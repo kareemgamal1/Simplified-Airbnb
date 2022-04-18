@@ -18,8 +18,11 @@ struct Time
     int time_mon;  // month of year from 0 to 11
     int time_year; // year since 1900
 };
+
 class timePeriod
 {
+
+
 public:
     bool includesDate(Time t);
     bool includesPeriod();
@@ -37,7 +40,7 @@ public:
     int pricePerDay;
     int noOfRooms;
     int ID;
-    static int noOfPlaces;
+    static int noOfPlaces; // decides ID of a place
     Place(location loc, int pricePerDay, string view, string paymentMethod, bool room)
     {
         noOfPlaces++;
@@ -160,7 +163,7 @@ public:
     // Aly
     void login()
     {
-        //TODO: test this 
+        // TODO: test this
         string em, pass;
         int num_tries = 0;
         bool validated = false;
@@ -180,7 +183,7 @@ public:
                 getline(stream, str);
                 validated = (str == pass);
             }
-            
+
             if (validated)
             {
                 cout << "\n\n\n-Choose (1) to add a new Advertisement\t,\tChoose (2) to edit an advertisement\tor Choose (3) to delete an advertisement\n";
@@ -223,16 +226,68 @@ public:
         }
     }
 
-    Place searchByType(string type);
-    Place searchByLocation(location loc);
-    Place searchByView(string view);
-    Place searchByPriceRange(int priceRangeStart, int priceRangeEnd);
-    Place searchByPaymentMethod(string paymentMethod);
-    Place searchByNoOfRooms(int noOfRooms);
-    Place searchByDuration(string startDate, string endDate);
-    Place search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
+    Place searchByType();
+    Place searchByLocation();
+    Place searchByView();
+    Place searchByPriceRange();
+    Place searchByPaymentMethod();
+    Place searchByNoOfRooms();
+    Place searchByDuration();
+    Place search()
+    {
+        int choice;
+        cout << "Press 1 to search for apartments by type (Apartment/Room).\n";
+        cout << "Press 2 to search for apartments by location\n";
+        cout << "Press 3 to search for apartments by view\n";
+        cout << "Press 4 to search for apartments with a certain price range\n\n";
+        cout << "Press 5 to search for apartments by number of rooms\n";
+        cout << "Press 6 to search for apartments by view\n";
+        cout << "Press 7 to search for apartments by stay duration\n";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1:
+        {
+            searchByType();
+            break;
+        }
+        case 2:
+        {
+            searchByLocation();
+            break;
+        }
+        case 3:
+        {
+            searchByView();
+            break;
+        }
+        case 4:
+        {
+            searchByPriceRange();
+            break;
+        }
+        case 5:
+        {
+            searchByNoOfRooms();
+            break;
+        }
+        case 6:
+        {
+            searchByView();
+            break;
+        }
+        case 7:
+        {
+            searchByDuration();
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    // narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
     void choosePlace(Place place);
-    int generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment
+    int generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment, add discount attribute to Places
     int generateTotalPrice(); // total price for the no of days the traveler will stay for
     void viewBy();            // sort based on different Place attributes
 
@@ -325,7 +380,7 @@ public:
         bool validated = false;
         while (num_tries < 3)
         {
-            cout << "Username : ";
+            cout << "E-mail : ";
             cin >> em;
             cout << "\nPassword : ";
             cin >> pass;
@@ -396,33 +451,34 @@ public:
             cout << "Enter advertisement number: " << i + 1 << " information:\n";
             cout << "Enter advertisement type, Choose(1) for Apartment or Choose(2) for Room\n";
             int type;
+            int pricePerDay;
+            bool room;
+            location loc;
+            string view;
+            string paymentMethod;
             cin >> type;
-            // Dangerous code, overwrites prevous entries in places[]
             if (type == 1)
-                places[i].room = false;
+                room = false;
             else if (type == 2)
-                places[i].room = true;
+                room = true;
             else
                 cout << "Please enter a correct choice.\n";
             cout << "Country: ";
-            cin >> places[i].loc.country;
+            cin >> loc.country;
             cout << "City: ";
-            cin >> places[i].loc.city;
+            cin >> loc.city;
             cout << "Street name: ";
-            cin >> places[i].loc.streetName;
+            cin >> loc.streetName;
             cout << "Price: ";
-            cin >> places[i].pricePerDay;
+            cin >> pricePerDay;
             cout << "View:";
-            cin >> places[i].view;
+            cin >> view;
             cout << "Payment method: ";
-            cin >> places[i].paymentMethod;
-            // So you alter an existing entry in places[], overwriting it with a new entry
-            // THEN you add THE SAME ENTRY into the back of the array
-            Place currentPlace = Place(places[i].loc, places[i].pricePerDay, places[i].view, places[i].paymentMethod, places[i].room);
+            cin >> paymentMethod;
+            Place currentPlace = Place(loc, pricePerDay, view, paymentMethod, room);
             places.push_back(currentPlace);
         }
     }
-    // Kareem
     void displayAdvertisements()
     {
         for (int i = 0; i < places.size(); i++)
@@ -477,7 +533,6 @@ public:
             break;
         }
     }
-
     void deleteAdvertisement()
     {
         displayAdvertisements();
@@ -494,7 +549,6 @@ public:
             }
         }
     }
-    // Aly
     void serializePlaces()
     {
         // TODO: test this
@@ -551,11 +605,11 @@ public:
             getline(stream, x);
             noOfRooms = stoi(x);
             stream.close();
+            // Aly TODO: put attributes in an object of Places and push it into the places vector
         }
     }
     // Getters and Setters
-    vector<Place>
-    getPlaces() // hashtable
+    vector<Place> getPlaces()
     {
         return this->places;
     }
