@@ -2,6 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <filesystem>
 using namespace std;
 
 struct location
@@ -155,16 +156,11 @@ public:
         cin >> gender;
         cout << "Age : ";
         cin >> age;
-
-        // for each new user, create a new file with it's email name
-        ofstream boba("heyo.txt");
-        boba << "hewwo!" << endl;
-        boba << "hewwo!" << endl;
-        boba.close();
     }
     // Aly
     void login()
     {
+        //TODO: test this 
         string em, pass;
         int num_tries = 0;
         bool validated = false;
@@ -174,18 +170,17 @@ public:
             cin >> em;
             cout << "\nPassword : ";
             cin >> pass;
-            // for (int i = 0; i < TempArr.size(); i++) // in order to access all users, we should put them in a file first and then iterate over that file
-            // {
-            //     if (em == TempArr.email)
-            //     {
-            //         if (p == TempArr.Password)
-            //         {
-            //             validated = true;
-            //             break;
-            //         }
-            //     }
-            // }
-
+            // logging in
+            // This isn't what the path should be, I don't know who I'm supposed to log in
+            string path = "/People/" + em + ".txt";
+            if (filesystem::exists(path))
+            {
+                string str;
+                ifstream stream(path.c_str());
+                getline(stream, str);
+                validated = (str == pass);
+            }
+            
             if (validated)
             {
                 cout << "\n\n\n-Choose (1) to add a new Advertisement\t,\tChoose (2) to edit an advertisement\tor Choose (3) to delete an advertisement\n";
@@ -402,7 +397,7 @@ public:
             cout << "Enter advertisement type, Choose(1) for Apartment or Choose(2) for Room\n";
             int type;
             cin >> type;
-
+            // Dangerous code, overwrites prevous entries in places[]
             if (type == 1)
                 places[i].room = false;
             else if (type == 2)
@@ -421,6 +416,8 @@ public:
             cin >> places[i].view;
             cout << "Payment method: ";
             cin >> places[i].paymentMethod;
+            // So you alter an existing entry in places[], overwriting it with a new entry
+            // THEN you add THE SAME ENTRY into the back of the array
             Place currentPlace = Place(places[i].loc, places[i].pricePerDay, places[i].view, places[i].paymentMethod, places[i].room);
             places.push_back(currentPlace);
         }
@@ -497,9 +494,68 @@ public:
             }
         }
     }
-
+    // Aly
+    void serializePlaces()
+    {
+        // TODO: test this
+        for (Place x : places)
+        {
+            string path = "/Places/" + to_string(x.ID) + ".txt";
+            ofstream stream(path.c_str());
+            stream << x.loc.country << endl;
+            stream << x.loc.city << endl;
+            stream << x.loc.streetName << endl;
+            // todo: time serialization
+            stream << x.view << endl;
+            stream << x.paymentMethod << endl;
+            stream << x.room << endl;
+            stream << x.reserved << endl;
+            stream << x.pricePerDay << endl;
+            stream << x.noOfRooms << endl;
+            stream << x.ID << endl;
+            stream.close();
+        }
+    }
+    void deSerializePlaces()
+    {
+        // TODO: test this
+        string path = "/places";
+        for (const auto &entry : filesystem::directory_iterator(path.c_str()))
+        {
+            ifstream stream(entry.path());
+            string x;
+            location l;
+            string view;
+            string paymentMethod;
+            bool room;
+            bool reserved;
+            int pricePerDay;
+            int noOfRooms;
+            int ID;
+            getline(stream, x);
+            l.country = x;
+            getline(stream, x);
+            l.city = x;
+            getline(stream, x);
+            l.streetName = x;
+            getline(stream, x);
+            view = x;
+            getline(stream, x);
+            paymentMethod = x;
+            getline(stream, x);
+            room = (x == "true");
+            getline(stream, x);
+            reserved = (x == "true");
+            getline(stream, x);
+            pricePerDay = stoi(x);
+            getline(stream, x);
+            noOfRooms = stoi(x);
+            stream.close();
+        }
+    }
     // Getters and Setters
-    vector<Place> getPlaces() // hashtable
+    vector<Place>
+    getPlaces() // hashtable
     {
         return this->places;
     }
