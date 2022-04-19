@@ -37,15 +37,21 @@ public:
     int noOfRooms;
     int ID;
     static int noOfPlaces;
-    Place(location loc, int pricePerDay, string view, string paymentMethod, bool room)
+
+    // Incomplete constructor, number of rooms and reservation status
+    // also fixed order of entry to correspond to class
+    // TODO: add time to constructor
+    Place(location loc, string view, string paymentMethod, bool room, bool reserved, int noOfRooms, int pricePerDay)
     {
         noOfPlaces++;
         ID = noOfPlaces + 1;
         this->loc = loc;
-        this->pricePerDay = pricePerDay;
         this->view = view;
         this->paymentMethod = paymentMethod;
         this->room = room;
+        this->reserved = reserved;
+        this->noOfRooms = noOfRooms;
+        this->pricePerDay = pricePerDay;
     }
 };
 
@@ -137,6 +143,7 @@ public:
     // vector to hold all Places, and check for each element if it satisfies every attribute we search with
     // another vector to hold the Places which satisfy the conditions
 
+    //TODO: test this
     void signup()
     {
         cout << "First name : ";
@@ -155,11 +162,25 @@ public:
         cin >> gender;
         cout << "Age : ";
         cin >> age;
+
+        // TODO: check email isn't already registered
+        // repetitve code, make a serializeUser() function
+        string path = "/travelers/" + email + ".txt";
+        ofstream stream(path.c_str());
+        stream << password << endl;
+        stream << firstName << endl;
+        stream << lastName << endl;
+        stream << email << endl;
+        stream << phone << endl;
+        stream << nationality << endl;
+        stream << gender << endl;
+        stream << age << endl;
+        stream.close();
     }
     // Aly
     void login()
     {
-        //TODO: test this 
+        // TODO: test this
         string em, pass;
         int num_tries = 0;
         bool validated = false;
@@ -170,8 +191,8 @@ public:
             cout << "\nPassword : ";
             cin >> pass;
             // logging in
-            // This isn't what the path should be, I don't know who I'm supposed to log in
-            string path = "/People/" + em + ".txt";
+            
+            string path = "/travelers/" + em + ".txt";
             if (filesystem::exists(path))
             {
                 string str;
@@ -179,7 +200,7 @@ public:
                 getline(stream, str);
                 validated = (str == pass);
             }
-            
+
             if (validated)
             {
                 cout << "\n\n\n-Choose (1) to add a new Advertisement\t,\tChoose (2) to edit an advertisement\tor Choose (3) to delete an advertisement\n";
@@ -291,6 +312,8 @@ class Host : public User
     vector<Place> places; // vector
 
 public:
+    // Aly
+    //TODO: test this
     void signup()
     {
         cout << "First name : ";
@@ -311,12 +334,22 @@ public:
         cin >> age;
 
         // for each new user, create a new file with it's email name
-        ofstream boba("heyo.txt");
-        boba << "hewwo!" << endl;
-        boba << "hewwo!" << endl;
-        boba.close();
+        // TODO: check email isn't already registered
+        // repetitve code, make a serializeUser() function 
+        string path = "/hosts/" + email + ".txt";
+        ofstream stream(path.c_str());
+        stream << password << endl;
+        stream << firstName << endl;
+        stream << lastName << endl;
+        stream << email << endl;
+        stream << phone << endl;
+        stream << nationality << endl;
+        stream << gender << endl;
+        stream << age << endl;
+        stream.close();
     }
-
+    // Aly
+    //TODO: test this
     void login()
     {
         string em, pass;
@@ -328,17 +361,14 @@ public:
             cin >> em;
             cout << "\nPassword : ";
             cin >> pass;
-            // for (int i = 0; i < TempArr.size(); i++) // in order to access all users, we should put them in a file first and then iterate over that file
-            // {
-            //     if (em == TempArr.email)
-            //     {
-            //         if (p == TempArr.Password)
-            //         {
-            //             validated = true;
-            //             break;
-            //         }
-            //     }
-            // }
+            string path = "/hosts/" + em + ".txt";
+            if (filesystem::exists(path))
+            {
+                string str;
+                ifstream stream(path.c_str());
+                getline(stream, str);
+                validated = (str == pass);
+            }
 
             if (validated)
             {
@@ -384,7 +414,7 @@ public:
             }
         }
     }
-
+    // TODO: conform this to new Place consturctor:: Karim
     void addAdvertisement()
     {
         int noOfAds;
@@ -417,8 +447,8 @@ public:
             cin >> places[i].paymentMethod;
             // So you alter an existing entry in places[], overwriting it with a new entry
             // THEN you add THE SAME ENTRY into the back of the array
-            Place currentPlace = Place(places[i].loc, places[i].pricePerDay, places[i].view, places[i].paymentMethod, places[i].room);
-            places.push_back(currentPlace);
+            // Place currentPlace = Place(places[i].loc, places[i].pricePerDay, places[i].view, places[i].paymentMethod, places[i].room);
+            // places.push_back(currentPlace); //COMMENTED OUT to prevent errors
         }
     }
     // Kareem
@@ -496,7 +526,9 @@ public:
     // Aly
     void serializePlaces()
     {
-        // TODO: test this
+        // TODO: create serializePlace(Place p) function to add to advertisement registration,
+        // as an alternative to this redundance-heavy function
+        //  TODO: test this
         for (Place x : places)
         {
             string path = "/Places/" + to_string(x.ID) + ".txt";
@@ -550,6 +582,7 @@ public:
             getline(stream, x);
             noOfRooms = stoi(x);
             stream.close();
+            Place p = Place(l, view, paymentMethod, room, reserved, noOfRooms, pricePerDay);
         }
     }
     // Getters and Setters
@@ -611,5 +644,4 @@ public:
 
 int main()
 {
-    
 }
