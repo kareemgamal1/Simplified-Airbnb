@@ -4,7 +4,6 @@
 #include <vector>
 #include <filesystem>
 using namespace std;
-
 struct location
 {
     string country;
@@ -612,4 +611,5 @@ public:
 
 int main()
 {
+    
 }
