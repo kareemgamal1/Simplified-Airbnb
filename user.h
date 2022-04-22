@@ -1,0 +1,41 @@
+#ifndef USER_H
+#define USER_H
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+using namespace std;
+
+class User
+{
+protected:
+    string firstName;
+    string lastName;
+    string email;
+    string password;
+    string nationality;
+    char gender;
+    int phone;
+    int age;
+
+public:
+    void signup();
+    void login();
+
+    // Getters and Setters
+    string getFirstName();
+    void setFirstName(string firstName);
+    string getLastName();
+    void setLastName(string lastName);
+    string getEmail();
+    void setEmail(string email);
+    string getPassword();
+    void setPassword(string password);
+    string getNationality();
+    void setNationality(string nationality);
+    char getGender();
+    void setGender(char gender);
+    int getAge();
+    void setAge(int age);
+};
+#endif
