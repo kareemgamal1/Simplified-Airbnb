@@ -8,7 +8,15 @@ void Traveler::signup()
     cout << "Last name : ";
     cin >> lastName;
     cout << "E-mail: ";
-    cin >> email; // validate email&password
+    cin >> email; // validate email isn't already in use
+    string path = "traveller/" + email + ".txt";
+    while (filesystem::exists(path))
+    {
+        cout << "this E-Mail is already in use" << endl;
+        cout << "E-mail: ";
+        cin >> email;
+        path = "traveller/" + email + ".txt";
+    }
     cout << "Password : ";
     cin >> password;
     cout << "Phone : ";
@@ -20,9 +28,6 @@ void Traveler::signup()
     cout << "Age : ";
     cin >> age;
 
-    // TODO: check email isn't already registered
-    // repetitve code, make a serializeUser() function
-    string path = "/traveller/" + email + ".txt";
     ofstream stream(path.c_str());
     stream << password << endl;
     stream << firstName << endl;
@@ -34,10 +39,8 @@ void Traveler::signup()
     stream << age << endl;
     stream.close();
 }
-// Aly
 void Traveler::login()
 {
-    // TODO: test this
     string em, pass;
     int num_tries = 0;
     bool validated = false;
@@ -49,7 +52,7 @@ void Traveler::login()
         cin >> pass;
         // logging in
 
-        string path = "/travellers/" + em + ".txt";
+        string path = "traveller/" + em + ".txt";
         if (filesystem::exists(path))
         {
             string str;

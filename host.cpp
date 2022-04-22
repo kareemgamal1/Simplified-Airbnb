@@ -10,6 +10,14 @@ void Host::signup()
     cin >> lastName;
     cout << "E-mail: ";
     cin >> email; // validate email&password
+    string path = "host/" + email + ".txt";
+    while (filesystem::exists(path))
+    {
+        cout << "this E-Mail is already in use" << endl;
+        cout << "E-mail: ";
+        cin >> email;
+        path = "host/" + email + ".txt";
+    }
     cout << "Password : ";
     cin >> password;
     cout << "Phone : ";
@@ -24,7 +32,6 @@ void Host::signup()
     // for each new user, create a new file with it's email name
     // TODO: check email isn't already registered
     // repetitve code, make a serializeUser() function
-    string path = "/hosts/" + email + ".txt";
     ofstream stream(path.c_str());
     stream << password << endl;
     stream << firstName << endl;
@@ -36,7 +43,6 @@ void Host::signup()
     stream << age << endl;
     stream.close();
 }
-// TODO: test this
 void Host::login()
 {
     string em, pass;
@@ -48,7 +54,7 @@ void Host::login()
         cin >> em;
         cout << "\nPassword : ";
         cin >> pass;
-        string path = "/hosts/" + em + ".txt";
+        string path = "host/" + em + ".txt";
         if (filesystem::exists(path))
         {
             string str;
