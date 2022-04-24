@@ -20,7 +20,7 @@ public:
     int pricePerDay;
     int noOfRooms;
     int ID;
-    static int noOfPlaces;
+    //static int noOfPlaces;
     Place();
     Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod);
 };

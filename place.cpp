@@ -2,8 +2,9 @@
 // TODO: add time to constructor
 Place::Place()
 {
-    noOfPlaces++;
-    ID = noOfPlaces + 1;
+    // noOfPlaces++;
+    // ID = noOfPlaces + 1;
+    ID = 66;
 }
 Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod)
 {
@@ -11,8 +12,9 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
     // {
     // this->reserved = reserved;
     // }
-    noOfPlaces++;
-    ID = noOfPlaces + 1;
+    // noOfPlaces++;
+    // ID = noOfPlaces + 1;
+    ID = 66;
     this->loc = loc;
     this->view = view;
     this->paymentMethod = paymentMethod;
