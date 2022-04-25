@@ -11,7 +11,9 @@ void Host::signup()
     cout << "E-mail: ";
     cin >> email; // validate email&password
     string path = "host/" + email + ".txt";
-    while (filesystem::exists(path))
+    ifstream ifile;
+    ifile.open(path);
+    while (ifile)
     {
         cout << "this E-Mail is already in use" << endl;
         cout << "E-mail: ";
@@ -55,7 +57,9 @@ void Host::login()
         cout << "\nPassword : ";
         cin >> pass;
         string path = "host/" + em + ".txt";
-        if (filesystem::exists(path))
+        ifstream ifile;
+        ifile.open(path);
+        if (ifile)
         {
             string str;
             ifstream stream(path.c_str());
@@ -107,6 +111,26 @@ void Host::login()
         }
     }
 }
+void Host::serializePlace(Place p)
+{
+    // TODO: create serializePlace(Place p) function to add to advertisement registration,
+    //  as an alternative to this redundance-heavy function
+    //  TODO: test this
+    string path = "/Places/" + to_string(p.ID) + ".txt";
+    ofstream stream(path.c_str());
+    stream << p.loc.country << endl;
+    stream << p.loc.city << endl;
+    stream << p.loc.streetName << endl;
+    // todo: time serialization
+    stream << p.view << endl;
+    stream << p.paymentMethod << endl;
+    stream << p.room << endl;
+    // stream << p.reserved << endl; uncomment it after we handle reservation in place
+    stream << p.pricePerDay << endl;
+    stream << p.noOfRooms << endl;
+    stream << p.ID << endl;
+    stream.close();
+}
 void Host::addAdvertisement()
 {
     int noOfAds;
@@ -128,6 +152,8 @@ void Host::addAdvertisement()
         int pricePerDay;
         int noOfRooms;
         int type;
+        float discount = 0;
+        char choice;
         cin >> type;
         if (type == 1)
         {
@@ -151,8 +177,17 @@ void Host::addAdvertisement()
         cin >> view;
         cout << "Payment method: ";
         cin >> paymentMethod;
-        Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod);
-        places.push_back(currentPlace); // COMMENTED OUT to prevent errors
+        cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
+        cin >> choice;
+        if (choice == 'y')
+        {
+            cout << "Enter your discount in percentage: ";
+            cin >> discount;
+        }
+        // we are adding the place to both the places of the host and the total places in the system.
+        Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount);
+        places.push_back(currentPlace);
+        serializePlace(currentPlace);
     }
 }
 void Host::displayAdvertisements()
@@ -209,7 +244,6 @@ void Host::editAdvertisement()
         break;
     }
 }
-
 void Host::deleteAdvertisement()
 {
     displayAdvertisements();
@@ -224,67 +258,6 @@ void Host::deleteAdvertisement()
             cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
             break;
         }
-    }
-}
-void Host::serializePlaces()
-{
-    // TODO: create serializePlace(Place p) function to add to advertisement registration,
-    // as an alternative to this redundance-heavy function
-    //  TODO: test this
-    for (Place x : places)
-    {
-        string path = "/Places/" + to_string(x.ID) + ".txt";
-        ofstream stream(path.c_str());
-        stream << x.loc.country << endl;
-        stream << x.loc.city << endl;
-        stream << x.loc.streetName << endl;
-        // todo: time serialization
-        stream << x.view << endl;
-        stream << x.paymentMethod << endl;
-        stream << x.room << endl;
-        // stream << x.reserved << endl; uncomment it after we handle reservation in place
-        stream << x.pricePerDay << endl;
-        stream << x.noOfRooms << endl;
-        stream << x.ID << endl;
-        stream.close();
-    }
-}
-void Host::deSerializePlaces()
-{
-    // TODO: test this
-    string path = "/places";
-    for (const auto &entry : filesystem::directory_iterator(path.c_str()))
-    {
-        ifstream stream(entry.path());
-        string x;
-        location loc;
-        string view;
-        string paymentMethod;
-        bool room;
-        bool reserved;
-        int pricePerDay;
-        int noOfRooms;
-        int ID;
-        getline(stream, x);
-        loc.country = x;
-        getline(stream, x);
-        loc.city = x;
-        getline(stream, x);
-        loc.streetName = x;
-        getline(stream, x);
-        view = x;
-        getline(stream, x);
-        paymentMethod = x;
-        getline(stream, x);
-        room = (x == "true");
-        getline(stream, x);
-        reserved = (x == "true");
-        getline(stream, x);
-        pricePerDay = stoi(x);
-        getline(stream, x);
-        noOfRooms = stoi(x);
-        stream.close();
-        Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod);
     }
 }
 

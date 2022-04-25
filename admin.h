@@ -12,7 +12,6 @@ class admin
     vector<Traveler> travelers; // hash table
 
 public:
-    void declare();
     void createTraveler();
     void createHost();
     void generateDashboard();
@@ -20,15 +19,17 @@ public:
     void addAdvertisement();
     void editAdvertisement();
     void deleteAdvertisement();
-    Place searchByType(string type);
-    Place searchByLocation(location loc);
-    Place searchByView(string view);
-    Place searchByPriceRange(int priceRangeStart, int priceRangeEnd);
-    Place searchByPaymentMethod(string paymentMethod);
-    Place searchByNoOfRooms(int noOfRooms);
-    Place searchByDuration(string startDate, string endDate);
+    Place searchByType();
+    Place searchByCountry();
+    Place searchByCity();
+    Place searchByStreet();
+    Place searchByLocation();
+    Place searchByView();
+    Place searchByPriceRange();
+    Place searchByPaymentMethod();
+    Place searchByNoOfRooms();
+    Place searchByDuration();
     Place search();
-
     // Getters and Setters
     vector<Host> getHosts();
     void setHosts(vector<Host> hosts);

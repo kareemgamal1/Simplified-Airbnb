@@ -9,12 +9,11 @@ class Host : public User
 public:
     void signup();
     void login();
+    void serializePlace(Place p);
     void addAdvertisement();
     void displayAdvertisements();
     void editAdvertisement();
     void deleteAdvertisement();
-    void serializePlaces();
-    void deSerializePlaces();
     // Getters and Setters
     vector<Place> getPlaces(); // hashtable
     void setPlaces(vector<Place> places);

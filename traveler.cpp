@@ -1,6 +1,8 @@
 #include "traveler.h"
 #include "user.h"
 #include "place.h"
+using namespace std;
+
 void Traveler::signup()
 {
     cout << "First name : ";
@@ -10,7 +12,9 @@ void Traveler::signup()
     cout << "E-mail: ";
     cin >> email; // validate email isn't already in use
     string path = "traveller/" + email + ".txt";
-    while (filesystem::exists(path))
+    ifstream ifile;
+    ifile.open(path);
+    while (ifile)
     {
         cout << "this E-Mail is already in use" << endl;
         cout << "E-mail: ";
@@ -51,9 +55,10 @@ void Traveler::login()
         cout << "\nPassword : ";
         cin >> pass;
         // logging in
-
         string path = "traveller/" + em + ".txt";
-        if (filesystem::exists(path))
+        ifstream ifile;
+        ifile.open(path);
+        if (ifile)
         {
             string str;
             ifstream stream(path.c_str());
@@ -84,62 +89,287 @@ void Traveler::login()
         }
     }
 }
-
-Place Traveler::searchByType() {}
-Place Traveler::searchByLocation() {}
-Place Traveler::searchByView() {}
-Place Traveler::searchByPriceRange() {}
-Place Traveler::searchByPaymentMethod() {}
-Place Traveler::searchByNoOfRooms() {}
-Place Traveler::searchByDuration() {}
+void Traveler::deSerializePlaces()
+{
+    // TODO: test this
+    string path = "/places";
+    for (const auto &entry : filesystem::directory_iterator(path.c_str()))
+    {
+        ifstream stream(entry.path());
+        string x;
+        location loc;
+        string view;
+        string paymentMethod;
+        bool room;
+        bool reserved;
+        int pricePerDay;
+        int noOfRooms;
+        int ID;
+        float discount;
+        getline(stream, x);
+        loc.country = x;
+        getline(stream, x);
+        loc.city = x;
+        getline(stream, x);
+        loc.streetName = x;
+        getline(stream, x);
+        view = x;
+        getline(stream, x);
+        paymentMethod = x;
+        getline(stream, x);
+        room = (x == "true");
+        getline(stream, x);
+        reserved = (x == "true");
+        getline(stream, x);
+        pricePerDay = stoi(x);
+        getline(stream, x);
+        noOfRooms = stoi(x);
+        getline(stream, x);
+        discount = stof(x);
+        stream.close();
+        Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount); // It's supposed to work without providing the discount as it's a defeault argument
+        allPlaces.push_back(p);
+    }
+}
+void Traveler::displayAll()
+{
+    for (int i = 0; i < currentPlaces.size(); i++)
+    {
+        cout << "Advertisements: \n";
+        cout << "Advertisement ID:" << currentPlaces[i].ID << '\n';
+        currentPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
+        cout << "Location:" << currentPlaces[i].loc.country << ' ' << currentPlaces[i].loc.city << ' ' << currentPlaces[i].loc.streetName << '\n';
+        cout << "Price: " << currentPlaces[i].pricePerDay << '\n';
+        cout << "View:" << currentPlaces[i].view << '\n';
+        cout << "Payment method: " << currentPlaces[i].paymentMethod;
+    }
+}
+vector<Place> Traveler::chooseContainer()
+{
+    return (queryNumber == 0) ? allPlaces : currentPlaces;
+}
+Place Traveler::searchByType()
+{
+    int choice;
+    bool room;
+    cout << "Enter (1) for room or (2) for apartment.";
+    cin >> choice;
+    room = (choice == 1);
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].room != room)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByCountry()
+{
+    string country;
+    cout << "Country: ";
+    cin >> country;
+    vector<Place>
+        currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].loc.country != country)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByCity()
+{
+    string city;
+    cout << "City: ";
+    cin >> city;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].loc.city != city)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByStreet()
+{
+    string streetName;
+    cout << "Street name: ";
+    cin >> streetName;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].loc.streetName != streetName)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByLocation()
+{
+    searchByCountry();
+    searchByCity();
+    searchByStreet();
+}
+Place Traveler::searchByView()
+{
+    string view;
+    cout << "View: ";
+    cin >> view;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].view != view)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByPriceRange()
+{
+    int priceRangeStart, priceRangeEnd;
+    cout << "Price from: ";
+    cin >> priceRangeStart;
+    cout << "To: ";
+    cin >> priceRangeEnd;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].pricePerDay < priceRangeStart && currentContainer[i].pricePerDay > priceRangeEnd)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByPaymentMethod()
+{
+    string paymentMethod;
+    cout << "Payment method: ";
+    cin >> paymentMethod;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].paymentMethod != paymentMethod)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByNoOfRooms()
+{
+    // available only if it's an apartment.
+    int noOfRooms;
+    cout << "Number of rooms: ";
+    cin >> noOfRooms;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].noOfRooms != noOfRooms && !currentContainer[i].room)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+Place Traveler::searchByDuration()
+{
+    // waiting for Tamer&Ahmed's timePeriod class
+}
 Place Traveler::search()
 {
+    queryNumber = 0;
+    deSerializePlaces();
     cout << "\n\n\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n";
+    cout << "Enter (0) to stop searching.";
     int choice;
     cin >> choice;
-    switch (choice)
+    while (choice != 0)
     {
-    case 1:
+        switch (choice)
+        {
+        case 1:
+        {
+            searchByType();
+
+            break;
+        }
+        case 2:
+        {
+            searchByLocation();
+            break;
+        }
+        case 3:
+        {
+            searchByView();
+            break;
+        }
+        case 4:
+        {
+            searchByPriceRange();
+            break;
+        }
+        case 5:
+        {
+            searchByPaymentMethod();
+            break;
+        }
+        case 6:
+        {
+            searchByNoOfRooms();
+            break;
+        }
+        case 7:
+        {
+            searchByDuration();
+            break;
+        }
+        }
+    }
+}
+
+void Traveler::choosePlace()
+{
+    displayAll();
+    cout << "Enter the ID of the advertisement you want to select.";
+    int ID;
+    cin >> ID;
+    for (int i = 0; i < currentPlaces.size(); i++)
     {
-        searchByType();
-        break;
+        if (currentPlaces[i].ID == ID)
+        {
+            reservedPlace = currentPlaces[i];
+            cout << "Please pay " << reservedPlace.generateTotalPrice() << " using: " << reservedPlace.paymentMethod;
+            break;
+        }
     }
-    case 2:
-    {
-        searchByLocation();
-        break;
-    }
-    case 3:
-    {
-        searchByView();
-        break;
-    }
-    case 4:
-    {
-        searchByPriceRange();
-        break;
-    }
-    case 5:
-    {
-        searchByPaymentMethod();
-        break;
-    }
-    case 6:
-    {
-        searchByNoOfRooms();
-        break;
-    }
-    case 7:
-    {
-        searchByDuration();
-        break;
-    }
-    }
-} // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
-void Traveler::choosePlace(Place place) {}
-int Traveler::generateDiscount() {}   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment
-int Traveler::generateTotalPrice() {} // total price for the no of days the traveler will stay for
-void Traveler::viewBy() {}            // sort based on different Place attributes
+}
+
+void Traveler::viewBy() {} // sort based on different Place attributes (Tamer)
 
 // Getters and Setters
 string Traveler::getStartDate()

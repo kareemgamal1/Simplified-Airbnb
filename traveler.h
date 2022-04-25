@@ -10,6 +10,10 @@ class Traveler : public User
     int stayDuration;
     int priceRangeStart;
     int priceRangeEnd;
+    int queryNumber;
+    vector<Place> allPlaces;
+    vector<Place> currentPlaces;
+    Place reservedPlace;
 
 public:
     // vector to hold all Places, and check for each element if it satisfies every attribute we search with
@@ -18,7 +22,13 @@ public:
     void signup();
     void login();
 
+    void deSerializePlaces();
+    void displayAll();
+    vector<Place> chooseContainer();
     Place searchByType();
+    Place searchByCountry();
+    Place searchByCity();
+    Place searchByStreet();
     Place searchByLocation();
     Place searchByView();
     Place searchByPriceRange();
@@ -26,10 +36,9 @@ public:
     Place searchByNoOfRooms();
     Place searchByDuration();
     Place search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
-    void choosePlace(Place place);
-    int generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment
-    int generateTotalPrice(); // total price for the no of days the traveler will stay for
-    void viewBy();            // sort based on different Place attributes
+    void choosePlace();
+    
+    void viewBy();              // sort based on different Place attributes
 
     // Getters and Setters
     string getStartDate();
