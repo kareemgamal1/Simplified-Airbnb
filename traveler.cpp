@@ -117,9 +117,9 @@ void Traveler::deSerializePlaces()
         getline(stream, x);
         paymentMethod = x;
         getline(stream, x);
-        room = (x == "true");
+        room = (x == "1");
         getline(stream, x);
-        reserved = (x == "true");
+        reserved = (x == "1");
         getline(stream, x);
         pricePerDay = stoi(x);
         getline(stream, x);
