@@ -1,6 +1,7 @@
 #include "traveler.h"
 #include "user.h"
 #include "place.h"
+#include <filesystem>
 using namespace std;
 
 void Traveler::signup()
@@ -117,9 +118,9 @@ void Traveler::deSerializePlaces()
         getline(stream, x);
         paymentMethod = x;
         getline(stream, x);
-        room = (x == "1");
+        room = (x == "true");
         getline(stream, x);
-        reserved = (x == "1");
+        reserved = (x == "true");
         getline(stream, x);
         pricePerDay = stoi(x);
         getline(stream, x);
@@ -148,7 +149,8 @@ vector<Place> Traveler::chooseContainer()
 {
     return (queryNumber == 0) ? allPlaces : currentPlaces;
 }
-Place Traveler::searchByType()
+
+void Traveler::searchByType()
 {
     int choice;
     bool room;
@@ -167,7 +169,7 @@ Place Traveler::searchByType()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByCountry()
+void Traveler::searchByCountry()
 {
     string country;
     cout << "Country: ";
@@ -185,7 +187,7 @@ Place Traveler::searchByCountry()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByCity()
+void Traveler::searchByCity()
 {
     string city;
     cout << "City: ";
@@ -202,7 +204,7 @@ Place Traveler::searchByCity()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByStreet()
+void Traveler::searchByStreet()
 {
     string streetName;
     cout << "Street name: ";
@@ -219,13 +221,13 @@ Place Traveler::searchByStreet()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByLocation()
+void Traveler::searchByLocation()
 {
     searchByCountry();
     searchByCity();
     searchByStreet();
 }
-Place Traveler::searchByView()
+void Traveler::searchByView()
 {
     string view;
     cout << "View: ";
@@ -242,7 +244,7 @@ Place Traveler::searchByView()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByPriceRange()
+void Traveler::searchByPriceRange()
 {
     int priceRangeStart, priceRangeEnd;
     cout << "Price from: ";
@@ -261,7 +263,7 @@ Place Traveler::searchByPriceRange()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByPaymentMethod()
+void Traveler::searchByPaymentMethod()
 {
     string paymentMethod;
     cout << "Payment method: ";
@@ -278,7 +280,7 @@ Place Traveler::searchByPaymentMethod()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByNoOfRooms()
+void Traveler::searchByNoOfRooms()
 {
     // available only if it's an apartment.
     int noOfRooms;
@@ -296,11 +298,11 @@ Place Traveler::searchByNoOfRooms()
     queryNumber++;
     displayAll();
 }
-Place Traveler::searchByDuration()
+void Traveler::searchByDuration()
 {
     // waiting for Tamer&Ahmed's timePeriod class
 }
-Place Traveler::search()
+void Traveler::search()
 {
     queryNumber = 0;
     deSerializePlaces();

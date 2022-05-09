@@ -2,6 +2,8 @@
 // #ifndef TRAVELER_H
 #include "user.h"
 #include "place.h"
+#include <filesystem>
+
 class Traveler : public User
 {
     string startDate;
@@ -25,20 +27,20 @@ public:
     void deSerializePlaces();
     void displayAll();
     vector<Place> chooseContainer();
-    Place searchByType();
-    Place searchByCountry();
-    Place searchByCity();
-    Place searchByStreet();
-    Place searchByLocation();
-    Place searchByView();
-    Place searchByPriceRange();
-    Place searchByPaymentMethod();
-    Place searchByNoOfRooms();
-    Place searchByDuration();
-    Place search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
+    void searchByType();
+    void searchByCountry();
+    void searchByCity();
+    void searchByStreet();
+    void searchByLocation();
+    void searchByView();
+    void searchByPriceRange();
+    void searchByPaymentMethod();
+    void searchByNoOfRooms();
+    void searchByDuration();
+    void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
     void choosePlace();
-    
-    void viewBy();              // sort based on different Place attributes
+
+    void viewBy(); // sort based on different Place attributes
 
     // Getters and Setters
     string getStartDate();
