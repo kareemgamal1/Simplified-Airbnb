@@ -6,14 +6,15 @@ void admin::generateDashboard() {}
 void admin::addAdvertisement() {}
 void admin::editAdvertisement() {}
 void admin::deleteAdvertisement() {}
-Place admin::searchByType() {}
-Place admin::searchByLocation() {}
-Place admin::searchByView() {}
-Place admin::searchByPriceRange() {}
-Place admin::searchByPaymentMethod() {}
-Place admin::searchByNoOfRooms() {}
-Place admin::searchByDuration() {}
-Place admin::search() {}
+
+//Place admin::searchByType() {}
+//Place admin::searchByLocation() {}
+//Place admin::searchByView() {}
+//Place admin::searchByPriceRange() {}
+//Place admin::searchByPaymentMethod() {}
+//Place admin::searchByNoOfRooms() {}
+//Place admin::searchByDuration() {}
+//Place admin::search() {}
 
 // Getters and Setters
 vector<Host> admin::getHosts()
