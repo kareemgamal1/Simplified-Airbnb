@@ -22,6 +22,7 @@ public:
     int ID;
     float discount;
     // static int noOfPlaces;
+    string hostEmail;
     Place();
     Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, float discount);
     float generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment

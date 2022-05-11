@@ -1,6 +1,6 @@
 #include "host.h"
 #include "time.h"
-
+#include <filesystem>
 // TODO: test this
 void Host::signup()
 {
@@ -33,7 +33,7 @@ void Host::signup()
 
     // for each new user, create a new file with it's email name
     // TODO: check email isn't already registered
-    // repetitve code, make a serializeUser() function
+    // repetitve code, make a serializeUser() function in User.cpp and call it here
     ofstream stream(path.c_str());
     stream << password << endl;
     stream << firstName << endl;
@@ -58,17 +58,33 @@ void Host::login()
         cin >> pass;
         string path = "host/" + em + ".txt";
         ifstream ifile;
-        ifile.open(path);
+        ifile.open(path); // this is never closed.
         if (ifile)
         {
             string str;
             ifstream stream(path.c_str());
             getline(stream, str);
             validated = (str == pass);
+            stream.close();
         }
 
         if (validated)
         {
+            ifstream stream(path.c_str());
+            string placeHolderString; // Rest in Peace placeHolderString, gone but not forgotten
+            // set user to stuff in file::
+            getline(stream, this->password);
+            getline(stream, this->firstName);
+            getline(stream, this->lastName);
+            getline(stream, this->email);
+            getline(stream, placeHolderString); // born to find horrible code, forced to cope
+            this->phone = stoi(placeHolderString);
+            getline(stream, this->nationality);
+            getline(stream, placeHolderString);
+            this->gender = placeHolderString[0]; // string to char
+            getline(stream, placeHolderString);
+            this->age = stoi(placeHolderString); // string to int
+
             cout << "\n\n\n-Choose (1) to add a new Advertisement\t,\tChoose (2) to edit an advertisement\tor Choose (3) to delete an advertisement\n";
             int choice;
             cin >> choice;
@@ -113,10 +129,8 @@ void Host::login()
 }
 void Host::serializePlace(Place p)
 {
-    // TODO: create serializePlace(Place p) function to add to advertisement registration,
-    //  as an alternative to this redundance-heavy function
-    //  TODO: test this
-    string path = "/Places/" + to_string(p.ID) + ".txt";
+    filesystem::create_directory("place/" + this->email);
+    string path = "place/A@mail/" + to_string(p.ID) + ".txt";
     ofstream stream(path.c_str());
     stream << p.loc.country << endl;
     stream << p.loc.city << endl;
@@ -129,6 +143,7 @@ void Host::serializePlace(Place p)
     stream << p.pricePerDay << endl;
     stream << p.noOfRooms << endl;
     stream << p.ID << endl;
+    stream << p.hostEmail << endl;
     stream.close();
 }
 void Host::addAdvertisement()
@@ -186,6 +201,7 @@ void Host::addAdvertisement()
         }
         // we are adding the place to both the places of the host and the total places in the system.
         Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount);
+        currentPlace.hostEmail = this->email; // fix constructor Place() and remove this
         places.push_back(currentPlace);
         serializePlace(currentPlace);
     }
@@ -208,6 +224,7 @@ void Host::editAdvertisement()
     displayAdvertisements();
     int index;
     int advID;
+    // does the host know this??
     cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n";
     cin >> advID;
     for (int i = 0; i < places.size(); i++)
