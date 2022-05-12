@@ -15,8 +15,8 @@ protected:
     string email;
     string password;
     string nationality;
+    string phone;
     char gender;
-    int phone;
     int age;
 
 public:
@@ -34,6 +34,8 @@ public:
     void setPassword(string password);
     string getNationality();
     void setNationality(string nationality);
+    string getPhone();
+    void setPhone(string phone);
     char getGender();
     void setGender(char gender);
     int getAge();

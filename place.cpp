@@ -1,20 +1,19 @@
 #include "place.h"
 // TODO: add time to constructor
-Place::Place()
-{
-    // noOfPlaces++;
-    // ID = noOfPlaces + 1;
-    ID = 66;
+int Place::noOfPlaces = 0; //I want to save it in a file
+
+Place::Place() {
+    noOfPlaces++;
+    this->ID = noOfPlaces;
 }
-Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, float discount = 0)
+Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, float discount = 0,string hostEmail)
 {
     // if () // if startDate to endDate is reserved
     // {
     // this->reserved = reserved;
     // }
-    // noOfPlaces++;
-    // ID = noOfPlaces + 1;
-    ID = 66;
+    noOfPlaces++;
+    this->ID = noOfPlaces;
     this->loc = loc;
     this->view = view;
     this->paymentMethod = paymentMethod;
@@ -22,7 +21,9 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
     this->noOfRooms = noOfRooms;
     this->pricePerDay = pricePerDay;
     this->discount = discount;
+    this->hostEmail = hostEmail;
 }
+
 float Place::generateDiscount()
 {
     if (discount != 0)

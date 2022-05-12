@@ -4,6 +4,7 @@
 
 int main()
 {
-    Traveler t;
-    t.signup();
+    Host t;
+    t.login();
+    t.deSerializePlaces();
 }

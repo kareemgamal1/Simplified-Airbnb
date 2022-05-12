@@ -10,6 +10,7 @@ public:
     void signup();
     void login();
     void serializePlace(Place p);
+    void deSerializePlaces();
     void addAdvertisement();
     void displayAdvertisements();
     void editAdvertisement();
