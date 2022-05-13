@@ -1,12 +1,14 @@
 #include "place.h"
 // TODO: add time to constructor
-int Place::noOfPlaces = 0; //I want to save it in a file
+int Place::noOfPlaces = 0; // I want to save it in a file
 
-Place::Place() {
+Place::Place()
+{
     noOfPlaces++;
     this->ID = noOfPlaces;
 }
-Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, float discount = 0,string hostEmail)
+
+Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0)
 {
     // if () // if startDate to endDate is reserved
     // {

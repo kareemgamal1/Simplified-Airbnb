@@ -30,10 +30,5 @@ public:
     Place searchByNoOfRooms();
     Place searchByDuration();
     Place search();
-    // Getters and Setters
-    vector<Host> getHosts();
-    void setHosts(vector<Host> hosts);
-    vector<Traveler> getTravelers();
-    void setTravelers(vector<Traveler> travelers);
 };
 #endif

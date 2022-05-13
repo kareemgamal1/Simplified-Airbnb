@@ -101,6 +101,7 @@ void Traveler::deSerializePlaces()
         location loc;
         string view;
         string paymentMethod;
+        string hostEmail;
         bool room;
         bool reserved;
         int pricePerDay;
@@ -128,9 +129,9 @@ void Traveler::deSerializePlaces()
         getline(stream, x);
         discount = stof(x);
         getline(stream, x);
+        hostEmail = x;
         stream.close();
-        Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount); // It's supposed to work without providing the discount as it's a defeault argument
-        p.hostEmail = x;
+        Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
         allPlaces.push_back(p);
     }
 }

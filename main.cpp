@@ -6,5 +6,4 @@ int main()
 {
     Host t;
     t.login();
-    t.deSerializePlaces();
 }

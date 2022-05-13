@@ -151,10 +151,10 @@ void Host::serializePlace(Place p)
 void Host::deSerializePlaces()
 {
 	// TODO: test this
-	string path = "place/"+this->email;
-	//gives error: path not found
+	string path = "place/" + this->email;
+	// gives error: path not found
 	cout << path;
-	for (const auto& entry : filesystem::directory_iterator(path.c_str()))
+	for (const auto &entry : filesystem::directory_iterator(path.c_str()))
 	{
 		ifstream stream(entry.path());
 		string x;
@@ -191,7 +191,7 @@ void Host::deSerializePlaces()
 		getline(stream, x);
 		hostEmail = x;
 		stream.close();
-		Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount, hostEmail); // It's supposed to work without providing the discount as it's a defeault argument
+		Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
 		places.push_back(p);
 	}
 }
@@ -228,8 +228,8 @@ void Host::addAdvertisement()
 		string view;
 		string paymentMethod;
 		bool room = true; // decides if the Place is a room or apartment
-		int pricePerDay=0;
-		int noOfRooms=0;
+		int pricePerDay = 0;
+		int noOfRooms = 0;
 		int type;
 		float discount = 0;
 		char choice;
@@ -243,7 +243,7 @@ void Host::addAdvertisement()
 		else if (type == 2)
 		{
 			room = true;
-			cout << "Number of rooms with this specifications: ";//for hostels.
+			cout << "Number of rooms with this specifications: "; // for hostels.
 			cin >> noOfRooms;
 		}
 		else
@@ -269,7 +269,7 @@ void Host::addAdvertisement()
 		}
 		// we are adding the place to both the places of the host and the total places in the system.
 		string hostEmail = this->email;
-		Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, discount, hostEmail);
+		Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount);
 		places.push_back(currentPlace);
 		serializePlace(currentPlace);
 	}

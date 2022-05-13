@@ -15,8 +15,5 @@ public:
     void displayAdvertisements();
     void editAdvertisement();
     void deleteAdvertisement();
-    // Getters and Setters
-    vector<Place> getPlaces(); // hashtable
-    void setPlaces(vector<Place> places);
 };
 #endif
