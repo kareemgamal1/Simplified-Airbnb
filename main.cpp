@@ -4,6 +4,8 @@
 
 int main()
 {
-    Host t;
-    t.login();
 }
+// one host can save place
+// two hosts can save places
+// hosts can deserialize their places
+// traveller can get all places

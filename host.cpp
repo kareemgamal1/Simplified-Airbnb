@@ -1,7 +1,7 @@
 #include "host.h"
 #include "time.h"
 #include <filesystem>
-
+using namespace std;
 void Host::signup()
 {
 	cout << "First name : ";
@@ -84,7 +84,7 @@ void Host::login()
 			this->gender = placeHolderString[0]; // string to char
 			getline(stream, placeHolderString);
 			this->age = stoi(placeHolderString); // string to int
-			// deSerializePlaces();
+			deSerializePlaces();
 			cout << "\n\n\n-Choose (1) to add a new Advertisement\t,\tChoose (2) to edit an advertisement\tor Choose (3) to delete an advertisement\n";
 			int choice;
 			cin >> choice;
@@ -154,45 +154,52 @@ void Host::deSerializePlaces()
 	string path = "place/" + this->email;
 	// gives error: path not found
 	cout << path;
-	for (const auto &entry : filesystem::directory_iterator(path.c_str()))
+	try
 	{
-		ifstream stream(entry.path());
-		string x;
-		location loc;
-		string view;
-		string paymentMethod;
-		string hostEmail;
-		bool room;
-		bool reserved;
-		int pricePerDay;
-		int noOfRooms;
-		int ID;
-		float discount;
-		getline(stream, x);
-		loc.country = x;
-		getline(stream, x);
-		loc.city = x;
-		getline(stream, x);
-		loc.streetName = x;
-		getline(stream, x);
-		view = x;
-		getline(stream, x);
-		paymentMethod = x;
-		getline(stream, x);
-		room = (x == "true");
-		getline(stream, x);
-		reserved = (x == "true");
-		getline(stream, x);
-		pricePerDay = stoi(x);
-		getline(stream, x);
-		noOfRooms = stoi(x);
-		getline(stream, x);
-		discount = stof(x);
-		getline(stream, x);
-		hostEmail = x;
-		stream.close();
-		Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
-		places.push_back(p);
+		for (const auto &entry : filesystem::directory_iterator(path))
+		{
+			ifstream stream(entry.path());
+			string x;
+			location loc;
+			string view;
+			string paymentMethod;
+			string hostEmail;
+			bool room;
+			bool reserved;
+			int pricePerDay;
+			int noOfRooms;
+			int ID;
+			float discount;
+			getline(stream, x);
+			loc.country = x;
+			getline(stream, x);
+			loc.city = x;
+			getline(stream, x);
+			loc.streetName = x;
+			getline(stream, x);
+			view = x;
+			getline(stream, x);
+			paymentMethod = x;
+			getline(stream, x);
+			room = (x == "1");
+			getline(stream, x);
+			reserved = (x == "1");
+			getline(stream, x);
+			pricePerDay = stoi(x);
+			getline(stream, x);
+			noOfRooms = stoi(x);
+			getline(stream, x);
+			//discount = (float)stoi(x);
+			getline(stream, x);
+			hostEmail = x;
+			stream.close();
+			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
+			places.push_back(p);
+		}
+	}
+	catch (std::filesystem::__cxx11::filesystem_error e)
+	{
+		// oh no, there's no directory for this host, anyways..
 	}
 }
 
