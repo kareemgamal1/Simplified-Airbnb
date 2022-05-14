@@ -93,46 +93,48 @@ void Traveler::login()
 void Traveler::deSerializePlaces()
 {
     // TODO: test this
-    string path = "/places";
-    for (const auto &entry : filesystem::directory_iterator(path.c_str()))
+    string path = "place";
+    for (const auto &host_directory_entry : filesystem::directory_iterator(path))
     {
-        ifstream stream(entry.path());
-        string x;
-        location loc;
-        string view;
-        string paymentMethod;
-        string hostEmail;
-        bool room;
-        bool reserved;
-        int pricePerDay;
-        int noOfRooms;
-        int ID;
-        float discount;
-        getline(stream, x);
-        loc.country = x;
-        getline(stream, x);
-        loc.city = x;
-        getline(stream, x);
-        loc.streetName = x;
-        getline(stream, x);
-        view = x;
-        getline(stream, x);
-        paymentMethod = x;
-        getline(stream, x);
-        room = (x == "true");
-        getline(stream, x);
-        reserved = (x == "true");
-        getline(stream, x);
-        pricePerDay = stoi(x);
-        getline(stream, x);
-        noOfRooms = stoi(x);
-        getline(stream, x);
-        discount = stof(x);
-        getline(stream, x);
-        hostEmail = x;
-        stream.close();
-        Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
-        allPlaces.push_back(p);
+        string host_name_path = host_directory_entry.path().string();
+        for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
+        {
+            ifstream stream(place_directory_entry.path().string());
+            string x;
+            location loc;
+            string view;
+            string paymentMethod;
+            bool room;
+            bool reserved;
+            int pricePerDay;
+            int noOfRooms;
+            int ID;
+            float discount;
+            getline(stream, x);
+            loc.country = x;
+            getline(stream, x);
+            loc.city = x;
+            getline(stream, x);
+            loc.streetName = x;
+            getline(stream, x);
+            view = x;
+            getline(stream, x);
+            paymentMethod = x;
+            getline(stream, x);
+            room = (x == "1");
+            getline(stream, x);
+            reserved = (x == "1");
+            getline(stream, x);
+            pricePerDay = stoi(x);
+            getline(stream, x);
+            noOfRooms = stoi(x);
+            getline(stream, x);
+            //discount = stof(x);
+            getline(stream, x);
+            stream.close();
+            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, x, discount); // It's supposed to work without providing the discount as it's a defeault argument
+            allPlaces.push_back(p);
+        }
     }
 }
 void Traveler::displayAll()
