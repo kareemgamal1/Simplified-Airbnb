@@ -147,7 +147,6 @@ void Host::serializePlace(Place p)
 	stream << p.hostEmail << endl;
 	stream.close();
 }
-
 void Host::deSerializePlaces()
 {
 	// TODO: test this
@@ -193,16 +192,16 @@ void Host::deSerializePlaces()
 			getline(stream, x);
 			hostEmail = x;
 			stream.close();
-			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount); // It's supposed to work without providing the discount as it's a defeault argument
+			//TODO discount
+			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
 			places.push_back(p);
 		}
 	}
-	catch (std::filesystem::__cxx11::filesystem_error e)
+	catch (exception e)
 	{
 		// oh no, there's no directory for this host, anyways..
 	}
 }
-
 void Host::displayAdvertisements()
 {
 	for (int i = 0; i < places.size(); i++)
@@ -216,30 +215,85 @@ void Host::displayAdvertisements()
 		cout << "Payment method: " << places[i].paymentMethod;
 	}
 }
+void createTimeForPlace(Place p) {
+	timereserve startdate, enddate;
+	cout << " please enter the start date";
+	cin >> startdate.day >> startdate.month;
+	cout << " please enter the end date ";
+	cin >> enddate.day >> enddate.month;
+	timereserve t;
+	int j = startdate.month;
+	switch (startdate.month) {
+	case 1:
+	case 3:
+	case 5:
+	case 7:
+	case 8:
+	case 10:
+	case 12:
+		for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+			if (i <= 31) {
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+			else {
+				i = 1;
+				j++;
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+		}
+		break;
+
+	case 4:
+	case 6:
+	case 9:
+	case 11:
+		for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+			if (i <= 30) {
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+			else {
+				i = 1;
+				j++;
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+		}
+	case 2: for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+		if (i <= 28) {
+			t.day = i;
+			t.month = j;
+			p.daysofplace.push_back(t);
+		}
+		else {
+			i = 1;
+			j++;
+			t.day = i;
+			t.month = j;
+			p.daysofplace.push_back(t);
+		}
+	}
+	}
+}
 void Host::addAdvertisement()
 {
 	int noOfAds;
+	int noOfRooms = 0;
+	int type;
+	bool room = true; // decides if the Place is a room or apartment
 	cout << "Enter how many advertisements you want to make:";
 	cin >> noOfAds;
 	Place p;
 	for (int i = 0; i < noOfAds; i++)
 	{
-		cout << "Enter advertisement number: " << p.noOfPlaces << " information:\n";
+		cout << "Enter advertisement number: " << i << " information:\n";
 		cout << "Enter advertisement type, Choose(1) for Apartment or Choose(2) for Room\n";
-		// Time startDate, endDate;
-		// cout << "Available from: ";
-		// cin >> startDate;
-		// cout << " to: ";
-		// cin >> endDate;
-		location loc;
-		string view;
-		string paymentMethod;
-		bool room = true; // decides if the Place is a room or apartment
-		int pricePerDay = 0;
-		int noOfRooms = 0;
-		int type;
-		float discount = 0;
-		char choice;
 		cin >> type;
 		if (type == 1)
 		{
@@ -255,6 +309,78 @@ void Host::addAdvertisement()
 		}
 		else
 			cout << "Please enter a correct choice.\n";
+		timereserve startdate, enddate;
+		cout << " please enter the start date";
+		cin >> startdate.day >> startdate.month;
+		cout << " please enter the end date ";
+		cin >> enddate.day >> enddate.month;
+		timereserve t;
+		int j = startdate.month;
+		switch (startdate.month) {
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+				if (i <= 31) {
+					t.day = i;
+					t.month = j;
+					p.daysofplace.push_back(t);
+				}
+				else {
+					i = 1;
+					j++;
+					t.day = i;
+					t.month = j;
+					p.daysofplace.push_back(t);
+				}
+			}
+			break;
+
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+				if (i <= 30) {
+					t.day = i;
+					t.month = j;
+					p.daysofplace.push_back(t);
+				}
+				else {
+					i = 1;
+					j++;
+					t.day = i;
+					t.month = j;
+					p.daysofplace.push_back(t);
+				}
+			}
+		case 2: for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++) {
+			if (i <= 28) {
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+			else {
+				i = 1;
+				j++;
+				t.day = i;
+				t.month = j;
+				p.daysofplace.push_back(t);
+			}
+		}
+		}
+		location loc;
+		string view;
+		string paymentMethod;
+		int pricePerDay = 0;
+		
+		float discount = 0;
+		char choice;
+		
 		cout << "Country: ";
 		cin >> loc.country;
 		cout << "City: ";
@@ -327,6 +453,7 @@ void Host::editAdvertisement()
 	default:
 		break;
 	}
+	serializePlace(places[index]);
 }
 void Host::deleteAdvertisement()
 {
@@ -339,8 +466,20 @@ void Host::deleteAdvertisement()
 		if (places[i].ID == advID)
 		{
 			places.erase(places.begin() + i);
-			cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
+			string toBeDeleted = "place/"+this->email+"/"+to_string(places[i].ID)+".txt";
+			cout << endl<<toBeDeleted<<endl;
+			//cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
+			try {
+				if (std::filesystem::remove(toBeDeleted))
+					std::cout << "file " << toBeDeleted << " deleted.\n";
+				else
+					std::cout << "file " << toBeDeleted << " not found.\n";
+			}
+			catch (const std::filesystem::filesystem_error& err) {
+				std::cout << "filesystem error: " << err.what() << '\n';
+			}
 			break;
 		}
 	}
+
 }

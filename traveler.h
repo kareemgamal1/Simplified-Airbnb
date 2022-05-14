@@ -37,9 +37,9 @@ public:
     void searchByPaymentMethod();
     void searchByNoOfRooms();
     void searchByDuration();
+    void searchByDate();
     void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
     void choosePlace();
-
     void viewBy(); // sort based on different Place attributes
 
     // Getters and Setters

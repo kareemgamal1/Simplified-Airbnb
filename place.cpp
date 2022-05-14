@@ -1,21 +1,29 @@
 #include "place.h"
 // TODO: add time to constructor
-int Place::noOfPlaces = 0; // I want to save it in a file
+
+
+void Place::getNextID() {
+    ifstream id("lastID.txt");
+    string currentID;
+    getline(id, currentID);
+    this->ID = stoi(currentID)+1;
+    id.close();
+}
+
+void Place::saveCurrentID() {
+    ofstream id("lastID.txt");
+    id << this->ID;
+    cout << "ID saved:" << ID;
+}
 
 Place::Place()
 {
-    noOfPlaces++;
-    this->ID = noOfPlaces;
+    
 }
 
-Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0)
-{
-    // if () // if startDate to endDate is reserved
-    // {
-    // this->reserved = reserved;
-    // }
-    noOfPlaces++;
-    this->ID = noOfPlaces;
+Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount) {
+    this->ID = ID;
+    saveCurrentID();
     this->loc = loc;
     this->view = view;
     this->paymentMethod = paymentMethod;
@@ -24,6 +32,28 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
     this->pricePerDay = pricePerDay;
     this->discount = discount;
     this->hostEmail = hostEmail;
+}
+Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0)
+{
+    // if () // if startDate to endDate is reserved
+    // {
+    // this->reserved = reserved;
+    // }
+    getNextID();
+    this->ID = ID++;
+    saveCurrentID();
+    this->loc = loc;
+    this->view = view;
+    this->paymentMethod = paymentMethod;
+    this->room = room;
+    this->noOfRooms = noOfRooms;
+    this->pricePerDay = pricePerDay;
+    this->discount = discount;
+    this->hostEmail = hostEmail;
+}
+
+void Place::calculateDuration() {
+    duration = daysofplace.size();
 }
 
 float Place::generateDiscount()
@@ -39,6 +69,6 @@ float Place::generateTotalPrice()
     if (discount != 0)
     {
         discount = generateDiscount();
-        return (pricePerDay - (discount * pricePerDay)); // then multiply the whole expression by the number of days (Tamer&Ahmed)
+        return (pricePerDay - (discount * pricePerDay))*duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
     }
 } // total price for the no of days the traveler will stay for

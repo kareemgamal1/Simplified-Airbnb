@@ -104,6 +104,7 @@ void Traveler::deSerializePlaces()
             location loc;
             string view;
             string paymentMethod;
+            string hostEmail;
             bool room;
             bool reserved;
             int pricePerDay;
@@ -131,12 +132,15 @@ void Traveler::deSerializePlaces()
             getline(stream, x);
             //discount = stof(x);
             getline(stream, x);
+            hostEmail = x;
             stream.close();
-            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, x, discount); // It's supposed to work without providing the discount as it's a defeault argument
+            //TODO discount
+            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
             allPlaces.push_back(p);
         }
     }
 }
+
 void Traveler::displayAll()
 {
     for (int i = 0; i < currentPlaces.size(); i++)
@@ -150,11 +154,11 @@ void Traveler::displayAll()
         cout << "Payment method: " << currentPlaces[i].paymentMethod;
     }
 }
+
 vector<Place> Traveler::chooseContainer()
 {
     return (queryNumber == 0) ? allPlaces : currentPlaces;
 }
-
 void Traveler::searchByType()
 {
     int choice;
@@ -192,6 +196,7 @@ void Traveler::searchByCountry()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByCity()
 {
     string city;
@@ -249,6 +254,7 @@ void Traveler::searchByView()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByPriceRange()
 {
     int priceRangeStart, priceRangeEnd;
@@ -268,6 +274,7 @@ void Traveler::searchByPriceRange()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByPaymentMethod()
 {
     string paymentMethod;
@@ -303,10 +310,34 @@ void Traveler::searchByNoOfRooms()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByDuration()
 {
-    // waiting for Tamer&Ahmed's timePeriod class
+    int duration;
+    cout << "Enter number of days";
+    cin >> duration;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (currentContainer[i].duration != duration)
+        {
+            currentContainer.erase(currentContainer.begin() + i);
+        }
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
 }
+
+void Traveler::searchByDate() {
+    timereserve startdate, enddate;
+    cout << " please enter the start date";
+    cin >> startdate.day >> startdate.month;
+    cout << " please enter the end date ";
+    cin >> enddate.day >> enddate.month;
+    
+}
+
 void Traveler::search()
 {
     queryNumber = 0;
