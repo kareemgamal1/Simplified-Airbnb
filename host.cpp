@@ -2,6 +2,7 @@
 #include "time.h"
 #include <filesystem>
 using namespace std;
+
 void Host::signup()
 {
 	cout << "First name : ";
@@ -187,14 +188,14 @@ void Host::deSerializePlaces()
 			pricePerDay = stoi(x);
 			getline(stream, x);
 			noOfRooms = stoi(x);
-			// TODO discount
 			getline(stream, x);
-			ID = stoi(x);
+			//discount = (float)stoi(x);
 			getline(stream, x);
 			hostEmail = x;
 			stream.close();
-			Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
-			places.push_back(p);
+			//TODO discount
+			//Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
+			//places.push_back(p);
 		}
 	}
 	catch (exception e)
@@ -215,17 +216,10 @@ void Host::displayAdvertisements()
 		cout << "Payment method: " << places[i].paymentMethod;
 	}
 }
-void createTimeForPlace(Place p)
-{
-	timereserve startdate, enddate;
-	cout << " please enter the start date";
-	cin >> startdate.day >> startdate.month;
-	cout << " please enter the end date ";
-	cin >> enddate.day >> enddate.month;
+void createTimeForPlace(Place p) {
 	timereserve t;
-	int j = startdate.month;
-	switch (startdate.month)
-	{
+	int j = p.startDate.month;
+	switch (j) {
 	case 1:
 	case 3:
 	case 5:
@@ -233,22 +227,21 @@ void createTimeForPlace(Place p)
 	case 8:
 	case 10:
 	case 12:
-		for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
-		{
-			if (i <= 31)
-			{
+		for (int i = p.startDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
+			if (i <= 31) {
 				t.day = i;
 				t.month = j;
 				p.daysofplace.push_back(t);
+
 			}
-			else
-			{
+			else {
 				i = 1;
 				j++;
 				t.day = i;
 				t.month = j;
 				p.daysofplace.push_back(t);
 			}
+			p.availableduration++;
 		}
 		break;
 
@@ -256,41 +249,36 @@ void createTimeForPlace(Place p)
 	case 6:
 	case 9:
 	case 11:
-		for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
-		{
-			if (i <= 30)
-			{
+		for (int i = p.startDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
+			if (i <= 30) {
 				t.day = i;
 				t.month = j;
 				p.daysofplace.push_back(t);
 			}
-			else
-			{
+			else {
 				i = 1;
 				j++;
 				t.day = i;
 				t.month = j;
 				p.daysofplace.push_back(t);
 			}
+			p.availableduration++;
 		}
-	case 2:
-		for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
-		{
-			if (i <= 28)
-			{
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
-			}
-			else
-			{
-				i = 1;
-				j++;
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
-			}
+	case 2: for (int i = p.endDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
+		if (i <= 28) {
+			t.day = i;
+			t.month = j;
+			p.daysofplace.push_back(t);
 		}
+		else {
+			i = 1;
+			j++;
+			t.day = i;
+			t.month = j;
+			p.daysofplace.push_back(t);
+		}
+		p.availableduration++;
+	}
 	}
 }
 void Host::addAdvertisement()
@@ -322,114 +310,86 @@ void Host::addAdvertisement()
 		else
 			cout << "Please enter a correct choice.\n";
 		timereserve startdate, enddate;
-		cout << " please enter the start date";
-		cin >> startdate.day >> startdate.month;
-		cout << " please enter the end date ";
-		cin >> enddate.day >> enddate.month;
-		timereserve t;
-		int j = startdate.month;
-		switch (startdate.month)
+		int noOfAds;
+		int noOfRooms = 0;
+		int type;
+		bool room = true; // decides if the Place is a room or apartment
+		cout << "Enter how many advertisements you want to make:";
+		cin >> noOfAds;
+		Place p;
+		for (int i = 0; i < noOfAds; i++)
 		{
-		case 1:
-		case 3:
-		case 5:
-		case 7:
-		case 8:
-		case 10:
-		case 12:
-			for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
-			{
-				if (i <= 31)
-				{
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
-				else
-				{
-					i = 1;
-					j++;
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
-			}
-			break;
+			cout << "Enter advertisement number: " << i+1 << " information:\n";
+			cout << "Enter advertisement type, Choose(1) for Apartment or Choose(2) for Room\n";
 
-		case 4:
-		case 6:
-		case 9:
-		case 11:
-			for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
+
+			location loc;
+			string view;
+			string paymentMethod;
+			bool room = true; // decides if the Place is a room or apartment
+			int pricePerDay = 0;
+			int noOfRooms = 0;
+			int type;
+			float discount = 0;
+			char choice;
+			cin >> type;
+			if (type == 1)
 			{
-				if (i <= 30)
-				{
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
-				else
-				{
-					i = 1;
-					j++;
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
+				room = false;
+				cout << "Number of rooms: ";
+				cin >> noOfRooms;
 			}
-		case 2:
-			for (int i = startdate.day; !(t.day == enddate.day && t.month == enddate.month); i++)
+			else if (type == 2)
 			{
-				if (i <= 28)
-				{
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
-				else
-				{
-					i = 1;
-					j++;
-					t.day = i;
-					t.month = j;
-					p.daysofplace.push_back(t);
-				}
+				room = true;
+				cout << "Number of rooms with this specifications: "; // for hostels.
+				cin >> noOfRooms;
 			}
+			else
+				cout << "Please enter a correct choice.\n";
+
+			location loc;
+			string view;
+			string paymentMethod;
+			int pricePerDay = 0;
+
+			float discount = 0;
+			char choice;
+
+			cout << "Country: ";
+			cin >> loc.country;
+			cout << "City: ";
+			cin >> loc.city;
+			cout << "Street name: ";
+			cin >> loc.streetName;
+			cout << "Price: ";
+			cin >> pricePerDay;
+			cout << "View:";
+			cin >> view;
+			cout << "Payment method: ";
+			cin >> paymentMethod;
+			cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
+			cin >> choice;
+			if (choice == 'y')
+			{
+				cout << "Enter your discount in percentage: ";
+				cin >> discount;
+			}
+			cout << "please enter the start date";
+			cin >> startdate.day >> startdate.month;
+			cout << "please enter the end date";
+			cin >> enddate.day, enddate.month;
+
+			// we are adding the place to both the places of the host and the total places in the system.
+			string hostEmail = this->email;
+			/*Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount, startdate, enddate);
+			createTimeForPlace(p);
+			places.push_back(currentPlace);
+			serializePlace(currentPlace);*/
 		}
-		location loc;
-		string view;
-		string paymentMethod;
-		int pricePerDay = 0;
-
-		float discount = 0;
-		char choice;
-
-		cout << "Country: ";
-		cin >> loc.country;
-		cout << "City: ";
-		cin >> loc.city;
-		cout << "Street name: ";
-		cin >> loc.streetName;
-		cout << "Price: ";
-		cin >> pricePerDay;
-		cout << "View:";
-		cin >> view;
-		cout << "Payment method: ";
-		cin >> paymentMethod;
-		cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
-		cin >> choice;
-		if (choice == 'y')
-		{
-			cout << "Enter your discount in percentage: ";
-			cin >> discount;
-		}
-		// we are adding the place to both the places of the host and the total places in the system.
-		string hostEmail = this->email;
-		Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount);
-		places.push_back(currentPlace);
-		serializePlace(currentPlace);
 	}
 }
+
 void Host::editAdvertisement()
 {
 	displayAdvertisements();
@@ -489,22 +449,20 @@ void Host::deleteAdvertisement()
 		if (places[i].ID == advID)
 		{
 			places.erase(places.begin() + i);
-			string toBeDeleted = "place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
-			cout << endl
-				 << toBeDeleted << endl;
-			// cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
-			try
-			{
+			string toBeDeleted = "place/"+this->email+"/"+to_string(places[i].ID)+".txt";
+			cout << endl<<toBeDeleted<<endl;
+			//cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
+			try {
 				if (std::filesystem::remove(toBeDeleted))
 					std::cout << "file " << toBeDeleted << " deleted.\n";
 				else
 					std::cout << "file " << toBeDeleted << " not found.\n";
 			}
-			catch (const std::filesystem::filesystem_error &err)
-			{
+			catch (const std::filesystem::filesystem_error& err) {
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
 			break;
 		}
 	}
+
 }

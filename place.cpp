@@ -23,6 +23,7 @@ Place::Place()
 
 Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount) {
     this->ID = ID;
+    saveCurrentID();
     this->loc = loc;
     this->view = view;
     this->paymentMethod = paymentMethod;
@@ -32,7 +33,7 @@ Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int 
     this->discount = discount;
     this->hostEmail = hostEmail;
 }
-Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0)
+Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate,float discount = 0)
 {
     // if () // if startDate to endDate is reserved
     // {
@@ -49,6 +50,9 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
     this->pricePerDay = pricePerDay;
     this->discount = discount;
     this->hostEmail = hostEmail;
+    this->availableduration = 0;
+    this->startDate = startDate;
+    this->endDate = endDate;
 }
 
 void Place::calculateDuration() {

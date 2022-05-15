@@ -20,11 +20,12 @@ class Place
 {
 public:
     location loc;
-    // Time startDate, endDate;
+     timereserve startDate, endDate;
     string view;
     string paymentMethod;
     bool room;
     // bool reserved = false; //should be based on the total time that the place will be available for
+    int availableduration;
     int ID;
     int pricePerDay;
     int noOfRooms;
@@ -36,7 +37,7 @@ public:
     void saveCurrentID();
     Place();
     Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0);
-    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount);
+    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, float discount = 0);
     void calculateDuration();
     float generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment
     float generateTotalPrice(); // total price for the no of days the traveler will stay for
