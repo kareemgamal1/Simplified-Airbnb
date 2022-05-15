@@ -23,7 +23,6 @@ Place::Place()
 
 Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount) {
     this->ID = ID;
-    saveCurrentID();
     this->loc = loc;
     this->view = view;
     this->paymentMethod = paymentMethod;

@@ -129,13 +129,13 @@ void Traveler::deSerializePlaces()
             pricePerDay = stoi(x);
             getline(stream, x);
             noOfRooms = stoi(x);
+            // TODO discount
             getline(stream, x);
-            //discount = stof(x);
+            ID = stoi(x);
             getline(stream, x);
             hostEmail = x;
             stream.close();
-            //TODO discount
-            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
+            Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail); // It's supposed to work without providing the discount as it's a defeault argument
             allPlaces.push_back(p);
         }
     }
