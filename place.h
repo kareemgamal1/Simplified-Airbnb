@@ -20,7 +20,7 @@ class Place
 {
 public:
     location loc;
-     timereserve startDate, endDate;
+    timereserve startDate, endDate;
     string view;
     string paymentMethod;
     bool room;
@@ -38,6 +38,8 @@ public:
     void createTimeForPlace();
     Place();
     Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, float discount = 0);
+    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0);
+
     Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, float discount = 0);
     void calculateDuration();
     float generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment

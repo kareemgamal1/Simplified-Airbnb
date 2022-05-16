@@ -116,7 +116,7 @@ void Host::login()
 			if (num_tries < 3)
 			{
 				cout << "The password or username you entered is incorrect. \n";
-				cout << "You have: " << 3 - num_tries + 1 << "| tries to enter\n";
+				cout << "You have: " << 3 - (num_tries + 1) << "| tries to enter\n";
 				num_tries++;
 				cout << "Please try again.\n";
 			}
@@ -150,6 +150,16 @@ void Host::serializePlace(Place p)
 	stream << p.startDate.month << endl;
 	stream << p.endDate.day << endl;
 	stream << p.endDate.month << endl;
+	// p.createTimeForPlace();
+	cout << "SIZE: " << p.daysofplace.size() << endl;
+	for (int i = 0; i < p.daysofplace.size(); i++)
+	{
+		stream << p.daysofplace[i].day << endl;
+		stream << p.daysofplace[i].month << endl;
+		stream << p.daysofplace[i].reserved << endl;
+		stream << endl;
+	}
+
 	stream.close();
 }
 void Host::deSerializePlaces()
@@ -193,8 +203,8 @@ void Host::deSerializePlaces()
 			pricePerDay = stoi(x);
 			getline(stream, x);
 			noOfRooms = stoi(x);
-			getline(stream, x);
-			//discount = (float)stoi(x);
+			// getline(stream, x);
+			// discount = (float)stoi(x);
 			getline(stream, x);
 			hostEmail = x;
 			getline(stream, x);
@@ -205,14 +215,34 @@ void Host::deSerializePlaces()
 			endDate.day = stoi(x);
 			getline(stream, x);
 			endDate.month = stoi(x);
-			stream.close();
-			//TODO discount
-			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); // It's supposed to work without providing the discount as it's a defeault argument
+			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); /// It's supposed to work without providing the discount as it's a defeault argument
+			int i = 0;
+			while (getline(stream, x))
+			{
+				timereserve t;
+				if (i < 3)
+				{
+					if (i == 0)
+						t.day = stoi(x);
+					else if (i == 1)
+						t.month = stoi(x);
+					else
+						t.reserved = (x == "1");
+					i++;
+				}
+				else
+				{
+					i = 0;
+					p.daysofplace.push_back(t);
+				}
+			}
 			places.push_back(p);
+			stream.close();
 		}
 	}
 	catch (exception e)
 	{
+		cout << "ERROR" << endl;
 		// oh no, there's no directory for this host, anyways..
 	}
 }
@@ -257,85 +287,55 @@ void Host::addAdvertisement()
 			cin >> noOfRooms;
 		}
 		else
+		{
 			cout << "Please enter a correct choice.\n";
+			i--;
+			continue;
+		}
 		timereserve startdate, enddate;
-		int noOfAds;
+		location loc;
+		string view;
+		string paymentMethod;
+		bool room = true; // decides if the Place is a room or apartment
+		int pricePerDay = 0;
 		int noOfRooms = 0;
 		int type;
-		bool room = true; // decides if the Place is a room or apartment
-		cout << "Enter how many advertisements you want to make:";
-		cin >> noOfAds;
-		Place p;
-		for (int i = 0; i < noOfAds; i++)
+		float discount = 0;
+		char choice;
+
+		cout << "Country: ";
+		cin >> loc.country;
+		cout << "City: ";
+		cin >> loc.city;
+		cout << "Street name: ";
+		cin >> loc.streetName;
+		cout << "Price: ";
+		cin >> pricePerDay;
+		cout << "View:";
+		cin >> view;
+		cout << "Payment method: ";
+		cin >> paymentMethod;
+		cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
+		cin >> choice;
+		if (choice == 'y')
 		{
-			cout << "Enter advertisement number: " << i+1 << " information:\n";
-			cout << "Enter advertisement type, Choose(1) for Apartment or Choose(2) for Room\n";
-
-
-			location loc;
-			string view;
-			string paymentMethod;
-			bool room = true; // decides if the Place is a room or apartment
-			int pricePerDay = 0;
-			int noOfRooms = 0;
-			int type;
-			float discount = 0;
-			char choice;
-			cin >> type;
-			if (type == 1)
-			{
-				room = false;
-				cout << "Number of rooms: ";
-				cin >> noOfRooms;
-			}
-			else if (type == 2)
-			{
-				room = true;
-				cout << "Number of rooms with this specifications: "; // for hostels.
-				cin >> noOfRooms;
-			}
-			else
-				cout << "Please enter a correct choice.\n";
-
-			location loc;
-			string view;
-			string paymentMethod;
-			int pricePerDay = 0;
-
-			float discount = 0;
-			char choice;
-
-			cout << "Country: ";
-			cin >> loc.country;
-			cout << "City: ";
-			cin >> loc.city;
-			cout << "Street name: ";
-			cin >> loc.streetName;
-			cout << "Price: ";
-			cin >> pricePerDay;
-			cout << "View:";
-			cin >> view;
-			cout << "Payment method: ";
-			cin >> paymentMethod;
-			cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
-			cin >> choice;
-			if (choice == 'y')
-			{
-				cout << "Enter your discount in percentage: ";
-				cin >> discount;
-			}
-			cout << "please enter the start date";
-			cin >> startdate.day >> startdate.month;
-			cout << "please enter the end date";
-			cin >> enddate.day, enddate.month;
-
-			// we are adding the place to both the places of the host and the total places in the system.
-			string hostEmail = this->email;
-			Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
-			currentPlace.createTimeForPlace();
-			places.push_back(currentPlace);
-			serializePlace(currentPlace);
+			cout << "Enter your discount in percentage: ";
+			cin >> discount;
 		}
+		cout << "please enter the start date";
+		cin >> startdate.day >> startdate.month;
+		cout << "please enter the end date";
+		cin >> enddate.day >> enddate.month;
+		cout << "datedone" << endl;
+		// we are adding the place to both the places of the host and the total places in the system.
+		string hostEmail = this->email;
+		cout << "hostdone" << endl;
+		Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
+		cout << "constructor" << endl;
+		currentPlace.createTimeForPlace();
+		cout << "time done" << endl;
+		places.push_back(currentPlace);
+		serializePlace(currentPlace);
 	}
 }
 
@@ -387,6 +387,7 @@ void Host::editAdvertisement()
 	}
 	serializePlace(places[index]);
 }
+
 void Host::deleteAdvertisement()
 {
 	displayAdvertisements();
@@ -398,20 +399,22 @@ void Host::deleteAdvertisement()
 		if (places[i].ID == advID)
 		{
 			places.erase(places.begin() + i);
-			string toBeDeleted = "place/"+this->email+"/"+to_string(places[i].ID)+".txt";
-			cout << endl<<toBeDeleted<<endl;
-			//cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
-			try {
+			string toBeDeleted = "place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
+			cout << endl
+				 << toBeDeleted << endl;
+			// cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
+			try
+			{
 				if (std::filesystem::remove(toBeDeleted))
 					std::cout << "file " << toBeDeleted << " deleted.\n";
 				else
 					std::cout << "file " << toBeDeleted << " not found.\n";
 			}
-			catch (const std::filesystem::filesystem_error& err) {
+			catch (const std::filesystem::filesystem_error &err)
+			{
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
 			break;
 		}
 	}
-
 }

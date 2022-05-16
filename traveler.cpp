@@ -130,13 +130,13 @@ void Traveler::deSerializePlaces()
             getline(stream, x);
             noOfRooms = stoi(x);
             getline(stream, x);
-            //discount = stof(x);
+            // discount = stof(x);
             getline(stream, x);
             hostEmail = x;
             stream.close();
-            //TODO discount, time
-            //Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
-            //allPlaces.push_back(p);
+            // TODO discount, time
+            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
+            allPlaces.push_back(p);
         }
     }
 }
@@ -329,13 +329,13 @@ void Traveler::searchByDuration()
     displayAll();
 }
 
-void Traveler::searchByDate() {
+void Traveler::searchByDate()
+{
     timereserve startdate, enddate;
     cout << " please enter the start date";
     cin >> startdate.day >> startdate.month;
     cout << " please enter the end date ";
     cin >> enddate.day >> enddate.month;
-    
 }
 
 void Traveler::search()

@@ -16,7 +16,7 @@ class Traveler : public User
     vector<Place> allPlaces;
     vector<Place> currentPlaces;
     Place reservedPlace;
-    //test
+    // test
 public:
     // vector to hold all Places, and check for each element if it satisfies every attribute we search with
     // another vector to hold the Places which satisfy the conditions
