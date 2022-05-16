@@ -146,6 +146,10 @@ void Host::serializePlace(Place p)
 	stream << p.noOfRooms << endl;
 	stream << p.ID << endl;
 	stream << p.hostEmail << endl;
+	stream << p.startDate.day << endl;
+	stream << p.startDate.month << endl;
+	stream << p.endDate.day << endl;
+	stream << p.endDate.month << endl;
 	stream.close();
 }
 void Host::deSerializePlaces()
@@ -159,6 +163,7 @@ void Host::deSerializePlaces()
 		for (const auto &entry : filesystem::directory_iterator(path))
 		{
 			ifstream stream(entry.path());
+			timereserve startDate, endDate;
 			string x;
 			location loc;
 			string view;
@@ -192,10 +197,18 @@ void Host::deSerializePlaces()
 			//discount = (float)stoi(x);
 			getline(stream, x);
 			hostEmail = x;
+			getline(stream, x);
+			startDate.day = stoi(x);
+			getline(stream, x);
+			startDate.month = stoi(x);
+			getline(stream, x);
+			endDate.day = stoi(x);
+			getline(stream, x);
+			endDate.month = stoi(x);
 			stream.close();
 			//TODO discount
-			//Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
-			//places.push_back(p);
+			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); // It's supposed to work without providing the discount as it's a defeault argument
+			places.push_back(p);
 		}
 	}
 	catch (exception e)
@@ -216,71 +229,7 @@ void Host::displayAdvertisements()
 		cout << "Payment method: " << places[i].paymentMethod;
 	}
 }
-void createTimeForPlace(Place p) {
-	timereserve t;
-	int j = p.startDate.month;
-	switch (j) {
-	case 1:
-	case 3:
-	case 5:
-	case 7:
-	case 8:
-	case 10:
-	case 12:
-		for (int i = p.startDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
-			if (i <= 31) {
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
 
-			}
-			else {
-				i = 1;
-				j++;
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
-			}
-			p.availableduration++;
-		}
-		break;
-
-	case 4:
-	case 6:
-	case 9:
-	case 11:
-		for (int i = p.startDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
-			if (i <= 30) {
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
-			}
-			else {
-				i = 1;
-				j++;
-				t.day = i;
-				t.month = j;
-				p.daysofplace.push_back(t);
-			}
-			p.availableduration++;
-		}
-	case 2: for (int i = p.endDate.day; !(t.day == p.endDate.day && t.month == p.endDate.month); i++) {
-		if (i <= 28) {
-			t.day = i;
-			t.month = j;
-			p.daysofplace.push_back(t);
-		}
-		else {
-			i = 1;
-			j++;
-			t.day = i;
-			t.month = j;
-			p.daysofplace.push_back(t);
-		}
-		p.availableduration++;
-	}
-	}
-}
 void Host::addAdvertisement()
 {
 	int noOfAds;
@@ -382,10 +331,10 @@ void Host::addAdvertisement()
 
 			// we are adding the place to both the places of the host and the total places in the system.
 			string hostEmail = this->email;
-			/*Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, discount, startdate, enddate);
-			createTimeForPlace(p);
+			Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
+			currentPlace.createTimeForPlace();
 			places.push_back(currentPlace);
-			serializePlace(currentPlace);*/
+			serializePlace(currentPlace);
 		}
 	}
 }
