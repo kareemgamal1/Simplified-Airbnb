@@ -4,6 +4,8 @@
 #include <filesystem>
 using namespace std;
 
+int queryNumber = 0;
+
 void Traveler::signup()
 {
     cout << "First name : ";
@@ -90,6 +92,40 @@ void Traveler::login()
         }
     }
 }
+void Traveler::serializePlace(Place p)
+{
+    string path = "place/" + p.hostEmail + "/" + to_string(p.ID) + ".txt";
+    filesystem::create_directory(path);
+    ofstream stream(path.c_str());
+    stream << p.loc.country << endl;
+    stream << p.loc.city << endl;
+    stream << p.loc.streetName << endl;
+    // todo: time serialization
+    stream << p.view << endl;
+    stream << p.paymentMethod << endl;
+    stream << p.room << endl;
+    // stream << p.reserved << endl; uncomment it after we handle reservation in place
+    stream << p.pricePerDay << endl;
+    stream << p.noOfRooms << endl;
+    stream << p.ID << endl;
+    stream << p.hostEmail << endl;
+    stream << p.startDate.day << endl;
+    stream << p.startDate.month << endl;
+    stream << p.endDate.day << endl;
+    stream << p.endDate.month << endl;
+    stream << p.availableduration << endl;
+    // p.createTimeForPlace();
+    cout << "SIZE: " << p.daysofplace.size() << endl;
+    for (int i = 0; i < p.daysofplace.size(); i++)
+    {
+        stream << p.daysofplace[i].day << endl;
+        stream << p.daysofplace[i].month << endl;
+        stream << p.daysofplace[i].reserved << endl;
+        stream << endl;
+    }
+
+    stream.close();
+}
 void Traveler::deSerializePlaces()
 {
     // TODO: test this
@@ -111,6 +147,7 @@ void Traveler::deSerializePlaces()
             int noOfRooms;
             int ID;
             float discount;
+            int availableduration;
             getline(stream, x);
             loc.country = x;
             getline(stream, x);
@@ -133,9 +170,32 @@ void Traveler::deSerializePlaces()
             // discount = stof(x);
             getline(stream, x);
             hostEmail = x;
+            getline(stream, x);
+            availableduration = stoi(x);
             stream.close();
             // TODO discount, time
             Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
+            p.availableduration = availableduration;
+            int i = 0;
+            while (getline(stream, x))
+            {
+                timereserve t;
+                if (i < 3)
+                {
+                    if (i == 0)
+                        t.day = stoi(x);
+                    else if (i == 1)
+                        t.month = stoi(x);
+                    else
+                        t.reserved = (x == "1");
+                    i++;
+                }
+                else
+                {
+                    i = 0;
+                    p.daysofplace.push_back(t);
+                }
+            }
             allPlaces.push_back(p);
         }
     }
@@ -159,6 +219,7 @@ vector<Place> Traveler::chooseContainer()
 {
     return (queryNumber == 0) ? allPlaces : currentPlaces;
 }
+
 void Traveler::searchByType()
 {
     int choice;
@@ -178,6 +239,7 @@ void Traveler::searchByType()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByCountry()
 {
     string country;
@@ -214,6 +276,7 @@ void Traveler::searchByCity()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByStreet()
 {
     string streetName;
@@ -231,6 +294,7 @@ void Traveler::searchByStreet()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByLocation()
 {
     searchByCountry();
@@ -292,6 +356,7 @@ void Traveler::searchByPaymentMethod()
     queryNumber++;
     displayAll();
 }
+
 void Traveler::searchByNoOfRooms()
 {
     // available only if it's an apartment.
@@ -340,7 +405,6 @@ void Traveler::searchByDate()
 
 void Traveler::search()
 {
-    queryNumber = 0;
     deSerializePlaces();
     cout << "\n\n\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n";
     cout << "Enter (0) to stop searching.";
@@ -353,37 +417,49 @@ void Traveler::search()
         case 1:
         {
             searchByType();
-
+            search();
             break;
         }
         case 2:
         {
             searchByLocation();
+            search();
             break;
         }
         case 3:
         {
             searchByView();
+            search();
             break;
         }
         case 4:
         {
             searchByPriceRange();
+            search();
             break;
         }
         case 5:
         {
             searchByPaymentMethod();
+            search();
             break;
         }
         case 6:
         {
             searchByNoOfRooms();
+            search();
             break;
         }
         case 7:
         {
             searchByDuration();
+            search();
+            break;
+        }
+        case 8:
+        {
+            searchByDate();
+            search();
             break;
         }
         }
@@ -400,6 +476,9 @@ void Traveler::choosePlace()
     {
         if (currentPlaces[i].ID == ID)
         {
+            for (int j = 0; j < currentPlaces[i].daysofplace.size(); j++)
+                currentPlaces[i].daysofplace[j].reserved = true;
+            serializePlace(currentPlaces[i]);
             reservedPlace = currentPlaces[i];
             cout << "Please pay " << reservedPlace.generateTotalPrice() << " using: " << reservedPlace.paymentMethod;
             break;

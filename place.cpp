@@ -1,4 +1,5 @@
 #include "place.h"
+#include <stdexcept>
 // TODO: add time to constructor
 
 void Place::getNextID()
@@ -75,6 +76,7 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
 }
 void Place::createTimeForPlace()
 {
+    // TODO:: fix 30th of Feb case
     timereserve t;
     int j = this->startDate.month;
     switch (this->startDate.month)
@@ -86,67 +88,87 @@ void Place::createTimeForPlace()
     case 8:
     case 10:
     case 12:
-        for (int i = this->startDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+        if (this->startDate.day > 31)
         {
-            if (i <= 31)
-            {
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            else
-            {
-                i = 1;
-                j++;
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            this->availableduration++;
+            std::logic_error ex("Invalid Date");
+            throw std::exception(ex);
         }
-        break;
+        else
+            for (int i = this->startDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+            {
 
+                if (i <= 31)
+                {
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                else
+                {
+                    i = 1;
+                    j++;
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                this->availableduration++;
+            }
+        break;
     case 4:
     case 6:
     case 9:
     case 11:
-        for (int i = this->startDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+        if (this->startDate.day > 30)
         {
-            if (i <= 30)
-            {
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            else
-            {
-                i = 1;
-                j++;
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            this->availableduration++;
+            std::logic_error ex("Invalid Date");
+            throw std::exception(ex);
         }
+        else
+            for (int i = this->startDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+            {
+                if (i <= 30)
+                {
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                else
+                {
+                    i = 1;
+                    j++;
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                this->availableduration++;
+            }
+        break;
     case 2:
-        for (int i = this->endDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+        if (this->startDate.day > 28)
         {
-            if (i <= 28)
-            {
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            else
-            {
-                i = 1;
-                j++;
-                t.day = i;
-                t.month = j;
-                this->daysofplace.push_back(t);
-            }
-            this->availableduration++;
+            std::logic_error ex("Invalid Date");
+            throw std::exception(ex);
         }
+        else
+            for (int i = this->endDate.day; !(t.day == this->endDate.day && t.month == this->endDate.month); i++)
+            {
+                if (i <= 28)
+                {
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                else
+                {
+                    i = 1;
+                    j++;
+                    t.day = i;
+                    t.month = j;
+                    this->daysofplace.push_back(t);
+                }
+                this->availableduration++;
+            }
+        break;
     }
 }
 

@@ -25,6 +25,7 @@ public:
     void login();
 
     void deSerializePlaces();
+    void serializePlace(Place p);
     void displayAll();
     vector<Place> chooseContainer();
     void searchByType();
