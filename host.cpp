@@ -171,88 +171,109 @@ void Host::deSerializePlaces()
 	string path = "place/" + this->email;
 	// gives error: path not found
 	cout << path;
-	try
+	// try
+	// {
+	for (const auto &entry : filesystem::directory_iterator(path))
 	{
-		for (const auto &entry : filesystem::directory_iterator(path))
+		ifstream stream(entry.path());
+		timereserve startDate, endDate;
+		string x;
+		location loc;
+		string view;
+		string paymentMethod;
+		string hostEmail;
+		bool room;
+		bool reserved;
+		int pricePerDay;
+		int noOfRooms;
+		int ID;
+		float discount;
+		int availableduration;
+
+		getline(stream, x);
+		loc.country = x;
+
+		getline(stream, x);
+		loc.city = x;
+
+		getline(stream, x);
+		loc.streetName = x;
+
+		getline(stream, x);
+		view = x;
+
+		getline(stream, x);
+		paymentMethod = x;
+
+		getline(stream, x);
+		room = (x == "1");
+
+		// getline(stream, x);
+		// reserved = (x == "1");
+
+		getline(stream, x);
+		pricePerDay = stoi(x);
+
+		getline(stream, x);
+		noOfRooms = stoi(x);
+
+		// getline(stream, x);
+		// discount = (float)stoi(x);
+
+		getline(stream, x);
+		ID = stoi(x);
+
+		getline(stream, x);
+		hostEmail = x;
+
+		getline(stream, x);
+		startDate.day = stoi(x);
+
+		getline(stream, x);
+		startDate.month = stoi(x);
+
+		getline(stream, x);
+		endDate.day = stoi(x);
+
+		getline(stream, x);
+		endDate.month = stoi(x);
+
+		getline(stream, x);
+		availableduration = stoi(x);
+
+		Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); /// It's supposed to work without providing the discount as it's a defeault argument
+		// under revision
+		p.availableduration = availableduration;
+		int i = 0;
+		while (getline(stream, x))
 		{
-			ifstream stream(entry.path());
-			timereserve startDate, endDate;
-			string x;
-			location loc;
-			string view;
-			string paymentMethod;
-			string hostEmail;
-			bool room;
-			bool reserved;
-			int pricePerDay;
-			int noOfRooms;
-			int ID;
-			float discount;
-			int availableduration;
-			getline(stream, x);
-			loc.country = x;
-			getline(stream, x);
-			loc.city = x;
-			getline(stream, x);
-			loc.streetName = x;
-			getline(stream, x);
-			view = x;
-			getline(stream, x);
-			paymentMethod = x;
-			getline(stream, x);
-			room = (x == "1");
-			getline(stream, x);
-			reserved = (x == "1");
-			getline(stream, x);
-			pricePerDay = stoi(x);
-			getline(stream, x);
-			noOfRooms = stoi(x);
-			// getline(stream, x);
-			// discount = (float)stoi(x);
-			getline(stream, x);
-			hostEmail = x;
-			getline(stream, x);
-			startDate.day = stoi(x);
-			getline(stream, x);
-			startDate.month = stoi(x);
-			getline(stream, x);
-			endDate.day = stoi(x);
-			getline(stream, x);
-			endDate.month = stoi(x);
-			getline(stream,x);
-			availableduration = stoi(x);
-			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); /// It's supposed to work without providing the discount as it's a defeault argument
-			//under revision
-			p.availableduration = availableduration;
-			int i = 0;
-			while (getline(stream, x))
+			timereserve t;
+			if (i < 3)
 			{
-				timereserve t;
-				if (i < 3)
-				{
-					if (i == 0)
-						t.day = stoi(x);
-					else if (i == 1)
-						t.month = stoi(x);
-					else
-						t.reserved = (x == "1");
-					i++;
-				}
+				if (i == 0)
+					t.day = stoi(x);
+				else if (i == 1)
+					t.month = stoi(x);
 				else
-				{
-					i = 0;
-					p.daysofplace.push_back(t);
-				}
+					t.reserved = (x == "1");
+				i++;
 			}
-			places.push_back(p);
-			stream.close();
+			else
+			{
+				i = 0;
+				p.daysofplace.push_back(t);
+			}
 		}
+		places.push_back(p);
+		stream.close();
 	}
-	catch (exception e)
-	{
-		cout << "ERROR" << endl;
-		// oh no, there's no directory for this host, anyways..
-	}
+	// }
+	// catch (exception e)
+	// {
+	// 	cout<<e.what();
+	// 	cout << "ERROR" << endl;
+	// 	// oh no, there's no directory for this host, anyways..
+	// }
 }
 void Host::displayAdvertisements()
 {
@@ -335,22 +356,24 @@ void Host::addAdvertisement()
 		Place currentPlace;
 		while (true)
 		{
-		try{
-			//TODO:: try catch for 30th of Feb case
-			cout << "please enter the start date";
-			cin >> startdate.day >> startdate.month;
-			cout << "please enter the end date";
-			cin >> enddate.day >> enddate.month;
-			currentPlace= Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
-		    currentPlace.createTimeForPlace();
+			try
+			{
+				// TODO:: try catch for 30th of Feb case
+				cout << "please enter the start date";
+				cin >> startdate.day >> startdate.month;
+				cout << "please enter the end date";
+				cin >> enddate.day >> enddate.month;
+				currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
+				currentPlace.createTimeForPlace();
 			}
-			catch (std::exception e) {
+			catch (std::exception e)
+			{
 				continue;
 			}
 			break;
 		}
 		// we are adding the place to both the places of the host and the total places in the system.
-	
+
 		cout << "constructor" << endl;
 		cout << "time done" << endl;
 		places.push_back(currentPlace);
@@ -417,11 +440,10 @@ void Host::deleteAdvertisement()
 	{
 		if (places[i].ID == advID)
 		{
-			places.erase(places.begin() + i);
+			cout << "Vector ID: " << places[i].ID << endl;
 			string toBeDeleted = "place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
-			cout << endl
-				 << toBeDeleted << endl;
-			// cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
+			cout << endl<< toBeDeleted << endl;
+			cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
 			try
 			{
 				if (std::filesystem::remove(toBeDeleted))
@@ -433,6 +455,7 @@ void Host::deleteAdvertisement()
 			{
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
+			places.erase(places.begin() + i);
 			break;
 		}
 	}
