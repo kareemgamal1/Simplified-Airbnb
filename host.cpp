@@ -46,6 +46,7 @@ void Host::signup()
 	stream << age << endl;
 	stream.close();
 }
+
 void Host::login()
 {
 	string em, pass;
@@ -150,6 +151,7 @@ void Host::serializePlace(Place p)
 	stream << p.startDate.month << endl;
 	stream << p.endDate.day << endl;
 	stream << p.endDate.month << endl;
+	stream << p.availableduration << endl;
 	// p.createTimeForPlace();
 	cout << "SIZE: " << p.daysofplace.size() << endl;
 	for (int i = 0; i < p.daysofplace.size(); i++)
@@ -162,6 +164,7 @@ void Host::serializePlace(Place p)
 
 	stream.close();
 }
+
 void Host::deSerializePlaces()
 {
 	// TODO: test this
@@ -185,6 +188,7 @@ void Host::deSerializePlaces()
 			int noOfRooms;
 			int ID;
 			float discount;
+			int availableduration;
 			getline(stream, x);
 			loc.country = x;
 			getline(stream, x);
@@ -215,7 +219,11 @@ void Host::deSerializePlaces()
 			endDate.day = stoi(x);
 			getline(stream, x);
 			endDate.month = stoi(x);
+			getline(stream,x);
+			availableduration = stoi(x);
 			Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, 0); /// It's supposed to work without providing the discount as it's a defeault argument
+			//under revision
+			p.availableduration = availableduration;
 			int i = 0;
 			while (getline(stream, x))
 			{
@@ -322,17 +330,28 @@ void Host::addAdvertisement()
 			cout << "Enter your discount in percentage: ";
 			cin >> discount;
 		}
-		cout << "please enter the start date";
-		cin >> startdate.day >> startdate.month;
-		cout << "please enter the end date";
-		cin >> enddate.day >> enddate.month;
-		cout << "datedone" << endl;
-		// we are adding the place to both the places of the host and the total places in the system.
 		string hostEmail = this->email;
 		cout << "hostdone" << endl;
-		Place currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
+		Place currentPlace;
+		while (true)
+		{
+		try{
+			//TODO:: try catch for 30th of Feb case
+			cout << "please enter the start date";
+			cin >> startdate.day >> startdate.month;
+			cout << "please enter the end date";
+			cin >> enddate.day >> enddate.month;
+			currentPlace= Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, 0);
+		    currentPlace.createTimeForPlace();
+			}
+			catch (std::exception e) {
+				continue;
+			}
+			break;
+		}
+		// we are adding the place to both the places of the host and the total places in the system.
+	
 		cout << "constructor" << endl;
-		currentPlace.createTimeForPlace();
 		cout << "time done" << endl;
 		places.push_back(currentPlace);
 		serializePlace(currentPlace);
