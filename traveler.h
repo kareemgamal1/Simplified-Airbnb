@@ -6,55 +6,58 @@
 
 class Traveler : public User
 {
-    string startDate;
-    string endDate;
-    location loc;
-    int stayDuration;
-    int priceRangeStart;
-    int priceRangeEnd;
-    int queryNumber;
-    vector<Place> allPlaces;
-    vector<Place> currentPlaces;
-    Place reservedPlace;
-    // test
+	string startDate;
+	string endDate;
+	location loc;
+	int stayDuration;
+	int priceRangeStart;
+	int priceRangeEnd;
+	int queryNumber;
+	vector<Place> allPlaces;
+	vector<Place> currentPlaces;
+	Place reservedPlace;
+	// test
 public:
-    // vector to hold all Places, and check for each element if it satisfies every attribute we search with
-    // another vector to hold the Places which satisfy the conditions
-    // TODO: test this
-    void signup();
-    void login();
+	// vector to hold all Places, and check for each element if it satisfies every attribute we search with
+	// another vector to hold the Places which satisfy the conditions
+	// TODO: test this
+	void signup();
+	void login();
 
-    void deSerializePlaces();
-    void serializePlace(Place p);
-    void displayAll();
-    vector<Place> chooseContainer();
-    void searchByType();
-    void searchByCountry();
-    void searchByCity();
-    void searchByStreet();
-    void searchByLocation();
-    void searchByView();
-    void searchByPriceRange();
-    void searchByPaymentMethod();
-    void searchByNoOfRooms();
-    void searchByDuration();
-    void searchByDate();
-    void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
-    void choosePlace();
-    void viewBy(); // sort based on different Place attributes
+	string validateEmail(string email);
+	bool checkForCredintials(string email, string password);
+	void fillTravelerInfo(string path);
+	void deSerializePlaces();
+	void serializePlace(Place p);
+	void displayAll();
+	vector<Place> chooseContainer();
+	void searchByType();
+	void searchByCountry();
+	void searchByCity();
+	void searchByStreet();
+	void searchByLocation();
+	void searchByView();
+	void searchByPriceRange();
+	void searchByPaymentMethod();
+	void searchByNoOfRooms();
+	void searchByDuration();
+	void searchByDate();
+	void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
+	void choosePlace();
+	void viewBy(); // sort based on different Place attributes
 
-    // Getters and Setters
-    string getStartDate();
-    void setStartDate(string startDate);
-    string getEndDate();
-    void setEndDate(string endDate);
-    int getStayDuration();
-    void setStayDuration(int stayDuration);
-    location getLoc();
-    void setLoc(location loc);
-    int getPriceRangeStart();
-    void setPriceRangeStart(int priceRangeStart);
-    int getPriceRangeEnd();
-    void setPriceRangeEnd(int priceRangeEnd);
+	// Getters and Setters
+	string getStartDate();
+	void setStartDate(string startDate);
+	string getEndDate();
+	void setEndDate(string endDate);
+	int getStayDuration();
+	void setStayDuration(int stayDuration);
+	location getLoc();
+	void setLoc(location loc);
+	int getPriceRangeStart();
+	void setPriceRangeStart(int priceRangeStart);
+	int getPriceRangeEnd();
+	void setPriceRangeEnd(int priceRangeEnd);
 };
 // #endif

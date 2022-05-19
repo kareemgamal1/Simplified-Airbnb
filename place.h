@@ -37,10 +37,9 @@ public:
     void saveCurrentID();
     void createTimeForPlace();
     Place();
-    Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, float discount = 0);
-    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, float discount = 0);
-
-    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, float discount = 0);
+    Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount);
+    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, int discount);
+    Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount);
     void calculateDuration();
     float generateDiscount();   // if there is a discount for travelers who stay for over 3 nights, generate it based on that apartment
     float generateTotalPrice(); // total price for the no of days the traveler will stay for

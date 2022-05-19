@@ -13,17 +13,8 @@ void Traveler::signup()
     cout << "Last name : ";
     cin >> lastName;
     cout << "E-mail: ";
-    cin >> email; // validate email isn't already in use
-    string path = "traveller/" + email + ".txt";
-    ifstream ifile;
-    ifile.open(path);
-    while (ifile)
-    {
-        cout << "this E-Mail is already in use" << endl;
-        cout << "E-mail: ";
-        cin >> email;
-        path = "traveller/" + email + ".txt";
-    }
+    cin >> email;
+    string path = validateEmail(email);//if the email is not in use, return its path
     cout << "Password : ";
     cin >> password;
     cout << "Phone : ";
@@ -34,53 +25,35 @@ void Traveler::signup()
     cin >> gender;
     cout << "Age : ";
     cin >> age;
-
-    ofstream stream(path.c_str());
-    stream << password << endl;
-    stream << firstName << endl;
-    stream << lastName << endl;
-    stream << email << endl;
-    stream << phone << endl;
-    stream << nationality << endl;
-    stream << gender << endl;
-    stream << age << endl;
-    stream.close();
+    serializeUser(path);
 }
+
 void Traveler::login()
 {
     string em, pass;
     int num_tries = 0;
     bool validated = false;
-    while (num_tries < 3)
+    while (num_tries < 3 && !validated)
     {
-        cout << "Username : ";
+        /*cout << "Username : ";
         cin >> em;
         cout << "\nPassword : ";
-        cin >> pass;
-        // logging in
+        cin >> pass;*/
+        em = "A@mail";
+        pass = "1";
         string path = "traveller/" + em + ".txt";
-        ifstream ifile;
-        ifile.open(path);
-        if (ifile)
-        {
-            string str;
-            ifstream stream(path.c_str());
-            getline(stream, str);
-            validated = (str == pass);
-        }
-
+        validated = checkForCredintials(path, pass);
         if (validated)
         {
+            fillTravelerInfo(path);
             search();
-            cout << "Thank you for using our app.\n";
-            break;
         }
         else
         {
             if (num_tries < 3)
             {
                 cout << "The password or username you entered is incorrect. \n";
-                cout << "You have: " << 3 - num_tries + 1 << "| tries to enter\n";
+                cout << "You have: " << 3 - (num_tries + 1) << "| tries to enter\n";
                 num_tries++;
                 cout << "Please try again.\n";
             }
@@ -88,10 +61,12 @@ void Traveler::login()
             {
                 cout << "Please try again after 1 minute.\n";
                 num_tries = 0;
+                login();
             }
         }
     }
 }
+
 void Traveler::serializePlace(Place p)
 {
     string path = "place/" + p.hostEmail + "/" + to_string(p.ID) + ".txt";
@@ -100,7 +75,6 @@ void Traveler::serializePlace(Place p)
     stream << p.loc.country << endl;
     stream << p.loc.city << endl;
     stream << p.loc.streetName << endl;
-    // todo: time serialization
     stream << p.view << endl;
     stream << p.paymentMethod << endl;
     stream << p.room << endl;
@@ -114,7 +88,6 @@ void Traveler::serializePlace(Place p)
     stream << p.endDate.day << endl;
     stream << p.endDate.month << endl;
     stream << p.availableduration << endl;
-    // p.createTimeForPlace();
     cout << "SIZE: " << p.daysofplace.size() << endl;
     for (int i = 0; i < p.daysofplace.size(); i++)
     {
@@ -123,30 +96,30 @@ void Traveler::serializePlace(Place p)
         stream << p.daysofplace[i].reserved << endl;
         stream << endl;
     }
-
     stream.close();
 }
+
 void Traveler::deSerializePlaces()
 {
-    // TODO: test this
     string path = "place";
     for (const auto &host_directory_entry : filesystem::directory_iterator(path))
     {
         string host_name_path = host_directory_entry.path().string();
         for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
         {
-            ifstream stream(place_directory_entry.path().string());
+            ifstream stream(place_directory_entry.path());
+            timereserve startDate, endDate;
             string x;
             location loc;
             string view;
             string paymentMethod;
             string hostEmail;
             bool room;
-            bool reserved;
+            //bool reserved;
             int pricePerDay;
             int noOfRooms;
             int ID;
-            float discount;
+            int discount = 0;
             int availableduration;
             getline(stream, x);
             loc.country = x;
@@ -160,21 +133,29 @@ void Traveler::deSerializePlaces()
             paymentMethod = x;
             getline(stream, x);
             room = (x == "1");
-            getline(stream, x);
-            reserved = (x == "1");
+            // getline(stream, x);
+            // reserved = (x == "1");
             getline(stream, x);
             pricePerDay = stoi(x);
             getline(stream, x);
             noOfRooms = stoi(x);
             getline(stream, x);
-            // discount = stof(x);
+            discount = stoi(x);
+            getline(stream, x);
+            ID = stoi(x);
             getline(stream, x);
             hostEmail = x;
             getline(stream, x);
+            startDate.day = stoi(x);
+            getline(stream, x);
+            startDate.month = stoi(x);
+            getline(stream, x);
+            endDate.day = stoi(x);
+            getline(stream, x);
+            endDate.month = stoi(x);
+            getline(stream, x);
             availableduration = stoi(x);
-            stream.close();
-            // TODO discount, time
-            Place p = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, 0); // It's supposed to work without providing the discount as it's a defeault argument
+            Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
             p.availableduration = availableduration;
             int i = 0;
             while (getline(stream, x))
@@ -197,21 +178,24 @@ void Traveler::deSerializePlaces()
                 }
             }
             allPlaces.push_back(p);
+            stream.close();
         }
     }
 }
 
 void Traveler::displayAll()
 {
-    for (int i = 0; i < currentPlaces.size(); i++)
+    cout << "\nAdvertisements: \n\n";
+    for (int i = 0; i < allPlaces.size(); i++)
     {
-        cout << "Advertisements: \n";
-        cout << "Advertisement ID:" << currentPlaces[i].ID << '\n';
-        currentPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-        cout << "Location:" << currentPlaces[i].loc.country << ' ' << currentPlaces[i].loc.city << ' ' << currentPlaces[i].loc.streetName << '\n';
-        cout << "Price: " << currentPlaces[i].pricePerDay << '\n';
-        cout << "View:" << currentPlaces[i].view << '\n';
-        cout << "Payment method: " << currentPlaces[i].paymentMethod;
+        cout << "===============================\n";
+        cout << "Advertisement ID:" << allPlaces[i].ID << '\n';
+        allPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
+        cout << "Location:" << allPlaces[i].loc.country << ' ' << allPlaces[i].loc.city << ' ' << allPlaces[i].loc.streetName << '\n';
+        cout << "Price: " << allPlaces[i].pricePerDay << '\n';
+        cout << "View:" << allPlaces[i].view << '\n';
+        cout << "Payment method: " << allPlaces[i].paymentMethod << "\n";
+        cout << "===============================\n\n\n";
     }
 }
 
@@ -488,52 +472,48 @@ void Traveler::choosePlace()
 
 void Traveler::viewBy() {} // sort based on different Place attributes (Tamer)
 
-// Getters and Setters
-string Traveler::getStartDate()
-{
-    return this->startDate;
+string Traveler::validateEmail(string email) {
+    string path = "traveller/" + email + ".txt";
+    ifstream ifile;
+    ifile.open(path);
+    while (ifile)
+    {
+        cout << "this E-Mail is already in use" << endl;
+        cout << "E-mail: ";
+        cin >> email;
+        path = "traveller/" + email + ".txt";
+    }
+    return path;
 }
-void Traveler::setStartDate(string startDate)
-{
-    this->startDate = startDate;
+
+bool Traveler::checkForCredintials(string email, string password) {
+    ifstream ifile;
+    bool validated = false;
+    ifile.open(email); // this is never closed.
+    if (ifile)
+    {
+        string str;
+        ifstream stream(email.c_str());
+        getline(stream, str);
+        validated = (str == password);
+        stream.close();
+    }
+    return validated;
 }
-string Traveler::getEndDate()
-{
-    return this->endDate;
-}
-void Traveler::setEndDate(string endDate)
-{
-    this->endDate = endDate;
-}
-int Traveler::getStayDuration()
-{
-    return this->stayDuration;
-}
-void Traveler::setStayDuration(int stayDuration)
-{
-    this->stayDuration = stayDuration;
-}
-location Traveler::getLoc()
-{
-    return this->loc;
-}
-void Traveler::setLoc(location loc)
-{
-    this->loc = loc;
-}
-int Traveler::getPriceRangeStart()
-{
-    return this->priceRangeStart;
-}
-void Traveler::setPriceRangeStart(int priceRangeStart)
-{
-    this->priceRangeStart = priceRangeStart;
-}
-int Traveler::getPriceRangeEnd()
-{
-    return this->priceRangeEnd;
-}
-void Traveler::setPriceRangeEnd(int priceRangeEnd)
-{
-    this->priceRangeEnd = priceRangeEnd;
+
+void Traveler::fillTravelerInfo(string path) {
+    ifstream stream(path.c_str());
+    string placeHolderString; // Rest in Peace placeHolderString, gone but not forgotten
+    getline(stream, this->password);
+    getline(stream, this->firstName);
+    getline(stream, this->lastName);
+    getline(stream, this->email);
+    getline(stream, placeHolderString); // born to find horrible code, forced to cope
+    this->phone = stoi(placeHolderString);
+    getline(stream, this->nationality);
+    getline(stream, placeHolderString);
+    this->gender = placeHolderString[0];
+    getline(stream, placeHolderString);
+    this->age = stoi(placeHolderString);
+    deSerializePlaces();
 }
