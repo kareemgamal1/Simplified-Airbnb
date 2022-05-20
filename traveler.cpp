@@ -187,15 +187,15 @@ void Traveler::displayAll()
 {
     vector<Place> currentContainer = chooseContainer();
     cout << "\nAdvertisements: \n\n";
-    for (int i = 0; i < currentContainer.size(); i++)
+    for (int i = 0; i < currentPlaces.size(); i++)
     {
         cout << "===============================\n";
-        cout << "Advertisement ID:" << currentContainer[i].ID << '\n';
-        currentContainer[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-        cout << "Location:" << currentContainer[i].loc.country << ' ' << currentContainer[i].loc.city << ' ' << currentContainer[i].loc.streetName << '\n';
-        cout << "Price: " << currentContainer[i].pricePerDay << '\n';
-        cout << "View:" << currentContainer[i].view << '\n';
-        cout << "Payment method: " << currentContainer[i].paymentMethod << "\n";
+        cout << "Advertisement ID:" << currentPlaces[i].ID << '\n';
+        currentPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
+        cout << "Location:" << currentPlaces[i].loc.country << ' ' << currentPlaces[i].loc.city << ' ' << currentPlaces[i].loc.streetName << '\n';
+        cout << "Price: " << currentPlaces[i].pricePerDay << '\n';
+        cout << "View:" << currentPlaces[i].view << '\n';
+        cout << "Payment method: " << currentPlaces[i].paymentMethod << "\n";
         cout << "===============================\n\n\n";
     }
 }
@@ -210,16 +210,17 @@ void Traveler::searchByType()
 
     int choice;
     bool room;
-    cout << "Enter (1) for room or (2) for apartment.";
+    cout << "Enter (1) for apartment or (2) for room.";
     /*cin >> choice;*/
     choice = 2;
-    room = (choice == 1);
+    room = (choice == 2);
     vector<Place> currentContainer = chooseContainer();
     for (int i = 0; i < currentContainer.size(); i++)
     {
         if (currentContainer[i].room != room)
         {
             currentContainer.erase(currentContainer.begin() + i);
+            i--;
         }
     }
     currentPlaces = currentContainer;
@@ -238,13 +239,13 @@ void Traveler::searchByCountry()
         if (currentContainer[i].loc.country != country)
         {
             currentContainer.erase(currentContainer.begin() + i);
+            i--;
         }
     }
     currentPlaces = currentContainer;
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByCity()
 {
     string city;
@@ -262,7 +263,6 @@ void Traveler::searchByCity()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByStreet()
 {
     string streetName;
@@ -280,7 +280,6 @@ void Traveler::searchByStreet()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByLocation()
 {
     searchByCountry();
@@ -304,7 +303,6 @@ void Traveler::searchByView()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByPriceRange()
 {
     int priceRangeStart, priceRangeEnd;
@@ -324,7 +322,6 @@ void Traveler::searchByPriceRange()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByPaymentMethod()
 {
     string paymentMethod;
@@ -342,7 +339,6 @@ void Traveler::searchByPaymentMethod()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByNoOfRooms()
 {
     // available only if it's an apartment.
@@ -361,7 +357,6 @@ void Traveler::searchByNoOfRooms()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByDuration()
 {
     int duration;
@@ -379,11 +374,10 @@ void Traveler::searchByDuration()
     queryNumber++;
     displayAll();
 }
-
 void Traveler::searchByDate()
 {
     timereserve startdateofuser, enddateofuser;
-    cout << " please enter start date\n";
+    cout << "please enter start date\n";
     cin >> startdateofuser.day >> startdateofuser.month;
     cout << "please enter end date\n";
     ;
@@ -392,7 +386,10 @@ void Traveler::searchByDate()
     for (int i = 0; i < currentContainer.size(); i++)
     {
         if (!(currentContainer[i].startDate.month < startdateofuser.month || (currentContainer[i].startDate.day <= startdateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)) || !(currentContainer[i].endDate.month > enddateofuser.month || (currentContainer[i].endDate.day >= enddateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)))
+        {
             currentContainer.erase(currentContainer.begin() + i);
+            i--;
+        }
     }
     currentPlaces = currentContainer;
     queryNumber++;
@@ -409,7 +406,7 @@ void Traveler::search()
 {
     showPreferences();
     int choice;
-
+    cin >> choice;
     while (choice != 0)
     {
         cin >> choice;

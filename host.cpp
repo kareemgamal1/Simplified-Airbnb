@@ -97,7 +97,6 @@ void Host::addAdvertisement()
 		location loc;
 		string view;
 		string paymentMethod;
-		bool room = true; // decides if the Place is a room or apartment
 		int pricePerDay;
 		int discount = 0;
 		char choice;

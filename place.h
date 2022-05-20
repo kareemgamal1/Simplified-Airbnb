@@ -1,7 +1,6 @@
 #ifndef PLACE_H
 #define PLACE_H
 #include "user.h"
-#include "timePeriod.h"
 #include <fstream>
 struct timereserve
 {
