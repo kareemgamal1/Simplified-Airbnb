@@ -1,3 +1,4 @@
+#include <array>
 #include "traveler.h"
 #include "host.h"
 
@@ -7,7 +8,6 @@ int main()
 	t.login();
 }
 
-
-//Finish testing traveller
-//Decide whether or not I will fully use python for the admin class
-//Further refactoring
+// Finish testing traveller
+// Decide whether or not I will fully use python for the admin class
+// Further refactoring

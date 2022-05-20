@@ -14,7 +14,7 @@ void Traveler::signup()
     cin >> lastName;
     cout << "E-mail: ";
     cin >> email;
-    string path = validateEmail(email);//if the email is not in use, return its path
+    string path = validateEmail(email); // if the email is not in use, return its path
     cout << "Password : ";
     cin >> password;
     cout << "Phone : ";
@@ -115,7 +115,7 @@ void Traveler::deSerializePlaces()
             string paymentMethod;
             string hostEmail;
             bool room;
-            //bool reserved;
+            // bool reserved;
             int pricePerDay;
             int noOfRooms;
             int ID;
@@ -155,6 +155,7 @@ void Traveler::deSerializePlaces()
             endDate.month = stoi(x);
             getline(stream, x);
             availableduration = stoi(x);
+            stream.close();
             Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
             p.availableduration = availableduration;
             int i = 0;
@@ -178,23 +179,23 @@ void Traveler::deSerializePlaces()
                 }
             }
             allPlaces.push_back(p);
-            stream.close();
         }
     }
 }
 
 void Traveler::displayAll()
 {
+    vector<Place> currentContainer = chooseContainer();
     cout << "\nAdvertisements: \n\n";
-    for (int i = 0; i < allPlaces.size(); i++)
+    for (int i = 0; i < currentContainer.size(); i++)
     {
         cout << "===============================\n";
-        cout << "Advertisement ID:" << allPlaces[i].ID << '\n';
-        allPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-        cout << "Location:" << allPlaces[i].loc.country << ' ' << allPlaces[i].loc.city << ' ' << allPlaces[i].loc.streetName << '\n';
-        cout << "Price: " << allPlaces[i].pricePerDay << '\n';
-        cout << "View:" << allPlaces[i].view << '\n';
-        cout << "Payment method: " << allPlaces[i].paymentMethod << "\n";
+        cout << "Advertisement ID:" << currentContainer[i].ID << '\n';
+        currentContainer[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
+        cout << "Location:" << currentContainer[i].loc.country << ' ' << currentContainer[i].loc.city << ' ' << currentContainer[i].loc.streetName << '\n';
+        cout << "Price: " << currentContainer[i].pricePerDay << '\n';
+        cout << "View:" << currentContainer[i].view << '\n';
+        cout << "Payment method: " << currentContainer[i].paymentMethod << "\n";
         cout << "===============================\n\n\n";
     }
 }
@@ -206,10 +207,12 @@ vector<Place> Traveler::chooseContainer()
 
 void Traveler::searchByType()
 {
+
     int choice;
     bool room;
     cout << "Enter (1) for room or (2) for apartment.";
-    cin >> choice;
+    /*cin >> choice;*/
+    choice = 2;
     room = (choice == 1);
     vector<Place> currentContainer = chooseContainer();
     for (int i = 0; i < currentContainer.size(); i++)
@@ -220,8 +223,8 @@ void Traveler::searchByType()
         }
     }
     currentPlaces = currentContainer;
-    queryNumber++;
     displayAll();
+    queryNumber++;
 }
 
 void Traveler::searchByCountry()
@@ -229,8 +232,7 @@ void Traveler::searchByCountry()
     string country;
     cout << "Country: ";
     cin >> country;
-    vector<Place>
-        currentContainer = chooseContainer();
+    vector<Place> currentContainer = chooseContainer();
     for (int i = 0; i < currentContainer.size(); i++)
     {
         if (currentContainer[i].loc.country != country)
@@ -363,12 +365,12 @@ void Traveler::searchByNoOfRooms()
 void Traveler::searchByDuration()
 {
     int duration;
-    cout << "Enter number of days";
+    cout << "enter duration ";
     cin >> duration;
     vector<Place> currentContainer = chooseContainer();
     for (int i = 0; i < currentContainer.size(); i++)
     {
-        if (currentContainer[i].duration != duration)
+        if (currentContainer[i].availableduration <= duration)
         {
             currentContainer.erase(currentContainer.begin() + i);
         }
@@ -380,70 +382,77 @@ void Traveler::searchByDuration()
 
 void Traveler::searchByDate()
 {
-    timereserve startdate, enddate;
-    cout << " please enter the start date";
-    cin >> startdate.day >> startdate.month;
-    cout << " please enter the end date ";
-    cin >> enddate.day >> enddate.month;
+    timereserve startdateofuser, enddateofuser;
+    cout << " please enter start date\n";
+    cin >> startdateofuser.day >> startdateofuser.month;
+    cout << "please enter end date\n";
+    ;
+    cin >> enddateofuser.day >> enddateofuser.month;
+    vector<Place> currentContainer = chooseContainer();
+    for (int i = 0; i < currentContainer.size(); i++)
+    {
+        if (!(currentContainer[i].startDate.month < startdateofuser.month || (currentContainer[i].startDate.day <= startdateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)) || !(currentContainer[i].endDate.month > enddateofuser.month || (currentContainer[i].endDate.day >= enddateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)))
+            currentContainer.erase(currentContainer.begin() + i);
+    }
+    currentPlaces = currentContainer;
+    queryNumber++;
+    displayAll();
+}
+
+void showPreferences()
+{
+    cout << "\n\n\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n";
+    cout << "Enter (0) to stop searching.";
 }
 
 void Traveler::search()
 {
-    deSerializePlaces();
-    cout << "\n\n\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n";
-    cout << "Enter (0) to stop searching.";
+    showPreferences();
     int choice;
-    cin >> choice;
+
     while (choice != 0)
     {
+        cin >> choice;
         switch (choice)
         {
         case 1:
         {
             searchByType();
-            search();
             break;
         }
         case 2:
         {
             searchByLocation();
-            search();
             break;
         }
         case 3:
         {
             searchByView();
-            search();
             break;
         }
         case 4:
         {
             searchByPriceRange();
-            search();
             break;
         }
         case 5:
         {
             searchByPaymentMethod();
-            search();
             break;
         }
         case 6:
         {
             searchByNoOfRooms();
-            search();
             break;
         }
         case 7:
         {
             searchByDuration();
-            search();
             break;
         }
         case 8:
         {
             searchByDate();
-            search();
             break;
         }
         }
@@ -472,7 +481,8 @@ void Traveler::choosePlace()
 
 void Traveler::viewBy() {} // sort based on different Place attributes (Tamer)
 
-string Traveler::validateEmail(string email) {
+string Traveler::validateEmail(string email)
+{
     string path = "traveller/" + email + ".txt";
     ifstream ifile;
     ifile.open(path);
@@ -486,7 +496,8 @@ string Traveler::validateEmail(string email) {
     return path;
 }
 
-bool Traveler::checkForCredintials(string email, string password) {
+bool Traveler::checkForCredintials(string email, string password)
+{
     ifstream ifile;
     bool validated = false;
     ifile.open(email); // this is never closed.
@@ -501,7 +512,8 @@ bool Traveler::checkForCredintials(string email, string password) {
     return validated;
 }
 
-void Traveler::fillTravelerInfo(string path) {
+void Traveler::fillTravelerInfo(string path)
+{
     ifstream stream(path.c_str());
     string placeHolderString; // Rest in Peace placeHolderString, gone but not forgotten
     getline(stream, this->password);

@@ -8,8 +8,8 @@ void Host::signup()
 	cout << "Last name : ";
 	cin >> lastName;
 	cout << "E-mail: ";
-	cin >> email; 
-	string path=validateEmail(email);//if the email is not in use, return its path
+	cin >> email;
+	string path = validateEmail(email); // if the email is not in use, return its path
 	cout << "Password : ";
 	cin >> password;
 	cout << "Phone : ";
@@ -33,8 +33,8 @@ void Host::login()
 		cin >> em;
 		cout << "\nPassword : ";
 		cin >> pass;
-		//em = "kg@zeby.com";
-		//pass = "kkk";
+		// em = "kg@zeby.com";
+		// pass = "kkk";
 		string path = "host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
@@ -159,7 +159,7 @@ void Host::editAdvertisement()
 {
 	displayAdvertisements();
 	cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n";
-	tryAgain:
+tryAgain:
 	int index = -404;
 	int advID;
 	cin >> advID;
@@ -174,7 +174,7 @@ void Host::editAdvertisement()
 	if (index == -404)
 	{
 		cout << "\nPlease enter a correct ID.\n\n";
-		goto tryAgain;//a price to pay for salvation
+		goto tryAgain; // a price to pay for salvation
 	}
 	cout << "What would you like to edit? Choose(1) for price or Choose(2) for payment method";
 	int choice;
@@ -197,7 +197,7 @@ void Host::editAdvertisement()
 		places[index].paymentMethod = newMethod;
 		break;
 	}
-	//TODO: allow the user to edit more attributes (discount, how about date?)
+	// TODO: allow the user to edit more attributes (discount, how about date?)
 	default:
 		break;
 	}
@@ -208,7 +208,7 @@ void Host::deleteAdvertisement()
 {
 	displayAdvertisements();
 	cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n";
-	tryAgain:
+tryAgain:
 	int index = -404;
 	int advID;
 	cin >> advID;
@@ -231,7 +231,7 @@ void Host::deleteAdvertisement()
 					std::cout << "file " << toBeDeleted << " not found.\n";
 				}
 			}
-			catch (const std::filesystem::filesystem_error& err)
+			catch (const std::filesystem::filesystem_error &err)
 			{
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
@@ -241,13 +241,12 @@ void Host::deleteAdvertisement()
 	if (index == -404)
 	{
 		cout << "\nPlease enter a correct ID.\n\n";
-		goto tryAgain;//a price to pay for salvation
+		goto tryAgain; // a price to pay for salvation
 	}
 }
 
-
-
-string Host::validateEmail(string email) {
+string Host::validateEmail(string email)
+{
 	string path = "host/" + email + ".txt";
 	ifstream ifile;
 	ifile.open(path);
@@ -317,7 +316,7 @@ void Host::deSerializePlaces()
 		return;
 	try
 	{
-		for (const auto& entry : filesystem::directory_iterator(path))
+		for (const auto &entry : filesystem::directory_iterator(path))
 		{
 			ifstream stream(entry.path());
 			timereserve startDate, endDate;
@@ -327,7 +326,7 @@ void Host::deSerializePlaces()
 			string paymentMethod;
 			string hostEmail;
 			bool room;
-			//bool reserved;
+			// bool reserved;
 			int pricePerDay;
 			int noOfRooms;
 			int ID;
@@ -401,9 +400,10 @@ void Host::deSerializePlaces()
 	}
 }
 
-void Host::showChoices() {
+void Host::showChoices()
+{
 	cout << "\n\n-Choose (1) to add a new Advertisement\n-Choose (2) to edit an advertisement\n-Choose (3) to delete an advertisement\n-Choose (0) to end the program.\n";
-	tryAgain:
+tryAgain:
 	int choice;
 	cin >> choice;
 	switch (choice)
@@ -430,11 +430,12 @@ void Host::showChoices() {
 	}
 	default:
 		cout << "Enter a correct number.\n";
-		goto tryAgain;//a price to pay for salvation
+		goto tryAgain; // a price to pay for salvation
 	}
 }
 
-bool Host::checkForCredintials(string email, string password) {
+bool Host::checkForCredintials(string email, string password)
+{
 	ifstream ifile;
 	bool validated = false;
 	ifile.open(email); // this is never closed.
@@ -449,7 +450,8 @@ bool Host::checkForCredintials(string email, string password) {
 	return validated;
 }
 
-void Host::fillHostInfo(string path) {
+void Host::fillHostInfo(string path)
+{
 	ifstream stream(path.c_str());
 	string placeHolderString; // Rest in Peace placeHolderString, gone but not forgotten
 	getline(stream, this->password);
