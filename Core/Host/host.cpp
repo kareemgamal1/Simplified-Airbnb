@@ -220,7 +220,7 @@ tryAgain:
 		if (places[i].ID == advID)
 		{
 			index = i;
-			string toBeDeleted = "place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
+			string toBeDeleted = "Data/place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
 			try
 			{
 				if (std::filesystem::remove(toBeDeleted))
@@ -250,17 +250,20 @@ tryAgain:
 string Host::validateEmail(string email)
 {
 	string path = "Data/host/" + email + ".txt";
-	ifstream ifile;
-	ifile.open(path);
-	while (ifile)
+	ifstream ifile(path);
+	if (ifile.is_open())
 	{
 		cout << "this E-Mail is already in use" << endl;
 		cout << "E-mail: ";
-		cin >> email;
-		path = "Data/host/" + email + ".txt";
+		string mail;
+		cin >> mail;
+		if (mail == "ABC")
+			return "ABC";
+		ifile.close();
+		return validateEmail(mail);
 	}
 	//ERROR if the user enters the email wrong, it will never let him correct it afterwards
-	return path;
+	return email;
 }
 
 void Host::displayAdvertisements()
