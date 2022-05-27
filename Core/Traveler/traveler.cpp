@@ -666,7 +666,7 @@ string Traveler::validateEmail(string email)
 			return validateEmail(mail);
 		}
 		//ERROR if the user enters the email wrong, it will never let him correct it afterwards
-		return email;
+		return path;
 	}
 }
 
