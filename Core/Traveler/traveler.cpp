@@ -35,12 +35,12 @@ void Traveler::login()
 	bool validated = false;
 	while (num_tries < 3 && !validated)
 	{
-		/*cout << "Username : ";
+		cout << "Username : ";
 		cin >> em;
 		cout << "\nPassword : ";
-		cin >> pass;*/
-		em = "A@mail";
-		pass = "1";
+		cin >> pass;
+		//em = "A@mail";
+		//pass = "1";
 		string path = "Data/traveller/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
@@ -640,6 +640,8 @@ void Traveler::choosePlace()
 			return;
 		}
 	}
+	cout << "Invalid ID.\n";
+	choosePlace();
 }
 
 
@@ -651,17 +653,21 @@ int Traveler::calculateBookedDuration(timereserve startDate, timereserve endDate
 
 string Traveler::validateEmail(string email)
 {
-	string path = "Data/traveller/" + email + ".txt";
-	ifstream ifile;
-	ifile.open(path);
-	while (ifile)
 	{
-		cout << "this E-Mail is already in use" << endl;
-		cout << "E-mail: ";
-		cin >> email;
-		path = "Data/traveller/" + email + ".txt";
+		string path = "Data/traveller/" + email + ".txt";
+		ifstream ifile(path);
+		if (ifile.is_open())
+		{
+			cout << "this E-Mail is already in use" << endl;
+			cout << "E-mail: ";
+			string mail;
+			cin >> mail;
+			ifile.close();
+			return validateEmail(mail);
+		}
+		//ERROR if the user enters the email wrong, it will never let him correct it afterwards
+		return path;
 	}
-	return path;
 }
 
 bool Traveler::checkForCredintials(string email, string password)
