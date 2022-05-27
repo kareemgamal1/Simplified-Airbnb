@@ -3,7 +3,7 @@ Cairo
 Nasr
 Street
 Cash
-1
+0
 5000
 3
 0

@@ -33,8 +33,8 @@ void Host::login()
 		cin >> em;
 		cout << "\nPassword : ";
 		cin >> pass;
-		// em = "kg@zeby.com";
-		// pass = "kkk";
+		em = "kg@zeby.com";
+		pass = "kkk";
 		string path = "host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
@@ -97,7 +97,6 @@ void Host::addAdvertisement()
 		location loc;
 		string view;
 		string paymentMethod;
-		bool room = true; // decides if the Place is a room or apartment
 		int pricePerDay;
 		int discount = 0;
 		char choice;
@@ -459,7 +458,7 @@ void Host::fillHostInfo(string path)
 	getline(stream, this->lastName);
 	getline(stream, this->email);
 	getline(stream, placeHolderString); // born to find horrible code, forced to cope
-	this->phone = stoi(placeHolderString);
+	this->phone = (placeHolderString);
 	getline(stream, this->nationality);
 	getline(stream, placeHolderString);
 	this->gender = placeHolderString[0];

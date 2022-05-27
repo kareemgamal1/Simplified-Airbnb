@@ -3,7 +3,7 @@ Kyiv
 zz
 Street
 Cash
-1
+0
 1200
 3
 0

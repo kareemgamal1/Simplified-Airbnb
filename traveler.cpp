@@ -187,15 +187,15 @@ void Traveler::displayAll()
 {
     vector<Place> currentContainer = chooseContainer();
     cout << "\nAdvertisements: \n\n";
-    for (int i = 0; i < currentContainer.size(); i++)
+    for (int i = 0; i < currentPlaces.size(); i++)
     {
         cout << "===============================\n";
-        cout << "Advertisement ID:" << currentContainer[i].ID << '\n';
-        currentContainer[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-        cout << "Location:" << currentContainer[i].loc.country << ' ' << currentContainer[i].loc.city << ' ' << currentContainer[i].loc.streetName << '\n';
-        cout << "Price: " << currentContainer[i].pricePerDay << '\n';
-        cout << "View:" << currentContainer[i].view << '\n';
-        cout << "Payment method: " << currentContainer[i].paymentMethod << "\n";
+        cout << "Advertisement ID:" << currentPlaces[i].ID << '\n';
+        currentPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
+        cout << "Location:" << currentPlaces[i].loc.country << ' ' << currentPlaces[i].loc.city << ' ' << currentPlaces[i].loc.streetName << '\n';
+        cout << "Price: " << currentPlaces[i].pricePerDay << '\n';
+        cout << "View:" << currentPlaces[i].view << '\n';
+        cout << "Payment method: " << currentPlaces[i].paymentMethod << "\n";
         cout << "===============================\n\n\n";
     }
 }
@@ -210,10 +210,10 @@ void Traveler::searchByType()
 
     int choice;
     bool room;
-    cout << "Enter (1) for room or (2) for apartment.";
+    cout << "Enter (1) for apartment or (2) for room.";
     /*cin >> choice;*/
     choice = 2;
-    room = (choice == 1);
+    room = (choice == 2);
     vector<Place> currentContainer = chooseContainer();
     for (int i = 0; i < currentContainer.size(); i++)
     {
@@ -409,7 +409,7 @@ void Traveler::search()
 {
     showPreferences();
     int choice;
-
+    cin >> choice;
     while (choice != 0)
     {
         cin >> choice;
