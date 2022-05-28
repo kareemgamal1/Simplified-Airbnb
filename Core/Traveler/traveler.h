@@ -52,5 +52,6 @@ public:
 	float generateDiscount(Place p);
 	float generateTotalPrice(Place p,int );
 	void viewBy(); // sort based on different Place attributes
+	
 };
 // #endif
