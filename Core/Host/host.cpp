@@ -34,6 +34,12 @@ void Host::login()
 		// cin >> em;
 		// cout << "\nPassword : ";
 		// cin >> pass;
+		string temp;
+		for (char c : em)
+		{
+			temp += (char)tolower(c);
+		}
+		em = temp; //email into lowercase
 		em = "kg@zeby.com";
 		pass = "kkk";
 		string path = "Data/host/" + em + ".txt";
@@ -128,7 +134,6 @@ void Host::addAdvertisement()
 		{
 			try
 			{
-				// TODO:: try catch for 30th of Feb case
 				cout << "please enter the start date";
 				cout << "month:";
 				cin >> startdate.month;
@@ -249,8 +254,30 @@ tryAgain:
 
 string Host::validateEmail(string email)
 {
-	string path = "Data/host/" + email + ".txt";
+	string temp;
+	for (char c : email)
+	{
+		temp += (char)tolower(c);
+	}
+	email = temp; //email into lowercase
+	string path = "Data/traveller/" + email + ".txt";
 	ifstream ifile(path);
+	if (email.find('@') == std::string::npos) {
+		cout << "this E-Mail must contain a domain" << endl;
+		cout << "E-mail: ";
+		string mail;
+		cin >> mail;
+		ifile.close();
+		return validateEmail(mail);
+	}
+	else if (email.substr(email.length() - 4, 4) != ".com") {
+		cout << "this E-Mail must end in .com suffix" << endl;
+		cout << "E-mail: ";
+		string mail;
+		cin >> mail;
+		ifile.close();
+		return validateEmail(mail);
+	}
 	if (ifile.is_open())
 	{
 		cout << "this E-Mail is already in use" << endl;
@@ -308,6 +335,7 @@ void Host::serializePlace(Place p)
 		stream << p.daysofplace[i].day << endl;
 		stream << p.daysofplace[i].month << endl;
 		stream << p.daysofplace[i].reserved << endl;
+		stream << p.daysofplace[i].userreserve << endl; 
 		stream << endl;
 	}
 	stream.close();
@@ -388,17 +416,20 @@ void Host::deSerializePlaces()
 			Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
 			p.availableduration = availableduration;
 			int i = 0;
+			timereserve t;
 			while (getline(stream, x))
 			{
-				timereserve t;
-				if (i < 3)
+				
+				if (i < 4)
 				{
 					if (i == 0)
 						t.day = stoi(x);
 					else if (i == 1)
 						t.month = stoi(x);
-					else
+					else if (i == 2)
 						t.reserved = (x == "1");
+					else
+						t.userreserve = x;
 					i++;
 				}
 				else
@@ -421,7 +452,7 @@ void Host::deSerializePlaces()
 
 void Host::showChoices()
 {
-	cout << "\n\n-Choose (1) to add a new Advertisement\n-Choose (2) to edit an advertisement\n-Choose (3) to delete an advertisement\n-Choose (0) to end the program.\n";
+	cout << "\n\n-Choose (1) to add a new Advertisement\n-Choose (2) to edit an advertisement\n-Choose (3) to delete an advertisement\n choose 4 to display information about specific place \n -Choose (0) to end the program.\n";
 tryAgain:
 	int choice;
 	cin >> choice;
@@ -446,6 +477,11 @@ tryAgain:
 	{
 		deleteAdvertisement();
 		break;
+	}
+	case 4 : 
+	{
+	    showSpecificPlace();
+		break; 
 	}
 	default:
 		cout << "Enter a correct number.\n";
@@ -486,3 +522,16 @@ void Host::fillHostInfo(string path)
 	this->age = stoi(placeHolderString);
 	deSerializePlaces();
 }
+void Host::showSpecificPlace () {
+	int id;
+	displayAdvertisements(); 
+	cout << " please enter the id of place you want"; 
+	cin >> id;
+	for (int i = 0; i < places.size(); i++) {
+		if (places[i].ID == id) {
+			for (int j = 0; j < places[i].daysofplace.size(); j++)
+				//add invalid id code again
+				cout << " Date : " << places[i].daysofplace[j].day << "/" << places[i].daysofplace[j].month << " \t reserver : " << places[i].daysofplace[j].userreserve << endl;
+		}
+	}
+} 
