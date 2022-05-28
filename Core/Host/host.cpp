@@ -30,12 +30,12 @@ void Host::login()
 	bool validated = false;
 	while (num_tries < 3 && !validated)
 	{
-		//cout << "Username : ";
-		//cin >> em;
-		//cout << "\nPassword : ";
-		//cin >> pass;
-		 em = "kg@zeby.com";
-		 pass = "kkk";
+		// cout << "Username : ";
+		// cin >> em;
+		// cout << "\nPassword : ";
+		// cin >> pass;
+		em = "kg@zeby.com";
+		pass = "kkk";
 		string path = "Data/host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
@@ -123,8 +123,8 @@ void Host::addAdvertisement()
 		string hostEmail = this->email;
 		cout << "hostdone" << endl;
 		Place currentPlace;
-		bool done=false; 
-		while (done == false) //infinite loop
+		bool done = false;
+		while (done == false) // infinite loop
 		{
 			try
 			{
@@ -141,13 +141,13 @@ void Host::addAdvertisement()
 				cin >> enddate.day;
 				currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, discount);
 				currentPlace.createTimeForPlace();
-				done = true ; 
+				done = true;
 			}
 			catch (std::exception e)
 			{
 				continue;
 			}
-				break;
+			break;
 		}
 		// we are adding the place to both the places of the host and the total places in the system.
 		cout << "constructor" << endl;
@@ -220,7 +220,7 @@ tryAgain:
 		if (places[i].ID == advID)
 		{
 			index = i;
-			string toBeDeleted = "place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
+			string toBeDeleted = "Data/place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
 			try
 			{
 				if (std::filesystem::remove(toBeDeleted))
@@ -250,16 +250,17 @@ tryAgain:
 string Host::validateEmail(string email)
 {
 	string path = "Data/host/" + email + ".txt";
-	ifstream ifile;
-	ifile.open(path);
-	while (ifile)
+	ifstream ifile(path);
+	if (ifile.is_open())
 	{
 		cout << "this E-Mail is already in use" << endl;
 		cout << "E-mail: ";
-		cin >> email;
-		path = "Data/host/" + email + ".txt";
+		string mail;
+		cin >> mail;
+		ifile.close();
+		return validateEmail(mail);
 	}
-	//ERROR if the user enters the email wrong, it will never let him correct it afterwards
+	// ERROR if the user enters the email wrong, it will never let him correct it afterwards
 	return path;
 }
 
@@ -364,7 +365,7 @@ void Host::deSerializePlaces()
 			discount = stoi(x);
 
 			getline(stream, x);
-			ID = stoi(x); 
+			ID = stoi(x);
 
 			getline(stream, x);
 			hostEmail = x;

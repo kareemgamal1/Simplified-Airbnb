@@ -4,7 +4,7 @@
 int main()
 {
 	Traveler t;
-	t.login();
+	t.signup();
 }
 
 //Finish choosePlace (serializePlace and bookContiniousPeriod)... Deadline: Today.
