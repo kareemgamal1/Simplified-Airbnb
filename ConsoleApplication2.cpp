@@ -6,7 +6,6 @@ int main()
 	Host t;
 	t.login();
 }
-//fix login for traveller and host
 
 //Re-check all data structures and add/replace suitable ones:
 //LinkedList or hashtable of <placesOfCurrentView> for the GUI searching... Deadline: 29/5
@@ -20,6 +19,10 @@ int main()
 
 
 //Use python for the admin dashboard, generate a web page for all the statistics of the program... Deadline:
-//Current issues:
-//Validate e-mail not working properly
-//Infinite loop when adding new advertisement's date
+//Current issues::
+// 
+// 
+// 
+//TODO::
+//main menu to login and signup etc
+//give host ability to be contacted by mail or phone

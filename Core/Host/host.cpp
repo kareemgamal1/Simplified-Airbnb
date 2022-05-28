@@ -532,6 +532,7 @@ void Host::showSpecificPlace () {
 			for (int j = 0; j < places[i].daysofplace.size(); j++)
 				//add invalid id code again
 				cout << " Date : " << places[i].daysofplace[j].day << "/" << places[i].daysofplace[j].month << " \t reserver : " << places[i].daysofplace[j].userreserve << endl;
+		
 		}
 	}
 } 
