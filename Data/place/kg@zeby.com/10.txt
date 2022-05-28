@@ -1,144 +1,161 @@
-k
-k
-s
+egy
+cit
 st
+view
 cash
-1
-20000
-3
 0
-22
+100000
+4
+0
+10
 kg@zeby.com
 1
 1
+29
 1
-2
-32
+23
 1
 1
 1
+A@mail
 
 2
 1
 1
+A@mail
 
 3
 1
 1
+A@mail
 
 4
 1
-0
+1
+A@mail
 
 5
 1
-0
+1
+A@mail
 
 6
 1
-0
+1
+A@mail
 
 7
 1
 0
+none
 
 8
 1
 0
+none
 
 9
 1
 0
+none
 
 10
 1
 0
+none
 
 11
 1
 0
+none
 
 12
 1
 0
+none
 
 13
 1
 0
+none
 
 14
 1
 0
+none
 
 15
 1
 0
+none
 
 16
 1
 0
+none
 
 17
 1
 0
+none
 
 18
 1
 0
+none
 
 19
 1
 0
+none
 
 20
 1
 0
+none
 
 21
 1
 0
+none
 
 22
 1
 0
+none
 
 23
 1
 0
+none
 
 24
 1
 0
+none
 
 25
 1
 0
+none
 
 26
 1
 0
+none
 
 27
 1
 0
+none
 
 28
 1
 0
+none
 
 29
 1
 0
-
-30
-1
-0
-
-31
-1
-0
-
-1
-2
-0
+none
 

@@ -1,5 +1,15 @@
-﻿  traveler.cpp
-E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(591,7): warning C4101: 'canreserve': unreferenced local variable
-E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(713,61): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(719,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+﻿  admin.cpp
+  host.cpp
+  place.cpp
+E:\Proj_DS\Simplified-Airbnb\Core\Place\place.cpp(35,19): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\Proj_DS\Simplified-Airbnb\Core\Place\place.cpp(52,19): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\Proj_DS\Simplified-Airbnb\Core\Place\place.cpp(66,19): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\Proj_DS\Simplified-Airbnb\Core\Place\place.cpp(175,31): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  traveler.cpp
+E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(600,7): warning C4101: 'canreserve': unreferenced local variable
+E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(744,61): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+E:\Proj_DS\Simplified-Airbnb\Core\Traveler\traveler.cpp(750,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+  user.cpp
+  ConsoleApplication2.cpp
+  Generating Code...
   ConsoleApplication2.vcxproj -> E:\Proj_DS\Simplified-Airbnb\x64\Debug\ConsoleApplication2.exe

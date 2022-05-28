@@ -71,10 +71,13 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
 }
 void Place::createTimeForPlace()
 {
-	// TODO:: fix 30th of Feb case
 	timereserve t;
 	int j = this->startDate.month;
 	int i = this->startDate.day;
+	if (this->startDate.month > 12 || this->endDate.month > 12 || this->endDate.month < this->startDate.month) {
+		std::logic_error ex("Invalid Date");
+		throw std::exception(ex);
+	}
 	while (!(t.day == this->endDate.day && t.month == this->endDate.month))
 	{
 		switch (j)

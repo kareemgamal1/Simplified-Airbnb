@@ -21,5 +21,6 @@ public:
     void displayAdvertisements();
     void editAdvertisement();
     void deleteAdvertisement();
+    void showSpecificPlace();
 };
 #endif

@@ -35,12 +35,18 @@ void Traveler::login()
 	bool validated = false;
 	while (num_tries < 3 && !validated)
 	{
-		cout << "Username : ";
-		cin >> em;
-		cout << "\nPassword : ";
-		cin >> pass;
-		//em = "A@mail";
-		//pass = "1";
+		//cout << "Username : ";
+		//cin >> em;
+		string temp;
+		for (char c : email)
+		{
+			temp += (char)tolower(c);
+		}
+		em = temp; //email into lowercase
+		//cout << "\nPassword : ";
+		//cin >> pass;
+		em = "A@mail";
+		pass = "1";
 		string path = "Data/traveller/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
@@ -96,6 +102,7 @@ void Traveler::serializePlace(Place p)
 		stream << p.daysofplace[i].day << endl;
 		stream << p.daysofplace[i].month << endl;
 		stream << p.daysofplace[i].reserved << endl;
+		stream << p.daysofplace[i].userreserve << endl;
 		stream << endl;
 	}
 	stream.close();
@@ -179,14 +186,16 @@ void Traveler::deSerializePlaces()
 			timereserve t;
 			while (getline(stream, x))
 			{
-				if (i < 3)
+				if (i < 4)
 				{
 					if (i == 0)
 						t.day = stoi(x);
 					else if (i == 1)
 						t.month = stoi(x);
-					else
+					else if (i == 2)
 						t.reserved = (x == "1");
+					else
+						t.userreserve = x;
 					i++;
 				}
 				else
@@ -454,12 +463,12 @@ void Traveler::searchByDate()
 	cout << "please enter start date\n";
 	cin >> startdateofuser.day >> startdateofuser.month;
 	cout << "please enter end date\n";
-	;
 	cin >> enddateofuser.day >> enddateofuser.month;
 	vector<Place> currentContainer = chooseContainer();
 	for (int i = 0; i < currentContainer.size(); i++)
 	{
-		if (!(currentContainer[i].startDate.month < startdateofuser.month || (currentContainer[i].startDate.day <= startdateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)) || !(currentContainer[i].endDate.month > enddateofuser.month || (currentContainer[i].endDate.day >= enddateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)))
+		if (!((currentContainer[i].startDate.month < startdateofuser.month) || (currentContainer[i].startDate.day <= startdateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)) || !((currentContainer[i].endDate.month > enddateofuser.month) || (currentContainer[i].endDate.day >= enddateofuser.day && currentContainer[i].endDate.month == startdateofuser.month)))
+		//period contains requested time
 		{
 			currentContainer.erase(currentContainer.begin() + i);
 			i--;
@@ -654,9 +663,31 @@ int Traveler::calculateBookedDuration(timereserve startDate, timereserve endDate
 string Traveler::validateEmail(string email)
 {
 	{
+		string temp;
+		for (char c : email)
+		{
+			temp += (char)tolower(c);
+		}
+		email = temp; //email into lowercase
 		string path = "Data/traveller/" + email + ".txt";
 		ifstream ifile(path);
-		if (ifile.is_open())
+		if (email.find('@') == std::string::npos) {
+			cout << "this E-Mail must contain a domain" << endl;
+			cout << "E-mail: ";
+			string mail;
+			cin >> mail;
+			ifile.close();
+			return validateEmail(mail);
+		}
+		else if (email.substr(email.length() - 4, 4) != ".com") {
+			cout << "this E-Mail must end in .com suffix" << endl;
+			cout << "E-mail: ";
+			string mail;
+			cin >> mail;
+			ifile.close();
+			return validateEmail(mail);
+		}
+		else if (ifile.is_open())
 		{
 			cout << "this E-Mail is already in use" << endl;
 			cout << "E-mail: ";

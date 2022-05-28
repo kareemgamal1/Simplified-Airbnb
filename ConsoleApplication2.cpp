@@ -3,11 +3,10 @@
 
 int main()
 {
-	Traveler t;
-	t.signup();
+	Host t;
+	t.login();
 }
-
-//Finish choosePlace (serializePlace and bookContiniousPeriod)... Deadline: Today.
+//fix login for traveller and host
 
 //Re-check all data structures and add/replace suitable ones:
 //LinkedList or hashtable of <placesOfCurrentView> for the GUI searching... Deadline: 29/5
