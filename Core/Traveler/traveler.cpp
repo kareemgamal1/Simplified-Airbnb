@@ -25,6 +25,7 @@ void Traveler::signup()
 	std::cout << "Age : ";
 	std::cin >> age;
 	serializeUser(path);
+	login();
 }
 
 void Traveler::login()
@@ -70,6 +71,7 @@ void Traveler::login()
 			}
 		}
 	}
+	search();
 }
 
 void Traveler::serializePlace(Place p)
@@ -212,6 +214,8 @@ void Traveler::deSerializePlaces()
 void Traveler::restartAll()
 {
 	queryNumber = 0;
+	search();
+
 }
 
 void Traveler::endProgram()
@@ -257,13 +261,15 @@ void Traveler::searchByType()
 	room = (choice == 2);
 	unordered_map<int, Place> currentContainer = chooseContainer();
 	unordered_map<int, Place>::iterator i;
-	for (i = currentContainer.cbegin();i!=currentContainer.end() ;i++)
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
 		if (i->second.room != room)
 		{
-			currentContainer.erase(i->first);
+			i = currentContainer.erase(i);
 			//i--;
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	displayAll();
@@ -276,11 +282,12 @@ void Traveler::searchByCountry()
 	std::cout << "Country: ";
 	std::cin >> country;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end(); i++)
 	{
-		if (i.second.loc.country != country)
+		if (i->second.loc.country != country)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
 	}
 	currentPlaces = currentContainer;
@@ -294,12 +301,15 @@ void Traveler::searchByCity()
 	std::cout << "City: ";
 	std::cin >> city;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.loc.city != city)
+		if (i->second.loc.city != city)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -311,12 +321,15 @@ void Traveler::searchByStreet()
 	std::cout << "Street name: ";
 	std::cin >> streetName;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.loc.streetName != streetName)
+		if ((i->second).loc.streetName != streetName)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -362,12 +375,15 @@ void Traveler::searchByView()
 	std::cout << "View: ";
 	std::cin >> view;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end(); i)
 	{
-		if (i.second.view != view)
+		if (i->second.view != view)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -382,12 +398,15 @@ void Traveler::searchByPriceRange()
 	std::cout << "To: ";
 	std::cin >> priceRangeEnd;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.pricePerDay < priceRangeStart || i.second.pricePerDay > priceRangeEnd)
+		if (i->second.pricePerDay < priceRangeStart || i->second.pricePerDay > priceRangeEnd)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -400,12 +419,15 @@ void Traveler::searchByPaymentMethod()
 	std::cout << "Payment method: ";
 	std::cin >> paymentMethod;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.paymentMethod != paymentMethod)
+		if (i->second.paymentMethod != paymentMethod)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -419,12 +441,15 @@ void Traveler::searchByNoOfRooms()
 	std::cout << "Number of rooms: ";
 	std::cin >> noOfRooms;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.noOfRooms != noOfRooms && !i.second.room)
+		if (i->second.noOfRooms != noOfRooms && !i->second.room)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -436,12 +461,15 @@ void Traveler::searchByDuration()
 	std::cout << "enter duration ";
 	std::cin >> duration;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i.second.availableduration <= duration)
+		if (i->second.availableduration <= duration)
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -456,13 +484,16 @@ void Traveler::searchByDate()
 	std::cout << "please enter end date\n";
 	std::cin >> enddateofuser.day >> enddateofuser.month;
 	unordered_map<int, Place> currentContainer = chooseContainer();
-	for (auto i : currentContainer)
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (!((i.second.startDate.month < startdateofuser.month) || (i.second.startDate.day <= startdateofuser.day && i.second.startDate.month == startdateofuser.month)) || !((i.second.endDate.month > enddateofuser.month) || (i.second.endDate.day >= enddateofuser.day && i.second.endDate.month == startdateofuser.month)))
+		if (!((i->second.startDate.month < startdateofuser.month) || (i->second.startDate.day <= startdateofuser.day && i->second.startDate.month == startdateofuser.month)) || !((i->second.endDate.month > enddateofuser.month) || (i->second.endDate.day >= enddateofuser.day && i->second.endDate.month == startdateofuser.month)))
 			//period contains requested time
 		{
-			currentContainer.erase(i.first);
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -477,11 +508,10 @@ void showPreferences()
 
 void Traveler::search()
 {
-	showPreferences();
-	int choice;
-	std::cin >> choice;
-	while (choice != 0)
-	{
+	while (true) {
+		showPreferences();
+		int choice;
+		std::cin >> choice;
 		switch (choice)
 		{
 		case 1:
@@ -527,13 +557,21 @@ void Traveler::search()
 		case 9:
 		{
 			restartAll();
+
+			return;
+		}
+		case 0: {
+			endProgram();
 			break;
+		}
+		default: {
+			cout << " invalid choice , try again \n";
 		}
 		}
 		std::cout << "Would you like to select any current advertisements?y/n\n";
 		char bookChoice;
 		std::cin >> bookChoice;
-		tolower(bookChoice) == 'y' ? choosePlace() : showPreferences();
+		tolower(bookChoice) == 'y' ? choosePlace() : search();
 		std::cin >> choice;
 	}
 }
@@ -609,7 +647,7 @@ void Traveler::choosePlace()
 	std::cin >> ID;
 	timereserve t;
 	int period;
-	std::unordered_map<int,Place> :: iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	i = currentPlaces.find(ID);
 	if (i == currentPlaces.end())
 		cout << "ID NOT FOUND";
@@ -638,6 +676,7 @@ void Traveler::choosePlace()
 			}
 		}
 		serializePlace(i->second);
+		search();
 		return;
 	}
 	std::cout << "Invalid ID.\n";
@@ -740,4 +779,3 @@ float Traveler::generateTotalPrice(Place p, int duration)
 	}
 	return totalPrice;
 }
-

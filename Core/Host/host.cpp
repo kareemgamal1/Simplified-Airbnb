@@ -21,6 +21,7 @@ void Host::signup()
 	cout << "Age : ";
 	cin >> age;
 	serializeUser(path);
+	login();
 }
 
 void Host::login()
@@ -40,14 +41,14 @@ void Host::login()
 			temp += (char)tolower(c);
 		}
 		em = temp; //email into lowercase
-		em = "kg@zeby.com";
+		em = "kg@mail.com";
 		pass = "kkk";
 		string path = "Data/host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
 		{
 			fillHostInfo(path);
-			showChoices();
+
 		}
 		else
 		{
@@ -60,12 +61,13 @@ void Host::login()
 			}
 			else
 			{
-				cout << "Please try again after 1 minute.\n";
+				cout << "Please try again .\n";
 				num_tries = 0;
 				login();
 			}
 		}
 	}
+	showChoices();
 }
 
 void Host::addAdvertisement()
@@ -168,9 +170,10 @@ void Host::addAdvertisement()
 		// we are adding the place to both the places of the host and the total places in the system.
 		cout << "constructor" << endl;
 		cout << "time done" << endl;
-		places[currentPlace.ID]=currentPlace;
+		places[currentPlace.ID] = currentPlace;
 		serializePlace(currentPlace);
 	}
+	showChoices();
 }
 
 void Host::editAdvertisement()
@@ -216,6 +219,7 @@ void Host::editAdvertisement()
 			break;
 		}
 	}
+	showChoices();
 }
 
 void Host::deleteAdvertisement()
@@ -253,7 +257,7 @@ void Host::deleteAdvertisement()
 			}
 		}
 	}
-	
+	showChoices();
 }
 
 string Host::validateEmail(string email)
@@ -297,7 +301,7 @@ string Host::validateEmail(string email)
 void Host::displayAdvertisements()
 {
 	cout << "\nAdvertisements: \n\n";
-	for (auto i:places)
+	for (auto i : places)
 	{
 		cout << "===============================\n";
 		cout << "Advertisement ID:" << i.second.ID << '\n';
@@ -338,7 +342,7 @@ void Host::serializePlace(Place p)
 		stream << p.daysofplace[i].day << endl;
 		stream << p.daysofplace[i].month << endl;
 		stream << p.daysofplace[i].reserved << endl;
-		stream << p.daysofplace[i].userreserve << endl; 
+		stream << p.daysofplace[i].userreserve << endl;
 		stream << endl;
 	}
 	stream.close();
@@ -351,7 +355,7 @@ void Host::deSerializePlaces()
 		return;
 	try
 	{
-		for (const auto &entry : filesystem::directory_iterator(path))
+		for (const auto& entry : filesystem::directory_iterator(path))
 		{
 			ifstream stream(entry.path());
 			timereserve startDate, endDate;
@@ -422,7 +426,7 @@ void Host::deSerializePlaces()
 			timereserve t;
 			while (getline(stream, x))
 			{
-				
+
 				if (i < 4)
 				{
 					if (i == 0)
@@ -441,7 +445,7 @@ void Host::deSerializePlaces()
 					currentPlace.daysofplace.push_back(t);
 				}
 			}
-			places[currentPlace.ID]= currentPlace;
+			places[currentPlace.ID] = currentPlace;
 			stream.close();
 		}
 	}
@@ -481,10 +485,10 @@ tryAgain:
 		deleteAdvertisement();
 		break;
 	}
-	case 4 : 
+	case 4:
 	{
-	    showSpecificPlace();
-		break; 
+		showSpecificPlace();
+		break;
 	}
 	default:
 		cout << "Enter a correct number.\n";
@@ -526,16 +530,17 @@ void Host::fillHostInfo(string path)
 	deSerializePlaces();
 }
 
-void Host::showSpecificPlace () {
+void Host::showSpecificPlace() {
 	int id;
-	displayAdvertisements(); 
-	cout << " please enter the id of place you want"; 
+	displayAdvertisements();
+	cout << " please enter the id of place you want";
 	cin >> id;
-	std::unordered_map<int, Place> :: iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	i = places.find(id);
 	if (i == places.end())
 		cout << "ID NOT FOUND";
 	else
 		for (int j = 0; j < i->second.daysofplace.size(); j++)
 			cout << " Date : " << i->second.daysofplace[j].day << "/" << i->second.daysofplace[j].month << " \t reserver : " << i->second.daysofplace[j].userreserve << endl;
-} 
+	showChoices();
+}
