@@ -2,30 +2,30 @@
 #include "../User/user.h"
 #include "../Place/place.h"
 #include <filesystem>
-using namespace std;
 
 int queryNumber = 0;
 
 void Traveler::signup()
 {
-	cout << "First name : ";
-	cin >> firstName;
-	cout << "Last name : ";
-	cin >> lastName;
-	cout << "E-mail: ";
-	cin >> email;
+	std::cout << "First name : ";
+	std::cin >> firstName;
+	std::cout << "Last name : ";
+	std::cin >> lastName;
+	std::cout << "E-mail: ";
+	std::cin >> email;
 	string path = validateEmail(email); // if the email is not in use, return its newly created path
-	cout << "Password : ";
-	cin >> password;
-	cout << "Phone : ";
-	cin >> phone;
-	cout << "Nationality :";
-	cin >> nationality;
-	cout << "Gender : ";
-	cin >> gender;
-	cout << "Age : ";
-	cin >> age;
+	std::cout << "Password : ";
+	std::cin >> password;
+	std::cout << "Phone : ";
+	std::cin >> phone;
+	std::cout << "Nationality :";
+	std::cin >> nationality;
+	std::cout << "Gender : ";
+	std::cin >> gender;
+	std::cout << "Age : ";
+	std::cin >> age;
 	serializeUser(path);
+	login();
 }
 
 void Traveler::login()
@@ -35,16 +35,16 @@ void Traveler::login()
 	bool validated = false;
 	while (num_tries < 3 && !validated)
 	{
-		//cout << "Username : ";
-		//cin >> em;
+		// std::cout << "Username : ";
+		// std::cin >> em;
 		string temp;
 		for (char c : email)
 		{
 			temp += (char)tolower(c);
 		}
-		em = temp; //email into lowercase
-		//cout << "\nPassword : ";
-		//cin >> pass;
+		em = temp; // email into lowercase
+		// std::cout << "\nPassword : ";
+		// std::cin >> pass;
 		em = "A@mail";
 		pass = "1";
 		string path = "Data/traveller/" + em + ".txt";
@@ -58,19 +58,20 @@ void Traveler::login()
 		{
 			if (num_tries < 3)
 			{
-				cout << "The password or username you entered is incorrect. \n";
-				cout << "You have: " << 3 - (num_tries + 1) << "| tries to enter\n";
+				std::cout << "The password or username you entered is incorrect. \n";
+				std::cout << "You have: " << 3 - (num_tries + 1) << "| tries to enter\n";
 				num_tries++;
-				cout << "Please try again.\n";
+				std::cout << "Please try again.\n";
 			}
 			else
 			{
-				cout << "Please try again after 1 minute.\n";
+				std::cout << "Please try again after 1 minute.\n";
 				num_tries = 0;
 				login();
 			}
 		}
 	}
+	search();
 }
 
 void Traveler::serializePlace(Place p)
@@ -96,7 +97,7 @@ void Traveler::serializePlace(Place p)
 	stream << p.endDate.day << endl;
 	stream << p.endDate.month << endl;
 	stream << p.availableduration << endl;
-	cout << "SIZE: " << p.daysofplace.size() << endl;
+	std::cout << "SIZE: " << p.daysofplace.size() << endl;
 	for (int i = 0; i < p.daysofplace.size(); i++)
 	{
 		stream << p.daysofplace[i].day << endl;
@@ -111,10 +112,10 @@ void Traveler::serializePlace(Place p)
 void Traveler::deSerializePlaces()
 {
 	string path = "Data/place";
-	for (const auto& host_directory_entry : filesystem::directory_iterator(path))
+	for (const auto &host_directory_entry : filesystem::directory_iterator(path))
 	{
 		string host_name_path = host_directory_entry.path().string();
-		for (const auto& place_directory_entry : filesystem::directory_iterator(host_name_path))
+		for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
 		{
 			ifstream stream(place_directory_entry.path());
 			timereserve startDate, endDate;
@@ -180,8 +181,8 @@ void Traveler::deSerializePlaces()
 			getline(stream, x);
 			availableduration = stoi(x);
 
-			Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
-			p.availableduration = availableduration;
+			Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
+			currentPlace.availableduration = availableduration;
 			int i = 0;
 			timereserve t;
 			while (getline(stream, x))
@@ -201,10 +202,10 @@ void Traveler::deSerializePlaces()
 				else
 				{
 					i = 0;
-					p.daysofplace.push_back(t);
+					currentPlace.daysofplace.push_back(t);
 				}
 			}
-			allPlaces.push_back(p);
+			allPlaces[currentPlace.ID] = currentPlace;
 			stream.close();
 		}
 	}
@@ -213,11 +214,12 @@ void Traveler::deSerializePlaces()
 void Traveler::restartAll()
 {
 	queryNumber = 0;
+	search();
 }
 
 void Traveler::endProgram()
 {
-	cout << "Thank you for using our program.\n";
+	std::cout << "Thank you for using our program.\n";
 	exit(0);
 }
 
@@ -225,26 +227,26 @@ void Traveler::displayAll()
 {
 	if (currentPlaces.size() == 0)
 	{
-		cout << "\nThere are no matching advertisements.\nWould you like to restart the searching process?y/n";
+		std::cout << "\nThere are no matching advertisements.\nWould you like to restart the searching process?y/n";
 		char choice;
-		cin >> choice;
+		std::cin >> choice;
 		tolower(choice) == 'y' ? restartAll() : endProgram();
 	}
-	cout << "\nAdvertisements: \n\n";
-	for (int i = 0; i < currentPlaces.size(); i++)
+	std::cout << "\nAdvertisements: \n\n";
+	for (auto i : currentPlaces)
 	{
 		cout << "===============================\n";
-		cout << "Advertisement ID:" << currentPlaces[i].ID << '\n';
-		currentPlaces[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-		cout << "Location:" << currentPlaces[i].loc.country << ' ' << currentPlaces[i].loc.city << ' ' << currentPlaces[i].loc.streetName << '\n';
-		cout << "Price: " << currentPlaces[i].pricePerDay << '\n';
-		cout << "View:" << currentPlaces[i].view << '\n';
-		cout << "Payment method: " << currentPlaces[i].paymentMethod << "\n";
+		cout << "Advertisement ID:" << i.first << '\n';
+		i.second.room ? cout << "Room.\n" : cout << "Apartment.\n";
+		cout << "Location:" << i.second.loc.country << ' ' << i.second.loc.city << ' ' << i.second.loc.streetName << '\n';
+		cout << "Price: " << i.second.pricePerDay << '\n';
+		cout << "View:" << i.second.view << '\n';
+		cout << "Payment method: " << i.second.paymentMethod << "\n";
 		cout << "===============================\n\n\n";
 	}
 }
 
-vector<Place> Traveler::chooseContainer()
+unordered_map<int, Place> Traveler::chooseContainer()
 {
 	return (queryNumber == 0) ? allPlaces : currentPlaces;
 }
@@ -253,18 +255,21 @@ void Traveler::searchByType()
 {
 	int choice;
 	bool room;
-	cout << "Enter (1) for apartment or (2) for room.";
-	cin >> choice;
+	std::cout << "Enter (1) for apartment or (2) for room.";
+	std::cin >> choice;
 	// choice = 2;
 	room = (choice == 2);
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].room != room)
+		if (i->second.room != room)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
+			// i--;
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	displayAll();
@@ -274,15 +279,15 @@ void Traveler::searchByType()
 void Traveler::searchByCountry()
 {
 	string country;
-	cout << "Country: ";
-	cin >> country;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "Country: ";
+	std::cin >> country;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end(); i++)
 	{
-		if (currentContainer[i].loc.country != country)
+		if (i->second.loc.country != country)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
 	}
 	currentPlaces = currentContainer;
@@ -293,16 +298,18 @@ void Traveler::searchByCountry()
 void Traveler::searchByCity()
 {
 	string city;
-	cout << "City: ";
-	cin >> city;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "City: ";
+	std::cin >> city;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].loc.city != city)
+		if (i->second.loc.city != city)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -311,16 +318,18 @@ void Traveler::searchByCity()
 void Traveler::searchByStreet()
 {
 	string streetName;
-	cout << "Street name: ";
-	cin >> streetName;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "Street name: ";
+	std::cin >> streetName;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].loc.streetName != streetName)
+		if ((i->second).loc.streetName != streetName)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -329,9 +338,9 @@ void Traveler::searchByStreet()
 
 void Traveler::searchByLocation()
 {
-	cout << "(1)Country\n(2)City\n(3)Street Name\n(0)to stop searching.\n";
+	std::cout << "(1)Country\n(2)City\n(3)Street Name\n(0)to stop searching.\n";
 	int locationChoice;
-	cin >> locationChoice;
+	std::cin >> locationChoice;
 	while (locationChoice != 0)
 	{
 		switch (locationChoice)
@@ -352,8 +361,8 @@ void Traveler::searchByLocation()
 			break;
 		}
 		}
-		cout << "(1)Country\n(2)City\n(3)Street Name\n(0)to stop searching by location.\n";
-		cin >> locationChoice;
+		std::cout << "(1)Country\n(2)City\n(3)Street Name\n(0)to stop searching by location.\n";
+		std::cin >> locationChoice;
 		/*searchByCountry();
 		searchByCity();
 		searchByStreet();*/
@@ -363,16 +372,18 @@ void Traveler::searchByLocation()
 void Traveler::searchByView()
 {
 	string view;
-	cout << "View: ";
-	cin >> view;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "View: ";
+	std::cin >> view;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end(); i)
 	{
-		if (currentContainer[i].view != view)
+		if (i->second.view != view)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -382,18 +393,20 @@ void Traveler::searchByView()
 void Traveler::searchByPriceRange()
 {
 	int priceRangeStart, priceRangeEnd;
-	cout << "Price from: ";
-	cin >> priceRangeStart;
-	cout << "To: ";
-	cin >> priceRangeEnd;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "Price from: ";
+	std::cin >> priceRangeStart;
+	std::cout << "To: ";
+	std::cin >> priceRangeEnd;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].pricePerDay < priceRangeStart || currentContainer[i].pricePerDay > priceRangeEnd)
+		if (i->second.pricePerDay < priceRangeStart || i->second.pricePerDay > priceRangeEnd)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -403,16 +416,18 @@ void Traveler::searchByPriceRange()
 void Traveler::searchByPaymentMethod()
 {
 	string paymentMethod;
-	cout << "Payment method: ";
-	cin >> paymentMethod;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "Payment method: ";
+	std::cin >> paymentMethod;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].paymentMethod != paymentMethod)
+		if (i->second.paymentMethod != paymentMethod)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -423,16 +438,18 @@ void Traveler::searchByNoOfRooms()
 {
 	// available only if it's an apartment.
 	int noOfRooms;
-	cout << "Number of rooms: ";
-	cin >> noOfRooms;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "Number of rooms: ";
+	std::cin >> noOfRooms;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].noOfRooms != noOfRooms && !currentContainer[i].room)
+		if (i->second.noOfRooms != noOfRooms && !i->second.room)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -441,16 +458,18 @@ void Traveler::searchByNoOfRooms()
 void Traveler::searchByDuration()
 {
 	int duration;
-	cout << "enter duration ";
-	cin >> duration;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "enter duration ";
+	std::cin >> duration;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (currentContainer[i].availableduration <= duration)
+		if (i->second.availableduration <= duration)
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -460,19 +479,21 @@ void Traveler::searchByDuration()
 void Traveler::searchByDate()
 {
 	timereserve startdateofuser, enddateofuser;
-	cout << "please enter start date\n";
-	cin >> startdateofuser.day >> startdateofuser.month;
-	cout << "please enter end date\n";
-	cin >> enddateofuser.day >> enddateofuser.month;
-	vector<Place> currentContainer = chooseContainer();
-	for (int i = 0; i < currentContainer.size(); i++)
+	std::cout << "please enter start date\n";
+	std::cin >> startdateofuser.day >> startdateofuser.month;
+	std::cout << "please enter end date\n";
+	std::cin >> enddateofuser.day >> enddateofuser.month;
+	unordered_map<int, Place> currentContainer = chooseContainer();
+	unordered_map<int, Place>::iterator i;
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (!((currentContainer[i].startDate.month < startdateofuser.month) || (currentContainer[i].startDate.day <= startdateofuser.day && currentContainer[i].startDate.month == startdateofuser.month)) || !((currentContainer[i].endDate.month > enddateofuser.month) || (currentContainer[i].endDate.day >= enddateofuser.day && currentContainer[i].endDate.month == startdateofuser.month)))
-		//period contains requested time
+		if (!((i->second.startDate.month < startdateofuser.month) || (i->second.startDate.day <= startdateofuser.day && i->second.startDate.month == startdateofuser.month)) || !((i->second.endDate.month > enddateofuser.month) || (i->second.endDate.day >= enddateofuser.day && i->second.endDate.month == startdateofuser.month)))
+		// period contains requested time
 		{
-			currentContainer.erase(currentContainer.begin() + i);
-			i--;
+			i = currentContainer.erase(i);
 		}
+		else
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -481,17 +502,17 @@ void Traveler::searchByDate()
 
 void showPreferences()
 {
-	cout << "\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n(8)Date\n";
-	cout << "(9)Restart search\n(0)Stop searching\n";
+	std::cout << "\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n(8)Date\n";
+	std::cout << "(9)Restart search\n(0)Stop searching\n";
 }
 
 void Traveler::search()
 {
-	showPreferences();
-	int choice;
-	cin >> choice;
-	while (choice != 0)
+	while (true)
 	{
+		showPreferences();
+		int choice;
+		std::cin >> choice;
 		switch (choice)
 		{
 		case 1:
@@ -537,75 +558,96 @@ void Traveler::search()
 		case 9:
 		{
 			restartAll();
+
+			return;
+		}
+		case 0:
+		{
+			endProgram();
 			break;
 		}
+		default:
+		{
+			cout << " invalid choice , try again \n";
 		}
-		cout << "Would you like to select any current advertisements?y/n\n";
+		}
+		std::cout << "Would you like to select any current advertisements?y/n\n";
 		char bookChoice;
-		cin >> bookChoice;
-		tolower(bookChoice) == 'y' ? choosePlace() : showPreferences();
-		cin >> choice;
+		std::cin >> bookChoice;
+		tolower(bookChoice) == 'y' ? choosePlace() : search();
+		std::cin >> choice;
 	}
 }
 
-void Traveler::displayDate(Place p) {
-	cout << "Available date : \n";
+void Traveler::displayDate(Place p)
+{
+	std::cout << "Available date : \n";
 	for (int i = 0; i < p.daysofplace.size(); i++)
 		if (p.daysofplace[i].reserved == false)
-			cout << p.daysofplace[i].day << "/" << p.daysofplace[i].month << endl;
+			std::cout << p.daysofplace[i].day << "/" << p.daysofplace[i].month << endl;
 }
 
-bool Traveler::bookingcontinousperiod(Place& p, timereserve startdate, int period) {
+bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int period)
+{
 	bool canreserve = false;
 	int findindex;
-	for (int i = 0; i < p.daysofplace.size(); i++) {
-		if (p.daysofplace[i].day == startdate.day && p.daysofplace[i].month == startdate.month) {
+	for (int i = 0; i < p.daysofplace.size(); i++)
+	{
+		if (p.daysofplace[i].day == startdate.day && p.daysofplace[i].month == startdate.month)
+		{
 			canreserve = true;
 			findindex = i;
-			if (i + period > p.daysofplace.size()) {
+			if (i + period > p.daysofplace.size())
+			{
 				canreserve = false;
 			}
 			else
-				for (int j = 1; j <= period; j++) {
-					if (p.daysofplace[i++].reserved == true) {
+				for (int j = 1; j <= period; j++)
+				{
+					if (p.daysofplace[i++].reserved == true)
+					{
 						canreserve = false;
 						break;
 					}
-
 				}
 			break;
 		}
 	}
-	if (canreserve) {
-		for (int j = 1; j <= period; j++) {
+	if (canreserve)
+	{
+		for (int j = 1; j <= period; j++)
+		{
 			p.daysofplace[findindex].reserved = true;
 			p.daysofplace[findindex].userreserve = this->email;
 			findindex++;
 		}
 		p.availableduration -= period;
-		cout << "Please pay " << generateTotalPrice(p, period) << " using: " << p.paymentMethod << endl;
+		std::cout << "Please pay " << generateTotalPrice(p, period) << " using: " << p.paymentMethod << endl;
 		return true;
 	}
-	else {
-		cout << "invalid date you can't book ";
+	else
+	{
+		std::cout << "invalid date you can't book ";
 		return false;
 	}
 }
 
-int Traveler::bookingSeperateDate(Place& p) {
+int Traveler::bookingSeperateDate(Place &p)
+{
 	int numofreservedate = 0;
 	bool booking = false;
 	timereserve t;
 	int choice;
 	bool canreserve;
-	do {
-		cout << " please enter date you want to reserve";
-		cin >> t.day >> t.month;
+	do
+	{
+		std::cout << " please enter date you want to reserve";
+		std::cin >> t.day >> t.month;
 		booking = bookingcontinousperiod(p, t, 1);
 		if (booking == true)
 			numofreservedate++;
-		cout << "do you want another date, put 1 to yes ";
-		cin >> choice;
+		std::cout << "do you want another date, put 1 to yes ";
+		std::cin >> choice;
 	} while (choice == 1);
 	return numofreservedate;
 }
@@ -614,46 +656,50 @@ void Traveler::choosePlace()
 {
 	bool booking = false;
 	int choice;
-	cout << "Enter the ID of the advertisement you want to select.";
+	std::cout << "Enter the ID of the advertisement you want to select.";
 	int ID;
-	cin >> ID;
+	std::cin >> ID;
 	timereserve t;
 	int period;
-	for (int i = 0; i < currentPlaces.size(); i++)
+	std::unordered_map<int, Place>::iterator i;
+	i = currentPlaces.find(ID);
+	if (i == currentPlaces.end())
+		cout << "ID NOT FOUND";
+	else
 	{
-		if (currentPlaces[i].ID == ID)
+		while (booking == false)
 		{
-			while (booking == false) {
-				displayDate(currentPlaces[i]);
-				cout << " if you want continous date press 1, if you want seperate press 2 \n if you want not to book press any number\n";
-				cin >> choice;
-				if (choice == 1) {
-					cout << " please enter start date ";
-					cin >> t.day >> t.month;
-					cout << " please enter period";
-					cin >> period;
-					booking = bookingcontinousperiod(currentPlaces[i], t, period);
-				}
-				else if (choice == 2) {
-					int num = bookingSeperateDate(currentPlaces[i]);
-					booking = true;
-					cout << " you have booking " << num << " days . \n";
-					cout << "Please pay " << generateTotalPrice(currentPlaces[i], num) << " using: " << currentPlaces[i].paymentMethod << endl;
-					break;
-				}
-				else {
-					break;
-				}
+			displayDate(i->second);
+			std::cout << " if you want continous date press 1, if you want seperate press 2 \n if you want not to book press any number\n";
+			std::cin >> choice;
+			if (choice == 1)
+			{
+				std::cout << " please enter start date ";
+				std::cin >> t.day >> t.month;
+				std::cout << " please enter period";
+				std::cin >> period;
+				booking = bookingcontinousperiod(i->second, t, period);
 			}
-			serializePlace(currentPlaces[i]);
-			return;
+			else if (choice == 2)
+			{
+				int num = bookingSeperateDate(i->second);
+				booking = true;
+				std::cout << " you have booking " << num << " days . \n";
+				std::cout << "Please pay " << generateTotalPrice(i->second, num) << " using: " << i->second.paymentMethod << endl;
+				break;
+			}
+			else
+			{
+				break;
+			}
 		}
+		serializePlace(i->second);
+		search();
+		return;
 	}
-	cout << "Invalid ID.\n";
+	std::cout << "Invalid ID.\n";
 	choosePlace();
 }
-
-
 
 int Traveler::calculateBookedDuration(timereserve startDate, timereserve endDate)
 {
@@ -668,35 +714,37 @@ string Traveler::validateEmail(string email)
 		{
 			temp += (char)tolower(c);
 		}
-		email = temp; //email into lowercase
+		email = temp; // email into lowercase
 		string path = "Data/traveller/" + email + ".txt";
 		ifstream ifile(path);
-		if (email.find('@') == std::string::npos) {
-			cout << "this E-Mail must contain a domain" << endl;
-			cout << "E-mail: ";
+		if (email.find('@') == std::string::npos)
+		{
+			std::cout << "this E-Mail must contain a domain" << endl;
+			std::cout << "E-mail: ";
 			string mail;
-			cin >> mail;
+			std::cin >> mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
-		else if (email.substr(email.length() - 4, 4) != ".com") {
-			cout << "this E-Mail must end in .com suffix" << endl;
-			cout << "E-mail: ";
+		else if (email.substr(email.length() - 4, 4) != ".com")
+		{
+			std::cout << "this E-Mail must end in .com suffix" << endl;
+			std::cout << "E-mail: ";
 			string mail;
-			cin >> mail;
+			std::cin >> mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
 		else if (ifile.is_open())
 		{
-			cout << "this E-Mail is already in use" << endl;
-			cout << "E-mail: ";
+			std::cout << "this E-Mail is already in use" << endl;
+			std::cout << "E-mail: ";
 			string mail;
-			cin >> mail;
+			std::cin >> mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
-		//ERROR if the user enters the email wrong, it will never let him correct it afterwards
+		// ERROR if the user enters the email wrong, it will never let him correct it afterwards
 		return path;
 	}
 }
@@ -749,4 +797,3 @@ float Traveler::generateTotalPrice(Place p, int duration)
 	}
 	return totalPrice;
 }
-
