@@ -3,6 +3,7 @@
 #include "../User/user.h"
 #include "../Place/place.h"
 #include <filesystem>
+#include <unordered_map>
 
 class Traveler : public User
 {
@@ -13,8 +14,8 @@ class Traveler : public User
 	int priceRangeStart;
 	int priceRangeEnd;
 	int queryNumber;
-	vector<Place> allPlaces;
-	vector<Place> currentPlaces;
+	unordered_map<int, Place> allPlaces;
+	unordered_map<int, Place> currentPlaces;
 	Place reservedPlace;
 	// test
 public:
@@ -32,7 +33,7 @@ public:
 	void restartAll();
 	void endProgram();
 	int calculateBookedDuration(timereserve startDate, timereserve endDate);
-	vector<Place> chooseContainer();
+	unordered_map<int, Place> chooseContainer();
 	void searchByType();
 	void searchByCountry();
 	void searchByCity();

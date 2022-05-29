@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -141,19 +141,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Simplified-Airbnb\Core\Admin\admin.cpp" />
-    <ClCompile Include="..\Simplified-Airbnb\Core\Host\host.cpp" />
-    <ClCompile Include="..\Simplified-Airbnb\Core\Place\place.cpp" />
-    <ClCompile Include="..\Simplified-Airbnb\Core\Traveler\traveler.cpp" />
-    <ClCompile Include="..\Simplified-Airbnb\Core\User\user.cpp" />
+    <ClCompile Include="Core\Admin\admin.cpp" />
+    <ClCompile Include="Core\Host\host.cpp" />
+    <ClCompile Include="Core\Place\place.cpp" />
+    <ClCompile Include="Core\Traveler\traveler.cpp" />
+    <ClCompile Include="Core\User\user.cpp" />
     <ClCompile Include="ConsoleApplication2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Simplified-Airbnb\Core\Admin\admin.h" />
-    <ClInclude Include="..\Simplified-Airbnb\Core\Host\host.h" />
-    <ClInclude Include="..\Simplified-Airbnb\Core\Place\place.h" />
-    <ClInclude Include="..\Simplified-Airbnb\Core\Traveler\traveler.h" />
-    <ClInclude Include="..\Simplified-Airbnb\Core\User\user.h" />
+    <ClInclude Include="Core\Admin\admin.h" />
+    <ClInclude Include="Core\Host\host.h" />
+    <ClInclude Include="Core\Place\place.h" />
+    <ClInclude Include="Core\Traveler\traveler.h" />
+    <ClInclude Include="Core\User\user.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

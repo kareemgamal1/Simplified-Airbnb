@@ -18,9 +18,13 @@ void Place::saveCurrentID()
 	cout << "ID saved:" << ID;
 }
 
-Place::Place()
-{
+Place::Place() {
 
+}
+Place::Place(timereserve startDate,timereserve endDate)
+{
+	this->startDate = startDate;
+	this->endDate = endDate;
 }
 
 Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount)
@@ -74,7 +78,7 @@ void Place::createTimeForPlace()
 	timereserve t;
 	int j = this->startDate.month;
 	int i = this->startDate.day;
-	if (this->startDate.month > 12 || this->endDate.month > 12 || this->endDate.month < this->startDate.month) {
+	if (this->startDate.month > 12 || this->endDate.month > 12 || this->endDate.month < this->startDate.month|| this->startDate.month<1||this->endDate.month<1) {
 		std::logic_error ex("Invalid Date");
 		throw std::exception(ex);
 	}
@@ -89,7 +93,7 @@ void Place::createTimeForPlace()
 		case 8:
 		case 10:
 		case 12:
-			if (this->startDate.day > 31)
+			if (this->startDate.day > 31||this->startDate.day < 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);
@@ -119,7 +123,7 @@ void Place::createTimeForPlace()
 		case 6:
 		case 9:
 		case 11:
-			if (this->startDate.day > 30)
+			if (this->startDate.day > 30 || this->startDate.day < 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);
@@ -137,13 +141,13 @@ void Place::createTimeForPlace()
 					else
 					{
 						i = 1;
-						j = ++j % 12;
+						j = ++j % 13;
 						break;
 					}
 				}
 			break;
 		case 2:
-			if (this->startDate.day > 28)
+			if (this->startDate.day > 28 || this->startDate.day < 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);

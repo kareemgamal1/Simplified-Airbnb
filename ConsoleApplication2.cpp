@@ -3,7 +3,7 @@
 
 int main()
 {
-	Host t;
+	Traveler t;
 	t.login();
 }
 
