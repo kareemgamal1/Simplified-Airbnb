@@ -35,16 +35,16 @@ void Traveler::login()
 	bool validated = false;
 	while (num_tries < 3 && !validated)
 	{
-		// std::cout << "Username : ";
-		// std::cin >> em;
+		//std::cout << "Username : ";
+		//std::cin >> em;
 		string temp;
 		for (char c : email)
 		{
 			temp += (char)tolower(c);
 		}
-		em = temp; // email into lowercase
-		// std::cout << "\nPassword : ";
-		// std::cin >> pass;
+		em = temp; //email into lowercase
+		//std::cout << "\nPassword : ";
+		//std::cin >> pass;
 		em = "A@mail";
 		pass = "1";
 		string path = "Data/traveller/" + em + ".txt";
@@ -215,6 +215,7 @@ void Traveler::restartAll()
 {
 	queryNumber = 0;
 	search();
+
 }
 
 void Traveler::endProgram()
@@ -233,8 +234,7 @@ void Traveler::displayAll()
 		tolower(choice) == 'y' ? restartAll() : endProgram();
 	}
 	std::cout << "\nAdvertisements: \n\n";
-	for (auto i : currentPlaces)
-	{
+	for (auto i : currentPlaces) {
 		cout << "===============================\n";
 		cout << "Advertisement ID:" << i.first << '\n';
 		i.second.room ? cout << "Room.\n" : cout << "Apartment.\n";
@@ -266,7 +266,7 @@ void Traveler::searchByType()
 		if (i->second.room != room)
 		{
 			i = currentContainer.erase(i);
-			// i--;
+			//i--;
 		}
 		else
 			i++;
@@ -488,7 +488,7 @@ void Traveler::searchByDate()
 	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
 		if (!((i->second.startDate.month < startdateofuser.month) || (i->second.startDate.day <= startdateofuser.day && i->second.startDate.month == startdateofuser.month)) || !((i->second.endDate.month > enddateofuser.month) || (i->second.endDate.day >= enddateofuser.day && i->second.endDate.month == startdateofuser.month)))
-		// period contains requested time
+			//period contains requested time
 		{
 			i = currentContainer.erase(i);
 		}
@@ -508,8 +508,7 @@ void showPreferences()
 
 void Traveler::search()
 {
-	while (true)
-	{
+	while (true) {
 		showPreferences();
 		int choice;
 		std::cin >> choice;
@@ -561,13 +560,11 @@ void Traveler::search()
 
 			return;
 		}
-		case 0:
-		{
+		case 0: {
 			endProgram();
 			break;
 		}
-		default:
-		{
+		default: {
 			cout << " invalid choice , try again \n";
 		}
 		}
@@ -579,8 +576,7 @@ void Traveler::search()
 	}
 }
 
-void Traveler::displayDate(Place p)
-{
+void Traveler::displayDate(Place p) {
 	std::cout << "Available date : \n";
 	for (int i = 0; i < p.daysofplace.size(); i++)
 		if (p.daysofplace[i].reserved == false)
@@ -625,8 +621,7 @@ bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int perio
 		std::cout << "Please pay " << generateTotalPrice(p, period) << " using: " << p.paymentMethod << endl;
 		return true;
 	}
-	else
-	{
+	else {
 		std::cout << "invalid date you can't book ";
 		return false;
 	}
@@ -639,8 +634,7 @@ int Traveler::bookingSeperateDate(Place &p)
 	timereserve t;
 	int choice;
 	bool canreserve;
-	do
-	{
+	do {
 		std::cout << " please enter date you want to reserve";
 		std::cin >> t.day >> t.month;
 		booking = bookingcontinousperiod(p, t, 1);
@@ -661,35 +655,31 @@ void Traveler::choosePlace()
 	std::cin >> ID;
 	timereserve t;
 	int period;
-	std::unordered_map<int, Place>::iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	i = currentPlaces.find(ID);
 	if (i == currentPlaces.end())
 		cout << "ID NOT FOUND";
 	else
 	{
-		while (booking == false)
-		{
+		while (booking == false) {
 			displayDate(i->second);
 			std::cout << " if you want continous date press 1, if you want seperate press 2 \n if you want not to book press any number\n";
 			std::cin >> choice;
-			if (choice == 1)
-			{
+			if (choice == 1) {
 				std::cout << " please enter start date ";
 				std::cin >> t.day >> t.month;
 				std::cout << " please enter period";
 				std::cin >> period;
 				booking = bookingcontinousperiod(i->second, t, period);
 			}
-			else if (choice == 2)
-			{
+			else if (choice == 2) {
 				int num = bookingSeperateDate(i->second);
 				booking = true;
 				std::cout << " you have booking " << num << " days . \n";
 				std::cout << "Please pay " << generateTotalPrice(i->second, num) << " using: " << i->second.paymentMethod << endl;
 				break;
 			}
-			else
-			{
+			else {
 				break;
 			}
 		}
@@ -717,8 +707,7 @@ string Traveler::validateEmail(string email)
 		email = temp; // email into lowercase
 		string path = "Data/traveller/" + email + ".txt";
 		ifstream ifile(path);
-		if (email.find('@') == std::string::npos)
-		{
+		if (email.find('@') == std::string::npos) {
 			std::cout << "this E-Mail must contain a domain" << endl;
 			std::cout << "E-mail: ";
 			string mail;
@@ -726,8 +715,7 @@ string Traveler::validateEmail(string email)
 			ifile.close();
 			return validateEmail(mail);
 		}
-		else if (email.substr(email.length() - 4, 4) != ".com")
-		{
+		else if (email.substr(email.length() - 4, 4) != ".com") {
 			std::cout << "this E-Mail must end in .com suffix" << endl;
 			std::cout << "E-mail: ";
 			string mail;

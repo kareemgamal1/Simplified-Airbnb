@@ -5,6 +5,39 @@ int main()
 {
 
 	int choice;
+	while (true) {
+		cout << "\n\n-Choose (1) to sign up as traveller -Choose (2) to login as traveller \n -Choose (3) sign up as host\n choose 4 to login as host \n";
+		cin >> choice;
+		if (choice == 1) {
+			Traveler T;
+			T.signup();
+			break;
+		}
+		else if (choice == 2) {
+			Traveler T;
+			T.login();
+			break;
+		}
+		else if (choice == 3) {
+			Host h;
+			h.signup();
+			break;
+		}
+		else if (choice == 4) {
+			Host h;
+			h.login();
+			break;
+		}
+		else
+		{
+			cout << " invalid choice , try again\n";
+			continue;
+		}
+	}
+
+}
+
+	int choice;
 	while (true)
 	{
 		cout << "\n\n-Choose (1) to sign up as traveller -Choose (2) to login as traveller \n -Choose (3) sign up as host\n choose 4 to login as host \n";

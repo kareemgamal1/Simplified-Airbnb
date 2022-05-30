@@ -40,7 +40,7 @@ void Host::login()
 		{
 			temp += (char)tolower(c);
 		}
-		em = temp; // email into lowercase
+		em = temp; //email into lowercase
 		em = "kg@mail.com";
 		pass = "kkk";
 		string path = "Data/host/" + em + ".txt";
@@ -48,6 +48,7 @@ void Host::login()
 		if (validated)
 		{
 			fillHostInfo(path);
+
 		}
 		else
 		{
@@ -87,9 +88,9 @@ void Host::addAdvertisement()
 		if (type == 1)
 		{
 			room = false;
-			// cout << "Number of rooms: ";
+			//cout << "Number of rooms: ";
 			noOfRooms = 3;
-			// cin >> noOfRooms;
+			//cin >> noOfRooms;
 		}
 		else if (type == 2)
 		{
@@ -178,7 +179,7 @@ void Host::addAdvertisement()
 void Host::editAdvertisement()
 {
 	displayAdvertisements();
-	std::unordered_map<int, Place>::iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	while (true)
 	{
 		cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n";
@@ -188,8 +189,7 @@ void Host::editAdvertisement()
 
 		if (i == places.end())
 			cout << "ID NOT FOUND";
-		else
-		{
+		else {
 			cout << "What would you like to edit? Choose(1) for price or Choose(2) for payment method";
 			int choice;
 			cin >> choice;
@@ -225,7 +225,7 @@ void Host::editAdvertisement()
 void Host::deleteAdvertisement()
 {
 	displayAdvertisements();
-	std::unordered_map<int, Place>::iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	while (true)
 	{
 		cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n";
@@ -251,7 +251,7 @@ void Host::deleteAdvertisement()
 					std::cout << "file " << toBeDeleted << " not found.\n";
 				}
 			}
-			catch (const std::filesystem::filesystem_error &err)
+			catch (const std::filesystem::filesystem_error& err)
 			{
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
@@ -357,7 +357,7 @@ void Host::deSerializePlaces()
 		return;
 	try
 	{
-		for (const auto &entry : filesystem::directory_iterator(path))
+		for (const auto& entry : filesystem::directory_iterator(path))
 		{
 			ifstream stream(entry.path());
 			timereserve startDate, endDate;
@@ -532,13 +532,12 @@ void Host::fillHostInfo(string path)
 	deSerializePlaces();
 }
 
-void Host::showSpecificPlace()
-{
+void Host::showSpecificPlace() {
 	int id;
 	displayAdvertisements();
 	cout << " please enter the id of place you want";
 	cin >> id;
-	std::unordered_map<int, Place>::iterator i;
+	std::unordered_map<int, Place> ::iterator i;
 	i = places.find(id);
 	if (i == places.end())
 		cout << "ID NOT FOUND";

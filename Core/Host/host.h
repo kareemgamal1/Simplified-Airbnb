@@ -3,11 +3,13 @@
 #include "../Place/place.h"
 #include <filesystem>
 #include <vector>
+#include <unordered_map>
+
 using namespace std;
 
 class Host : public User
 {
-    vector<Place> places; // vector
+    unordered_map<int,Place> places; // vector
 public:
     void signup();
     void login();
