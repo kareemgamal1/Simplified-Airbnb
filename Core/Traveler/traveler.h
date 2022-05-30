@@ -50,9 +50,9 @@ public:
 	bool bookingcontinousperiod(Place& p, timereserve startdate, int period);
 	int bookingSeperateDate(Place& p); 
 	void choosePlace();
-	float generateDiscount(Place p);
 	float generateTotalPrice(Place p,int );
 	void viewBy(); // sort based on different Place attributes
-	
+	Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age);
+	Traveler();
 };
 // #endif

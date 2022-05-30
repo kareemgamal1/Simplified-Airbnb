@@ -24,5 +24,7 @@ public:
     void editAdvertisement();
     void deleteAdvertisement();
     void showSpecificPlace();
+    Host(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age);
+    Host();
 };
 #endif

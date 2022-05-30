@@ -29,26 +29,25 @@ void Host::login()
 	string em, pass;
 	int num_tries = 0;
 	bool validated = false;
-	while (num_tries < 3 && !validated)
+	while (!validated)////////////// upddate
 	{
-		// cout << "Username : ";
-		// cin >> em;
-		// cout << "\nPassword : ";
-		// cin >> pass;
+		cout << "Username : ";
+		cin >> em;
+		cout << "\nPassword : ";
+		cin >> pass;
 		string temp;
 		for (char c : em)
 		{
 			temp += (char)tolower(c);
 		}
 		em = temp; //email into lowercase
-		em = "kg@mail.com";
-		pass = "kkk";
+		//em = "kg@mail.com";
+		//pass = "kkk";
 		string path = "Data/host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
 		{
 			fillHostInfo(path);
-
 		}
 		else
 		{
@@ -64,6 +63,7 @@ void Host::login()
 				cout << "Please try again .\n";
 				num_tries = 0;
 				login();
+				return; /////// update 
 			}
 		}
 	}
@@ -111,14 +111,14 @@ void Host::addAdvertisement()
 		int pricePerDay;
 		int discount = 0;
 		char choice;
-		loc.country = "Egypt";
-		loc.city = "cai";
-		loc.streetName = "St";
-		pricePerDay = 300;
-		view = "Share3";
-		paymentMethod = "cash";
-		choice = 'n';
-		/*cout << "Country: ";
+		//loc.country = "Egypt";
+		//loc.city = "cai";
+		//loc.streetName = "St";
+		//pricePerDay = 300;
+		//view = "Share3";
+		//paymentMethod = "cash";
+		//choice = 'n';
+		cout << "Country: ";
 		cin >> loc.country;
 		cout << "City: ";
 		cin >> loc.city;
@@ -131,7 +131,7 @@ void Host::addAdvertisement()
 		cout << "Payment method: ";
 		cin >> paymentMethod;
 		cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
-		cin >> choice;*/
+		cin >> choice;
 		if (choice == 'y')
 		{
 			cout << "Enter your discount in percentage: ";
@@ -182,13 +182,19 @@ void Host::editAdvertisement()
 	std::unordered_map<int, Place> ::iterator i;
 	while (true)
 	{
-		cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n";
+		if (places.size() == 0) {
+			cout << "You have no registered Advertisments.. Returning..\n";
+			break;
+		}
+		cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n if you want to return back press 0 \n";//updateeee
 		int advID;
 		cin >> advID;
+		if (advID == 0) {//updateeee
+			break;
+		}
 		i = places.find(advID);
-
 		if (i == places.end())
-			cout << "ID NOT FOUND";
+			cout << "ID NOT FOUND\n";
 		else {
 			cout << "What would you like to edit? Choose(1) for price or Choose(2) for payment method";
 			int choice;
@@ -228,11 +234,18 @@ void Host::deleteAdvertisement()
 	std::unordered_map<int, Place> ::iterator i;
 	while (true)
 	{
-		cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n";
+		if (places.size() == 0)
+		{
+			cout << "You have no adverts to delete, retuning..\n";
+			break;
+		}
+		cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n if you want to return back press 0 \n ";//update
 		int advID;
 		cin >> advID;
+		if (advID == 0) {//updateee
+			break;
+		}
 		i = places.find(advID);
-
 		if (i == places.end())
 			cout << "ID NOT FOUND";
 		else
@@ -267,8 +280,8 @@ string Host::validateEmail(string email)
 	{
 		temp += (char)tolower(c);
 	}
-	email = temp; // email into lowercase
-	string path = "Data/traveller/" + email + ".txt";
+	email = temp; //email into lowercase
+	string path = "Data/host/" + email + ".txt";
 	ifstream ifile(path);
 	if (email.find('@') == std::string::npos)
 	{
@@ -535,14 +548,40 @@ void Host::fillHostInfo(string path)
 void Host::showSpecificPlace() {
 	int id;
 	displayAdvertisements();
-	cout << " please enter the id of place you want";
-	cin >> id;
-	std::unordered_map<int, Place> ::iterator i;
-	i = places.find(id);
-	if (i == places.end())
-		cout << "ID NOT FOUND";
-	else
-		for (int j = 0; j < i->second.daysofplace.size(); j++)
-			cout << " Date : " << i->second.daysofplace[j].day << "/" << i->second.daysofplace[j].month << " \t reserver : " << i->second.daysofplace[j].userreserve << endl;
+	while (true) {
+		if (places.size() == 0) {
+			cout << "You have no registered adverts, Returning to menu..\n";
+			break;
+		}
+		cout << " please enter the id of place you want , if you want to return back press 0 \n";//updateeeeeeeeee
+		cin >> id;
+		if (id == 0) {///////updateeeeeeeeeeee
+			break;
+		}
+		std::unordered_map<int, Place> ::iterator i;
+		i = places.find(id);
+		if (i == places.end())
+			cout << "ID NOT FOUND";
+		else {
+			for (int j = 0; j < i->second.daysofplace.size(); j++) {
+				cout << " Date : " << i->second.daysofplace[j].day << "/" << i->second.daysofplace[j].month << " \t reserver : " << i->second.daysofplace[j].userreserve << endl;
+			}
+			break;
+		}
+	}
 	showChoices();
+}
+Host::Host(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {
+	this->password = password;
+	this->firstName = firstName;
+	this->lastName = lastName;
+	this->email = email;
+	this->phone = phone;
+	this->nationality = nationality;
+	this->gender = gender;
+	this->age = age;
+}
+
+Host::Host() {
+
 }

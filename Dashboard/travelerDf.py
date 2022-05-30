@@ -22,7 +22,7 @@ for travelername in traveler_dir:
         travelerNumber.append(lines[4])
         travelerNationality.append(lines[5])
         travelerGender.append(lines[6])
-        travelerAge.append(lines[7])
+        travelerAge.append(int(lines[7]))
         #iterate over a file, put every line in its respectable list
 
 
@@ -38,6 +38,7 @@ TravelerDf=pd.DataFrame(
       'age': travelerAge 
       }
     )
+TravelerDf['age_group'] = pd.cut(TravelerDf['age'],bins=[0,17,59,120], labels=["0-17","18-59","60+"])
 print(TravelerDf.head())
 
 

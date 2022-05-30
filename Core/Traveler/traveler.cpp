@@ -42,7 +42,7 @@ void Traveler::login()
 		{
 			temp += (char)tolower(c);
 		}
-		em = temp; //email into lowercase
+		em = temp;//email into lowercase
 		//std::cout << "\nPassword : ";
 		//std::cin >> pass;
 		em = "A@mail";
@@ -117,70 +117,71 @@ void Traveler::deSerializePlaces()
 		string host_name_path = host_directory_entry.path().string();
 		for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
 		{
-			ifstream stream(place_directory_entry.path());
-			timereserve startDate, endDate;
-			string x;
-			location loc;
-			string view;
-			string paymentMethod;
-			string hostEmail;
-			bool room;
-			// bool reserved;
-			int pricePerDay;
-			int noOfRooms;
-			int ID;
-			int discount = 0;
-			int availableduration;
-			getline(stream, x);
-			loc.country = x;
+			try
+			{
+				ifstream stream(place_directory_entry.path());
+				timereserve startDate, endDate;
+				string x;
+				location loc;
+				string view;
+				string paymentMethod;
+				string hostEmail;
+				bool room;
+				// bool reserved;
+				int pricePerDay;
+				int noOfRooms;
+				int ID;
+				int discount = 0;
+				int availableduration;
+				getline(stream, x);
+				loc.country = x;
 
-			getline(stream, x);
-			loc.city = x;
+				getline(stream, x);
+				loc.city = x;
 
-			getline(stream, x);
-			loc.streetName = x;
+				getline(stream, x);
+				loc.streetName = x;
 
-			getline(stream, x);
-			view = x;
+				getline(stream, x);
+				view = x;
 
-			getline(stream, x);
-			paymentMethod = x;
+				getline(stream, x);
+				paymentMethod = x;
 
-			getline(stream, x);
-			room = (x == "1");
+				getline(stream, x);
+				room = (x == "1");
 
-			// getline(stream, x);
-			// reserved = (x == "1");
-			getline(stream, x);
-			pricePerDay = stoi(x);
+				// getline(stream, x);
+				// reserved = (x == "1");
+				getline(stream, x);
+				pricePerDay = stoi(x);
 
-			getline(stream, x);
-			noOfRooms = stoi(x);
+				getline(stream, x);
+				noOfRooms = stoi(x);
 
-			getline(stream, x);
-			discount = stoi(x);
+				getline(stream, x);
+				discount = stoi(x);
 
-			getline(stream, x);
-			ID = stoi(x);
+				getline(stream, x);
+				ID = stoi(x);
 
-			getline(stream, x);
-			hostEmail = x;
+				getline(stream, x);
+				hostEmail = x;
 
-			getline(stream, x);
-			startDate.day = stoi(x);
+				getline(stream, x);
+				startDate.day = stoi(x);
 
-			getline(stream, x);
-			startDate.month = stoi(x);
+				getline(stream, x);
+				startDate.month = stoi(x);
 
-			getline(stream, x);
-			endDate.day = stoi(x);
+				getline(stream, x);
+				endDate.day = stoi(x);
 
-			getline(stream, x);
-			endDate.month = stoi(x);
+				getline(stream, x);
+				endDate.month = stoi(x);
 
-			getline(stream, x);
-			availableduration = stoi(x);
-
+				getline(stream, x);
+				availableduration = stoi(x);
 			Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
 			currentPlace.availableduration = availableduration;
 			int i = 0;
@@ -207,9 +208,16 @@ void Traveler::deSerializePlaces()
 			}
 			allPlaces[currentPlace.ID] = currentPlace;
 			stream.close();
+			}
+			catch (const std::exception&)
+			{
+				//error on loading, this means a file was made incorrectly, delete the file to prevent further errors
+				filesystem::remove(place_directory_entry);
+				continue;
+			}
 		}
 	}
-}
+	}
 
 void Traveler::restartAll()
 {
@@ -761,8 +769,8 @@ void Traveler::fillTravelerInfo(string path)
 	getline(stream, this->firstName);
 	getline(stream, this->lastName);
 	getline(stream, this->email);
-	getline(stream, placeHolderString); // born to find horrible code, forced to cope
-	this->phone = stoi(placeHolderString);
+	getline(stream, this->phone); // born to find horrible code, forced to cope
+	//this->phone = stoi(placeHolderString);
 	getline(stream, this->nationality);
 	getline(stream, placeHolderString);
 	this->gender = placeHolderString[0];
@@ -774,14 +782,24 @@ void Traveler::fillTravelerInfo(string path)
 float Traveler::generateTotalPrice(Place p, int duration)
 {
 	int totalPrice = 0;
-	if (p.discount != 0)
-	{
+	if (duration > 3) {//updateee
 		float discount = p.discount / 100;
 		totalPrice = (p.pricePerDay - (discount * p.pricePerDay)) * duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
 	}
 	else
-	{
-		totalPrice = p.pricePerDay * duration; // duration is calculated by the number of days the user reserves.
-	}
+		totalPrice = p.pricePerDay * duration;//updateee
 	return totalPrice;
+}
+Traveler::Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {
+	this->password = password;
+	this->firstName = firstName;
+	this->lastName = lastName;
+	this->email = email;
+	this->phone = phone;
+	this->nationality = nationality;
+	this->gender = gender;
+	this->age = age;
+}
+Traveler::Traveler() {
+
 }
