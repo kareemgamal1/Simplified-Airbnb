@@ -2,11 +2,9 @@
 
 int main()
 {
-	Admin Kareem;
-	Kareem.deleteTraveler();
-	/*int choice;
+	int choice;
 	while (true) {
-		cout << "-Choose (1) to sign up as a host.\tChoose (2) sign up as traveller\n\n-Choose (3) to login as a host.\t\tChoose (4) to login as a traveller. \n";
+		cout << "-Choose (1) to sign up as a host.\n-Choose (2) sign up as traveller\n-Choose (3) to login as a host.\n-Choose (4) to login as a traveller. \n if you want to login as admin press 5 \n ";
 		cin >> choice;
 		if (choice == 1) {
 			Host h;
@@ -30,12 +28,16 @@ int main()
 			T.login();
 			break;
 		}
+		else if (choice == 5) {
+			Admin a;
+			a.mainmenu();
+		}
 		else
 		{
 			cout << "Invalid choice, please try again.\n";
 			continue;
 		}
-	}*/
+	}
 }
 
 //Let everyone test every single running scenario of the program... 

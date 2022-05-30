@@ -15,7 +15,7 @@ public:
 	void createTraveler();
 	void createHost();
 	void generateDashboard();
-
+	void mainmenu();
 	void addAdvertisement();
 	void editAdvertisement();
 	void deleteAdvertisement();

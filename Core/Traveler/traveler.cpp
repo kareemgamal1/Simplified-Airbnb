@@ -25,6 +25,7 @@ void Traveler::signup()
 	std::cout << "Age : ";
 	std::cin >> age;
 	serializeUser(path);
+	login();
 }
 
 void Traveler::login()
@@ -111,75 +112,76 @@ void Traveler::serializePlace(Place p)
 void Traveler::deSerializePlaces()
 {
 	string path = "Data/place";
-	for (const auto& host_directory_entry : filesystem::directory_iterator(path))
+	for (const auto &host_directory_entry : filesystem::directory_iterator(path))
 	{
 		string host_name_path = host_directory_entry.path().string();
-		for (const auto& place_directory_entry : filesystem::directory_iterator(host_name_path))
+		for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
 		{
-			ifstream stream(place_directory_entry.path());
-			timereserve startDate, endDate;
-			string x;
-			location loc;
-			string view;
-			string paymentMethod;
-			string hostEmail;
-			bool room;
-			// bool reserved;
-			int pricePerDay;
-			int noOfRooms;
-			int ID;
-			int discount = 0;
-			int availableduration;
-			getline(stream, x);
-			loc.country = x;
+			try
+			{
+				ifstream stream(place_directory_entry.path());
+				timereserve startDate, endDate;
+				string x;
+				location loc;
+				string view;
+				string paymentMethod;
+				string hostEmail;
+				bool room;
+				// bool reserved;
+				int pricePerDay;
+				int noOfRooms;
+				int ID;
+				int discount = 0;
+				int availableduration;
+				getline(stream, x);
+				loc.country = x;
 
-			getline(stream, x);
-			loc.city = x;
+				getline(stream, x);
+				loc.city = x;
 
-			getline(stream, x);
-			loc.streetName = x;
+				getline(stream, x);
+				loc.streetName = x;
 
-			getline(stream, x);
-			view = x;
+				getline(stream, x);
+				view = x;
 
-			getline(stream, x);
-			paymentMethod = x;
+				getline(stream, x);
+				paymentMethod = x;
 
-			getline(stream, x);
-			room = (x == "1");
+				getline(stream, x);
+				room = (x == "1");
 
-			// getline(stream, x);
-			// reserved = (x == "1");
-			getline(stream, x);
-			pricePerDay = stoi(x);
+				// getline(stream, x);
+				// reserved = (x == "1");
+				getline(stream, x);
+				pricePerDay = stoi(x);
 
-			getline(stream, x);
-			noOfRooms = stoi(x);
+				getline(stream, x);
+				noOfRooms = stoi(x);
 
-			getline(stream, x);
-			discount = stoi(x);
+				getline(stream, x);
+				discount = stoi(x);
 
-			getline(stream, x);
-			ID = stoi(x);
+				getline(stream, x);
+				ID = stoi(x);
 
-			getline(stream, x);
-			hostEmail = x;
+				getline(stream, x);
+				hostEmail = x;
 
-			getline(stream, x);
-			startDate.day = stoi(x);
+				getline(stream, x);
+				startDate.day = stoi(x);
 
-			getline(stream, x);
-			startDate.month = stoi(x);
+				getline(stream, x);
+				startDate.month = stoi(x);
 
-			getline(stream, x);
-			endDate.day = stoi(x);
+				getline(stream, x);
+				endDate.day = stoi(x);
 
-			getline(stream, x);
-			endDate.month = stoi(x);
+				getline(stream, x);
+				endDate.month = stoi(x);
 
-			getline(stream, x);
-			availableduration = stoi(x);
-
+				getline(stream, x);
+				availableduration = stoi(x);
 			Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
 			currentPlace.availableduration = availableduration;
 			int i = 0;
@@ -206,9 +208,16 @@ void Traveler::deSerializePlaces()
 			}
 			allPlaces[currentPlace.ID] = currentPlace;
 			stream.close();
+			}
+			catch (const std::exception&)
+			{
+				//error on loading, this means a file was made incorrectly, delete the file to prevent further errors
+				filesystem::remove(place_directory_entry);
+				continue;
+			}
 		}
 	}
-}
+	}
 
 void Traveler::restartAll()
 {
@@ -582,29 +591,36 @@ void Traveler::displayDate(Place p) {
 			std::cout << p.daysofplace[i].day << "/" << p.daysofplace[i].month << endl;
 }
 
-bool Traveler::bookingcontinousperiod(Place& p, timereserve startdate, int period) {
+bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int period)
+{
 	bool canreserve = false;
 	int findindex;
-	for (int i = 0; i < p.daysofplace.size(); i++) {
-		if (p.daysofplace[i].day == startdate.day && p.daysofplace[i].month == startdate.month) {
+	for (int i = 0; i < p.daysofplace.size(); i++)
+	{
+		if (p.daysofplace[i].day == startdate.day && p.daysofplace[i].month == startdate.month)
+		{
 			canreserve = true;
 			findindex = i;
-			if (i + period > p.daysofplace.size()) {
+			if (i + period > p.daysofplace.size())
+			{
 				canreserve = false;
 			}
 			else
-				for (int j = 1; j <= period; j++) {
-					if (p.daysofplace[i++].reserved == true) {
+				for (int j = 1; j <= period; j++)
+				{
+					if (p.daysofplace[i++].reserved == true)
+					{
 						canreserve = false;
 						break;
 					}
-
 				}
 			break;
 		}
 	}
-	if (canreserve) {
-		for (int j = 1; j <= period; j++) {
+	if (canreserve)
+	{
+		for (int j = 1; j <= period; j++)
+		{
 			p.daysofplace[findindex].reserved = true;
 			p.daysofplace[findindex].userreserve = this->email;
 			findindex++;
@@ -619,7 +635,8 @@ bool Traveler::bookingcontinousperiod(Place& p, timereserve startdate, int perio
 	}
 }
 
-int Traveler::bookingSeperateDate(Place& p) {
+int Traveler::bookingSeperateDate(Place &p)
+{
 	int numofreservedate = 0;
 	bool booking = false;
 	timereserve t;
@@ -682,8 +699,6 @@ void Traveler::choosePlace()
 	choosePlace();
 }
 
-
-
 int Traveler::calculateBookedDuration(timereserve startDate, timereserve endDate)
 {
 	return 0;
@@ -697,7 +712,7 @@ string Traveler::validateEmail(string email)
 		{
 			temp += (char)tolower(c);
 		}
-		email = temp; //email into lowercase
+		email = temp; // email into lowercase
 		string path = "Data/traveller/" + email + ".txt";
 		ifstream ifile(path);
 		if (email.find('@') == std::string::npos) {
@@ -725,7 +740,7 @@ string Traveler::validateEmail(string email)
 			ifile.close();
 			return validateEmail(mail);
 		}
-		//ERROR if the user enters the email wrong, it will never let him correct it afterwards
+		// ERROR if the user enters the email wrong, it will never let him correct it afterwards
 		return path;
 	}
 }
@@ -767,15 +782,12 @@ void Traveler::fillTravelerInfo(string path)
 float Traveler::generateTotalPrice(Place p, int duration)
 {
 	int totalPrice = 0;
-	if (p.discount != 0)
-	{
+	if (duration > 3) {//updateee
 		float discount = p.discount / 100;
 		totalPrice = (p.pricePerDay - (discount * p.pricePerDay)) * duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
 	}
 	else
-	{
-		totalPrice = p.pricePerDay * duration; // duration is calculated by the number of days the user reserves.
-	}
+		totalPrice = p.pricePerDay * duration;//updateee
 	return totalPrice;
 }
 Traveler::Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {
