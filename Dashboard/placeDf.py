@@ -6,12 +6,31 @@ import pandas as pd
 placeCountry,placeCity,placeStreet,placeView,placePayment,placeRoom,placePrice,placeNoOfRooms,placeDiscount,placeOwner,placeStartDate,placeEndDate,placeEndDay,placeEndMonth,placeDuration=([] for i in range(15))
 
 rootdir = '../Data/place'
+currentPlace=""
+hostEm,hostPlaces,noOfPlaces=[],[],[]
 
 places=[]
 for subdir, dirs, files in os.walk(rootdir):
+    hostEm.append(subdir)
+    hostPlaces.append(files)
     for file in files:
         places.append(os.path.join(subdir, file))
-# print(places)        
+        # print(file)
+        
+hostPlaces.pop(0)
+
+for hostPlace in hostPlaces:
+    noOfPlaces.append(len(hostPlace))
+
+hostEm.pop(0)
+hostEm = [x.replace(' ', '').replace('../Data/place\\', '') for x in hostEm]
+
+hostPlacesDf=pd.DataFrame(
+        {
+      'host':hostEm,
+      'noOfPlaces':noOfPlaces
+        }
+    )
 
 for place in places:
     placeFile = open(place, "r")
@@ -52,4 +71,4 @@ PlaceDf=pd.DataFrame(
       'duration': placeDuration,
       }
     )
-print(PlaceDf)
+# print(PlaceDf)

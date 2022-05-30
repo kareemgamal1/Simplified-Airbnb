@@ -1,5 +1,5 @@
 ﻿  traveler.cpp
-C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(591,7): warning C4101: 'canreserve': unreferenced local variable
-C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(736,61): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(742,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(627,7): warning C4101: 'canreserve': unreferenced local variable
+C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(773,61): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\karim\source\repos\ConsoleApplication2\Core\Traveler\traveler.cpp(779,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   ConsoleApplication2.vcxproj -> C:\Users\karim\source\repos\ConsoleApplication2\x64\Debug\ConsoleApplication2.exe

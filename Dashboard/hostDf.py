@@ -9,7 +9,6 @@ hostFilesPath="../Data/host"
 
 
 host_dir=os.listdir(hostFilesPath)
-print(host_dir)
 for hostname in host_dir:
     f=os.path.join(hostFilesPath,hostname)
     if os.path.isfile(f):
@@ -22,7 +21,7 @@ for hostname in host_dir:
         hostNumber.append(lines[4])
         hostNationality.append(lines[5])
         hostGender.append(lines[6])
-        hostAge.append(lines[7])
+        hostAge.append(int(lines[7]))
         #iterate over a file, put every line in its respectable list
 
 
@@ -39,8 +38,8 @@ HostDf=pd.DataFrame(
       }
     )
 
-
-
+HostDf['age_group'] = pd.cut(HostDf['age'],bins=[0,17,59,120], labels=["0-17","18-59","60+"])
+print(HostDf)
 
 
 
