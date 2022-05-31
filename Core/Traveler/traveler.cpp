@@ -53,6 +53,7 @@ void Traveler::login()
 		{
 			cout << "Logged in successfully!\n";
 			fillTravelerInfo(path);
+			viewAllPlaces();
 			search();
 		}
 		else
@@ -111,10 +112,10 @@ void Traveler::serializePlace(Place p)
 void Traveler::deSerializePlaces()
 {
 	string path = "Data/place";
-	for (const auto &host_directory_entry : filesystem::directory_iterator(path))
+	for (const auto& host_directory_entry : filesystem::directory_iterator(path))
 	{
 		string host_name_path = host_directory_entry.path().string();
-		for (const auto &place_directory_entry : filesystem::directory_iterator(host_name_path))
+		for (const auto& place_directory_entry : filesystem::directory_iterator(host_name_path))
 		{
 			try
 			{
@@ -181,32 +182,32 @@ void Traveler::deSerializePlaces()
 
 				getline(stream, x);
 				availableduration = stoi(x);
-			Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
-			currentPlace.availableduration = availableduration;
-			int i = 0;
-			timereserve t;
-			while (getline(stream, x))
-			{
-				if (i < 4)
+				Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
+				currentPlace.availableduration = availableduration;
+				int i = 0;
+				timereserve t;
+				while (getline(stream, x))
 				{
-					if (i == 0)
-						t.day = stoi(x);
-					else if (i == 1)
-						t.month = stoi(x);
-					else if (i == 2)
-						t.reserved = (x == "1");
+					if (i < 4)
+					{
+						if (i == 0)
+							t.day = stoi(x);
+						else if (i == 1)
+							t.month = stoi(x);
+						else if (i == 2)
+							t.reserved = (x == "1");
+						else
+							t.userreserve = x;
+						i++;
+					}
 					else
-						t.userreserve = x;
-					i++;
+					{
+						i = 0;
+						currentPlace.daysofplace.push_back(t);
+					}
 				}
-				else
-				{
-					i = 0;
-					currentPlace.daysofplace.push_back(t);
-				}
-			}
-			allPlaces[currentPlace.ID] = currentPlace;
-			stream.close();
+				allPlaces[currentPlace.ID] = currentPlace;
+				stream.close();
 			}
 			catch (const std::exception&)
 			{
@@ -216,7 +217,7 @@ void Traveler::deSerializePlaces()
 			}
 		}
 	}
-	}
+}
 
 void Traveler::restartAll()
 {
@@ -287,12 +288,14 @@ void Traveler::searchByCountry()
 	std::cin >> country;
 	unordered_map<int, Place> currentContainer = chooseContainer();
 	unordered_map<int, Place>::iterator i;
-	for (i = currentContainer.begin(); i != currentContainer.end(); i++)
+	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
 		if (i->second.loc.country != country)
 		{
 			i = currentContainer.erase(i);
 		}
+		else 
+			i++;
 	}
 	currentPlaces = currentContainer;
 	queryNumber++;
@@ -582,7 +585,7 @@ void Traveler::displayDate(Place p) {
 			std::cout << p.daysofplace[i].day << "/" << p.daysofplace[i].month << endl;
 }
 
-bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int period)
+bool Traveler::bookingcontinousperiod(Place& p, timereserve startdate, int period)
 {
 	bool canreserve = false;
 	int findindex;
@@ -626,7 +629,7 @@ bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int perio
 	}
 }
 
-int Traveler::bookingSeperateDate(Place &p)
+int Traveler::bookingSeperateDate(Place& p)
 {
 	int numofreservedate = 0;
 	bool booking = false;
@@ -719,7 +722,7 @@ string Traveler::validateEmail(string email)
 			std::cout << "E-mail: ";
 			string mail;
 			std::cin >> mail;
-			this->email=mail;
+			this->email = mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
@@ -779,12 +782,121 @@ float Traveler::generateTotalPrice(Place p, int duration)
 			float discount = p.discount / 100;
 			totalPrice = (p.pricePerDay - (discount * p.pricePerDay)) * duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
 		}
-		else 
+		else
 			totalPrice = p.pricePerDay * duration;
 	}
 	else
 		totalPrice = p.pricePerDay * duration;
 	return totalPrice;
+}
+
+void Traveler::displayView() {
+	cout << "\nAdvertisements: \n\n";
+	for (auto i : sortedPlaces) {
+		cout << "===============================\n";
+		cout << "Advertisement ID:" << i.first << '\n';
+		i.second.room ? cout << "Room.\n" : cout << "Apartment.\n";
+		cout << "Location:" << i.second.loc.country << ' ' << i.second.loc.city << ' ' << i.second.loc.streetName << '\n';
+		cout << "Price: " << i.second.pricePerDay << '\n';
+		cout << "View:" << i.second.view << '\n';
+		cout << "Payment method: " << i.second.paymentMethod << "\n";
+		cout << "Duration: " << i.second.availableduration << "\n";
+		cout << "===============================\n\n\n";
+	}
+
+}
+
+void Traveler::viewAllPlaces() {
+	cout << "Would you like to sort by duration or price?Choose(1) for duration, Choose (2) for price.\n";
+	int choice;
+	cin >> choice;
+	cout << "(1)Descendingly or (2)Ascendingly\n";
+	int sort;
+	cin >> sort;
+	if (choice == 1) {
+		viewByDuration(sort);
+	}
+	else if (choice == 2) {
+		viewByPricePerDay(sort);
+	}
+	else
+		cout << "Invalid.\n";
+	queryNumber = 0;
+}
+
+void Traveler::viewByPricePerDay(int choice) {
+	if (choice == 1) {// Descending Order
+		struct comparePricePerDayDescendingly { // Struct of operator overloading of the priority queue
+			bool operator()(pair<int, Place>& left, pair<int, Place>& right) {
+				return left.second.pricePerDay < right.second.pricePerDay; //if "<" then the order is descending
+			}
+		};
+
+		priority_queue< pair<int, Place>, vector<pair<int, Place> >, comparePricePerDayDescendingly> pq;
+
+		for (auto i = allPlaces.begin(); i != allPlaces.end(); i++) {
+			pq.push(make_pair(i->first, i->second));
+		}
+
+		while (!pq.empty()) {
+			sortedPlaces.push_back(pq.top());
+			pq.pop();
+		}
+
+	}
+	else {// Ascending Order
+		struct comparePricePerDayAscendingly {
+			bool operator()(pair<int, Place>& left, pair<int, Place>& right) {
+				return left.second.pricePerDay > right.second.pricePerDay; //if ">" then the order is ascending
+			}
+		};
+		priority_queue< pair<int, Place>, vector<pair<int, Place>>, comparePricePerDayAscendingly> pq;
+		for (auto i = allPlaces.begin(); i != allPlaces.end(); i++) {
+			pq.push(make_pair(i->first, i->second));
+		}
+		while (!pq.empty()) {
+			sortedPlaces.push_back(pq.top());
+			pq.pop();
+		}
+	}
+	displayView();
+}
+
+void Traveler::viewByDuration(int choice) {
+	if (choice == 1) {// Descending Order
+		struct compareDurationDescendingly { // Struct of operator overloading of the priority queue
+			bool operator()(pair<int, Place>& left, pair<int, Place>& right) {
+				return left.second.availableduration < right.second.availableduration; //if "<" then the order is descending
+			}
+		};
+
+		priority_queue< pair<int, Place>, vector<pair<int, Place>>, compareDurationDescendingly> pq;
+
+		for (auto i = allPlaces.begin(); i != allPlaces.end(); i++) {
+			pq.push(make_pair(i->first, i->second));
+		}
+		while (!pq.empty()) {
+			sortedPlaces.push_back(pq.top());
+			pq.pop();
+		}
+	}
+	else {// Ascending Order
+		struct compareDurationAscendingly {
+			bool operator()(pair<int, Place>& left, pair<int, Place>& right) {
+				return left.second.availableduration > right.second.availableduration; //if ">" then the order is ascending
+			}
+		};
+		priority_queue< pair<int, Place>, vector<pair<int, Place>>, compareDurationAscendingly> pq;
+
+		for (auto i = allPlaces.begin(); i != allPlaces.end(); i++) {
+			pq.push(make_pair(i->first, i->second));
+		}
+		while (!pq.empty()) {
+			sortedPlaces.push_back(pq.top());
+			pq.pop();
+		}
+	}
+	displayView();
 }
 
 Traveler::Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {

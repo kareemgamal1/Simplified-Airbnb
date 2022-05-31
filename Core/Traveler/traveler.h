@@ -4,16 +4,17 @@
 #include "../Place/place.h"
 #include <filesystem>
 #include <unordered_map>
+#include <queue>
 
 class Traveler : public User
 {
 	int queryNumber;
 	unordered_map<int, Place> allPlaces;
 	unordered_map<int, Place> currentPlaces;
+	vector<pair<int, Place>> sortedPlaces;
 public:
 	void signup();
 	void login();
-
 	string validateEmail(string email);
 	bool checkForCredintials(string email, string password);
 	void fillTravelerInfo(string path);
@@ -36,11 +37,15 @@ public:
 	void searchByDuration();
 	void searchByDate();
 	void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
-	void displayDate(Place p); 
+	void displayDate(Place p);
+	void displayView();
+	void viewAllPlaces();
+	void viewByPricePerDay(int choice);
+	void viewByDuration(int choice);
 	bool bookingcontinousperiod(Place& p, timereserve startdate, int period);
-	int bookingSeperateDate(Place& p); 
+	int bookingSeperateDate(Place& p);
 	void choosePlace();
-	float generateTotalPrice(Place p,int );
+	float generateTotalPrice(Place p, int);
 	void viewBy(); // sort based on different Place attributes
 	Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age);
 	Traveler();

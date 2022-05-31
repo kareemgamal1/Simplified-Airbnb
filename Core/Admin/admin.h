@@ -8,8 +8,8 @@ using namespace std;
 
 class Admin
 {
-	unordered_map<string, Host> hosts;         // hash table
-	unordered_map<string, Traveler> travelers; // hash table
+	unordered_map<string, Host> hosts;         
+	unordered_map<string, Traveler> travelers; 
 
 public:
 	void createTraveler();

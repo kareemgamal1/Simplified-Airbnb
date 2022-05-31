@@ -33,7 +33,7 @@ void Host::login()
 	cout << "\Please login.\n";
 	while (!validated)
 	{
-		cout << "Username : ";
+		cout << "E-mail : ";
 		cin >> em;
 		cout << "\nPassword : ";
 		cin >> pass;

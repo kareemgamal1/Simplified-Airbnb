@@ -34,6 +34,7 @@ void Admin::addAdvertisement() {
 	i->second.addAdvertisement();
 	mainmenu();
 }
+
 void Admin::editAdvertisement() {
 	string mail;
 	Host h;
@@ -53,6 +54,7 @@ void Admin::editAdvertisement() {
 	i->second.editAdvertisement();
 	mainmenu();
 }
+
 void Admin::deleteAdvertisement() {
 	string mail;
 	Host h;
@@ -283,7 +285,7 @@ void Admin::deleteTraveler() {
 	}
 	mainmenu();
 }
-void Admin::mainmenu() { ///// updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+void Admin::mainmenu() { 
 	int choice;
 	cout << "\n-Choose (1) if you want to create a new traveller.\n-Choose (2) if you want to create a new host.\n-Choose (3) if you want to delete a traveller.\n-Choose (4) if you want to delete a host.\n-Choose (5) if you want to add an advertisment to a specific host.\n-Choose (6) if you want to edit advertisment.\n-Choose (7) if you want to delete advertisment.\n-Choose (8) if you want to display all travellers.\n-Choose (9) if you want to display all hosts.\n-Choose (10) if you want to generate a statistical insights about the whole system.\n-Choose (0)if you want to sign out.\n";
 	while (true) {
@@ -342,17 +344,7 @@ void Admin::mainmenu() { ///// updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 }
 void Admin::generateDashboard()
 {
-	// getTotalNoOfUsers();
-	// getTotalNoOfHosts();
-	// getTotalNoOfTravellers();
-	// getTotalNoOfAdvertisements();
-	// getPercentageOfMaleUsers();
-	// getPercentageOfFemaleUsers();
-	// getNoOfDiscounts();
-	// getPercentageOfDiscounts();
-	// getTotalNumberOfRooms();
-	// getPercentageOfRooms&Apartments();
-	// getNoOfReservedPlaces();
+	system("Dashboard/dist/dashboard.exe");
 }
 
 void Admin::validateAdmin() {
