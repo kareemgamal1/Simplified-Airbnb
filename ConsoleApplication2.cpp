@@ -1,28 +1,53 @@
-#include "Core/Traveler/traveler.h"
-#include "Core/Host/host.h"
+#include "Core/Admin/admin.h"
 
 int main()
 {
-	Host t;
-	t.login();
+	int choice;
+	while (true) {
+		cout << "-Choose (1) to sign up as a host.\n-Choose (2) sign up as traveller\n-Choose (3) to login as a host.\n-Choose (4) to login as a traveller. \n-Choose (0) if you want to exit the program.\nChoose (5) if you want to login as admin.\n\n";
+		cin >> choice;
+		if (choice == 1) {
+			Host h;
+			h.signup();
+			h.login();
+		}
+		else if (choice == 2) {
+			Traveler T;
+			T.signup();
+			T.login();
+		}
+		else if (choice == 3) {
+			Host h;
+			h.login();
+		}
+		else if (choice == 4) {
+			Traveler T;
+			T.login();
+		}
+		else if (choice == 5) {
+			Admin a;
+			a.validateAdmin();
+		}
+		else if (choice == 0) {
+			cout << "Thank you for using our program!\n";
+			break;
+		}
+		else
+		{
+			cout << "Invalid choice, please try again.\n";
+			continue;
+		}
+	}
 }
-
-//Re-check all data structures and add/replace suitable ones:
-//LinkedList or hashtable of <placesOfCurrentView> for the GUI searching... Deadline: 29/5
-//Priority Queue for the premium users (Host for number of possible places, 
-//Traveller for discount generated)... Deadline:
 
 //Let everyone test every single running scenario of the program... 
 //Deadline: No deadline, everyone should always test newly implemented features and how they work with the system logic.
 
-//Fully implement the program with a very appealing graphical user interface... (Ongoing)
-
+//Fully implement the program with a very appealing graphical user interface... (Canceled)
 
 //Use python for the admin dashboard, generate a web page for all the statistics of the program... Deadline:
 //Current issues::
 // 
 // 
-// 
 //TODO::
-//main menu to login and signup etc
 //give host ability to be contacted by mail or phone
