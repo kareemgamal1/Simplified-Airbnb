@@ -3,26 +3,18 @@
 #include "../User/user.h"
 #include "../Place/place.h"
 #include <filesystem>
+#include <unordered_map>
+#include <queue>
 
 class Traveler : public User
 {
-	string startDate;
-	string endDate;
-	location loc;
-	int stayDuration;
-	int priceRangeStart;
-	int priceRangeEnd;
 	int queryNumber;
-	vector<Place> allPlaces;
-	vector<Place> currentPlaces;
-	Place reservedPlace;
-	// test
+	unordered_map<int, Place> allPlaces;
+	unordered_map<int, Place> currentPlaces;
+	vector<pair<int, Place>> sortedPlaces;
 public:
-	// vector to hold all Places, and check for each element if it satisfies every attribute we search with
-	// another vector to hold the Places which satisfy the conditions
 	void signup();
 	void login();
-
 	string validateEmail(string email);
 	bool checkForCredintials(string email, string password);
 	void fillTravelerInfo(string path);
@@ -32,7 +24,7 @@ public:
 	void restartAll();
 	void endProgram();
 	int calculateBookedDuration(timereserve startDate, timereserve endDate);
-	vector<Place> chooseContainer();
+	unordered_map<int, Place> chooseContainer();
 	void searchByType();
 	void searchByCountry();
 	void searchByCity();
@@ -45,13 +37,17 @@ public:
 	void searchByDuration();
 	void searchByDate();
 	void search(); // will contain all the above functions, narrowing it down, if at any choice there are no Places available, it will be shown to the traveler
-	void displayDate(Place p); 
+	void displayDate(Place p);
+	void displayView();
+	void viewAllPlaces();
+	void viewByPricePerDay(int choice);
+	void viewByDuration(int choice);
 	bool bookingcontinousperiod(Place& p, timereserve startdate, int period);
-	int bookingSeperateDate(Place& p); 
+	int bookingSeperateDate(Place& p);
 	void choosePlace();
-	float generateDiscount(Place p);
-	float generateTotalPrice(Place p,int );
+	float generateTotalPrice(Place p, int);
 	void viewBy(); // sort based on different Place attributes
-	
+	Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age);
+	Traveler();
 };
 // #endif

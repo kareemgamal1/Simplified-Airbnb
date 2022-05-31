@@ -15,12 +15,16 @@ void Place::saveCurrentID()
 {
 	ofstream id("Data/lastID.txt");
 	id << this->ID;
-	cout << "ID saved:" << ID;
+	cout << "ID saved:" << ID<<"\n";
 }
 
-Place::Place()
-{
+Place::Place() {
 
+}
+Place::Place(timereserve startDate,timereserve endDate)
+{
+	this->startDate = startDate;
+	this->endDate = endDate;
 }
 
 Place::Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount)
@@ -72,9 +76,10 @@ Place::Place(location loc, int pricePerDay, string view, bool room, int noOfRoom
 void Place::createTimeForPlace()
 {
 	timereserve t;
+	int date = this->startDate.day;
 	int j = this->startDate.month;
 	int i = this->startDate.day;
-	if (this->startDate.month > 12 || this->endDate.month > 12 || this->endDate.month < this->startDate.month) {
+	if (this->startDate.month > 12 || this->endDate.month > 12 || this->endDate.month < this->startDate.month|| this->startDate.month<1||this->endDate.month<1) {
 		std::logic_error ex("Invalid Date");
 		throw std::exception(ex);
 	}
@@ -89,7 +94,7 @@ void Place::createTimeForPlace()
 		case 8:
 		case 10:
 		case 12:
-			if (this->startDate.day > 31)
+			if (date > 31||date< 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);
@@ -108,6 +113,7 @@ void Place::createTimeForPlace()
 					else
 					{
 						i = 1;
+						date = 1;
 						j = ++j % 12;
 						break;
 					}
@@ -119,7 +125,7 @@ void Place::createTimeForPlace()
 		case 6:
 		case 9:
 		case 11:
-			if (this->startDate.day > 30)
+			if (date > 30 || date< 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);
@@ -137,13 +143,14 @@ void Place::createTimeForPlace()
 					else
 					{
 						i = 1;
-						j = ++j % 12;
+						date = 1; 
+						j = ++j % 13;
 						break;
 					}
 				}
 			break;
 		case 2:
-			if (this->startDate.day > 28)
+			if (date > 28 || date < 1)
 			{
 				std::logic_error ex("Invalid Date");
 				throw std::exception(ex);
@@ -161,57 +168,12 @@ void Place::createTimeForPlace()
 					else
 					{
 						i = 1;
+						date = 1; 
 						j = ++j % 12;
 						break;
 					}
 				}
 			break;
 		}
-	}
-}
-
-void Place::calculateDuration()
-{
-	duration = daysofplace.size();
-}
-void Place::displaydays()
-{
-	for (int i = 0; i < daysofplace.size(); i++)
-		if (daysofplace[i].reserved == false)
-			cout << " valid : " << daysofplace[i].day << "/" << daysofplace[i].month << endl;
-}
-
-void Place::bookingcontinousperiod(int period, timereserve t)
-{
-	bool canreserve = false;
-	int findindex;
-	for (int i = 0; i < daysofplace.size(); i++)
-		if (daysofplace[i].day == t.day && daysofplace[i].month == t.month)
-		{
-			canreserve = true;
-			findindex = i;
-			if (i + period > daysofplace.size())
-				cout << " invalid date , you can't book";
-			else
-				for (int j = 1; j <= period; j++)
-				{
-					if (daysofplace[i++].reserved == true)
-					{
-						canreserve = false;
-						break;
-					}
-				}
-		}
-	if (canreserve)
-	{
-		for (int j = 1; j <= period; j++)
-		{
-			daysofplace[findindex].reserved = true;
-			findindex++;
-		}
-	}
-	else
-	{
-		cout << "invalid date you can't book ";
 	}
 }

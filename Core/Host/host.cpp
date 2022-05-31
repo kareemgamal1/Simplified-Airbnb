@@ -3,6 +3,7 @@ using namespace std;
 
 void Host::signup()
 {
+	cout << "\nPlease sign up.\n";
 	cout << "First name : ";
 	cin >> firstName;
 	cout << "Last name : ";
@@ -18,9 +19,11 @@ void Host::signup()
 	cin >> nationality;
 	cout << "Gender : ";
 	cin >> gender;
+	gender = 'M';
 	cout << "Age : ";
 	cin >> age;
 	serializeUser(path);
+	cout << "\nSigned up successfully!\n";
 }
 
 void Host::login()
@@ -28,24 +31,24 @@ void Host::login()
 	string em, pass;
 	int num_tries = 0;
 	bool validated = false;
-	while (num_tries < 3 && !validated)
+	cout << "\Please login.\n";
+	while (!validated)
 	{
-		// cout << "Username : ";
-		// cin >> em;
-		// cout << "\nPassword : ";
-		// cin >> pass;
+		cout << "Username : ";
+		cin >> em;
+		cout << "\nPassword : ";
+		cin >> pass;
 		string temp;
 		for (char c : em)
 		{
 			temp += (char)tolower(c);
 		}
-		em = temp; //email into lowercase
-		em = "kg@zeby.com";
-		pass = "kkk";
+		em = temp;
 		string path = "Data/host/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
 		{
+			cout << "Logged in successfully!\n";
 			fillHostInfo(path);
 			showChoices();
 		}
@@ -60,7 +63,7 @@ void Host::login()
 			}
 			else
 			{
-				cout << "Please try again after 1 minute.\n";
+				cout << "Please try again .\n";
 				num_tries = 0;
 				login();
 			}
@@ -91,8 +94,7 @@ void Host::addAdvertisement()
 		else if (type == 2)
 		{
 			room = true;
-			cout << "Number of rooms with this specifications: "; // for hostels.
-			cin >> noOfRooms;
+			noOfRooms = 0;
 		}
 		else
 		{
@@ -117,8 +119,24 @@ void Host::addAdvertisement()
 		cin >> pricePerDay;
 		cout << "View:";
 		cin >> view;
-		cout << "Payment method: ";
-		cin >> paymentMethod;
+		while (true) {
+			cout << "Enter payment method, Choose(1) for Cash or Choose(2) for Visa\n";
+			cin >> type;
+			if (type == 1)
+			{
+				paymentMethod = "Cash";
+				break;
+			}
+			else if (type == 2)
+			{
+				paymentMethod = "Visa";
+				break;
+			}
+			else
+			{
+				cout << "Please enter a correct choice.\n";
+			}
+		}
 		cout << "Would you like to add a discount for stays that are over 3 nights?(y) or (n)";
 		cin >> choice;
 		if (choice == 'y')
@@ -127,7 +145,6 @@ void Host::addAdvertisement()
 			cin >> discount;
 		}
 		string hostEmail = this->email;
-		cout << "hostdone" << endl;
 		Place currentPlace;
 		bool done = false;
 		while (done == false) // infinite loop
@@ -135,15 +152,17 @@ void Host::addAdvertisement()
 			try
 			{
 				cout << "please enter the start date";
-				cout << "month:";
+				cout << "\nmonth:";
 				cin >> startdate.month;
-				cout << "day:";
+				cout << "\nday:";
 				cin >> startdate.day;
-				cout << "please enter the end date";
-				cout << "month:";
+				cout << "\nplease enter the end date";
+				cout << "\nmonth:";
 				cin >> enddate.month;
-				cout << "day:";
+				cout << "\nday:";
 				cin >> enddate.day;
+				currentPlace = Place(startdate, enddate);
+				currentPlace.createTimeForPlace();
 				currentPlace = Place(loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startdate, enddate, discount);
 				currentPlace.createTimeForPlace();
 				done = true;
@@ -155,101 +174,124 @@ void Host::addAdvertisement()
 			break;
 		}
 		// we are adding the place to both the places of the host and the total places in the system.
-		cout << "constructor" << endl;
-		cout << "time done" << endl;
-		places.push_back(currentPlace);
+		places[currentPlace.ID] = currentPlace;
 		serializePlace(currentPlace);
 	}
+	showChoices();
 }
 
 void Host::editAdvertisement()
 {
+	int type;
 	displayAdvertisements();
-	cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n";
-tryAgain:
-	int index = -404;
-	int advID;
-	cin >> advID;
-	for (int i = 0; i < places.size(); i++)
+	std::unordered_map<int, Place> ::iterator i;
+	while (true)
 	{
-		if (places[i].ID == advID)
-		{
-			index = i;
+		if (places.size() == 0) {
+			cout << "You have no registered Advertisments.. Returning..\n";
+			break;
+		}
+		cout << "Which advertisement would you like to edit? Please enter the advertisement's ID.\n if you want to return back press 0 \n";//updateeee
+		int advID;
+		cin >> advID;
+		if (advID == 0) {
+			break;
+		}
+		i = places.find(advID);
+		if (i == places.end())
+			cout << "ID NOT FOUND\n";
+		else {
+			cout << "What would you like to edit? Choose(1) for price or Choose(2) for payment method";
+			int choice;
+			cin >> choice;
+			switch (choice)
+			{
+			case 1:
+			{
+				int newPrice;
+				cout << "Enter your new price: ";
+				cin >> newPrice;
+				i->second.pricePerDay = newPrice;
+				break;
+			}
+			case 2:
+			{
+				while (true) {
+					cout << "Enter payment method, Choose(1) for Cash or Choose(2) for Visa\n";
+					cin >> type;
+					if (type == 1)
+					{
+
+						i->second.paymentMethod = "Cash";
+						break;
+					}
+					else if (type == 2)
+					{
+
+						i->second.paymentMethod = "Visa";
+						break;
+					}
+					else
+					{
+						cout << "Please enter a correct choice.\n";
+					}
+				}
+				break;
+			}
+			// TODO: allow the user to edit more attributes (discount, how about date?)
+			default:
+				break;
+			}
+			serializePlace(i->second);
 			break;
 		}
 	}
-	if (index == -404)
-	{
-		cout << "\nPlease enter a correct ID.\n\n";
-		goto tryAgain; // a price to pay for salvation
-	}
-	cout << "What would you like to edit? Choose(1) for price or Choose(2) for payment method";
-	int choice;
-	cin >> choice;
-	switch (choice)
-	{
-	case 1:
-	{
-		int newPrice;
-		cout << "Enter your new price: ";
-		cin >> newPrice;
-		places[index].pricePerDay = newPrice;
-		break;
-	}
-	case 2:
-	{
-		string newMethod;
-		cout << "Enter your new payment method (cash or visa): ";
-		cin >> newMethod;
-		places[index].paymentMethod = newMethod;
-		break;
-	}
-	// TODO: allow the user to edit more attributes (discount, how about date?)
-	default:
-		break;
-	}
-	serializePlace(places[index]);
+	showChoices();
 }
 
 void Host::deleteAdvertisement()
 {
 	displayAdvertisements();
-	cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n";
-tryAgain:
-	int index = -404;
-	int advID;
-	cin >> advID;
-
-	for (int i = 0; i < places.size(); i++)
+	std::unordered_map<int, Place> ::iterator i;
+	while (true)
 	{
-		if (places[i].ID == advID)
+		if (places.size() == 0)
 		{
-			index = i;
-			string toBeDeleted = "Data/place/" + this->email + "/" + to_string(places[i].ID) + ".txt";
+			cout << "You have no adverts to delete, retuning..\n";
+			break;
+		}
+		cout << "Which advertisement would you like to delete? Please enter the advertisement's ID.\n if you want to return back press 0 \n ";//update
+		int advID;
+		cin >> advID;
+		if (advID == 0) {
+			break;
+		}
+		i = places.find(advID);
+		if (i == places.end())
+			cout << "ID NOT FOUND";
+		else
+		{
+			string toBeDeleted = "Data/place/" + this->email + "/" + to_string(i->second.ID) + ".txt";
 			try
 			{
 				if (std::filesystem::remove(toBeDeleted))
 				{
-					cout << "Advertisement with ID: " << places[i].ID << " has been deleted.\n";
-					places.erase(places.begin() + i);
+					cout << "Advertisement with ID: " << i->second.ID << " has been deleted.\n";
+					places.erase(i->first);
+					break;
 				}
 				else
 				{
 					std::cout << "file " << toBeDeleted << " not found.\n";
 				}
 			}
-			catch (const std::filesystem::filesystem_error &err)
+			catch (const std::filesystem::filesystem_error& err)
 			{
 				std::cout << "filesystem error: " << err.what() << '\n';
 			}
-			break;
 		}
 	}
-	if (index == -404)
-	{
-		cout << "\nPlease enter a correct ID.\n\n";
-		goto tryAgain; // a price to pay for salvation
-	}
+	showChoices();
 }
 
 string Host::validateEmail(string email)
@@ -260,21 +302,25 @@ string Host::validateEmail(string email)
 		temp += (char)tolower(c);
 	}
 	email = temp; //email into lowercase
-	string path = "Data/traveller/" + email + ".txt";
+	string path = "Data/host/" + email + ".txt";
 	ifstream ifile(path);
-	if (email.find('@') == std::string::npos) {
+	if (email.find('@') == std::string::npos)
+	{
 		cout << "this E-Mail must contain a domain" << endl;
 		cout << "E-mail: ";
 		string mail;
 		cin >> mail;
+		this->email = mail;
 		ifile.close();
 		return validateEmail(mail);
 	}
-	else if (email.substr(email.length() - 4, 4) != ".com") {
+	else if (email.substr(email.length() - 4, 4) != ".com")
+	{
 		cout << "this E-Mail must end in .com suffix" << endl;
 		cout << "E-mail: ";
 		string mail;
 		cin >> mail;
+		this->email = mail;
 		ifile.close();
 		return validateEmail(mail);
 	}
@@ -284,25 +330,25 @@ string Host::validateEmail(string email)
 		cout << "E-mail: ";
 		string mail;
 		cin >> mail;
+		this->email = mail;
 		ifile.close();
 		return validateEmail(mail);
 	}
-	// ERROR if the user enters the email wrong, it will never let him correct it afterwards
 	return path;
 }
 
 void Host::displayAdvertisements()
 {
 	cout << "\nAdvertisements: \n\n";
-	for (int i = 0; i < places.size(); i++)
+	for (auto i : places)
 	{
 		cout << "===============================\n";
-		cout << "Advertisement ID:" << places[i].ID << '\n';
-		places[i].room ? cout << "Room.\n" : cout << "Apartment.\n";
-		cout << "Location:" << places[i].loc.country << ' ' << places[i].loc.city << ' ' << places[i].loc.streetName << '\n';
-		cout << "Price: " << places[i].pricePerDay << '\n';
-		cout << "View:" << places[i].view << '\n';
-		cout << "Payment method: " << places[i].paymentMethod << "\n";
+		cout << "Advertisement ID:" << i.second.ID << '\n';
+		i.second.room ? cout << "Room.\n" : cout << "Apartment.\n";
+		cout << "Location:" << i.second.loc.country << ' ' << i.second.loc.city << ' ' << i.second.loc.streetName << '\n';
+		cout << "Price: " << i.second.pricePerDay << '\n';
+		cout << "View:" << i.second.view << '\n';
+		cout << "Payment method: " << i.second.paymentMethod << "\n";
 		cout << "===============================\n\n\n";
 	}
 }
@@ -319,7 +365,6 @@ void Host::serializePlace(Place p)
 	stream << p.view << endl;
 	stream << p.paymentMethod << endl;
 	stream << p.room << endl;
-	// stream << p.reserved << endl; uncomment it after we handle reservation in place
 	stream << p.pricePerDay << endl;
 	stream << p.noOfRooms << endl;
 	stream << p.discount << endl;
@@ -335,7 +380,7 @@ void Host::serializePlace(Place p)
 		stream << p.daysofplace[i].day << endl;
 		stream << p.daysofplace[i].month << endl;
 		stream << p.daysofplace[i].reserved << endl;
-		stream << p.daysofplace[i].userreserve << endl; 
+		stream << p.daysofplace[i].userreserve << endl;
 		stream << endl;
 	}
 	stream.close();
@@ -348,7 +393,7 @@ void Host::deSerializePlaces()
 		return;
 	try
 	{
-		for (const auto &entry : filesystem::directory_iterator(path))
+		for (const auto& entry : filesystem::directory_iterator(path))
 		{
 			ifstream stream(entry.path());
 			timereserve startDate, endDate;
@@ -413,13 +458,13 @@ void Host::deSerializePlaces()
 			getline(stream, x);
 			availableduration = stoi(x);
 
-			Place p = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
-			p.availableduration = availableduration;
+			Place currentPlace = Place(ID, loc, pricePerDay, view, room, noOfRooms, paymentMethod, hostEmail, startDate, endDate, discount); /// It's supposed to work without providing the discount as it's a defeault argument
+			currentPlace.availableduration = availableduration;
 			int i = 0;
 			timereserve t;
 			while (getline(stream, x))
 			{
-				
+
 				if (i < 4)
 				{
 					if (i == 0)
@@ -435,10 +480,10 @@ void Host::deSerializePlaces()
 				else
 				{
 					i = 0;
-					p.daysofplace.push_back(t);
+					currentPlace.daysofplace.push_back(t);
 				}
 			}
-			places.push_back(p);
+			places[currentPlace.ID] = currentPlace;
 			stream.close();
 		}
 	}
@@ -452,7 +497,7 @@ void Host::deSerializePlaces()
 
 void Host::showChoices()
 {
-	cout << "\n\n-Choose (1) to add a new Advertisement\n-Choose (2) to edit an advertisement\n-Choose (3) to delete an advertisement\n choose 4 to display information about specific place \n -Choose (0) to end the program.\n";
+	cout << "\n\n-Choose (1) to add a new Advertisement\n-Choose (2) to edit an advertisement\n-Choose (3) to delete an advertisement\n-Choose (4) to display information about specific place.\n-Choose (0) to log out.\n";
 tryAgain:
 	int choice;
 	cin >> choice;
@@ -460,7 +505,7 @@ tryAgain:
 	{
 	case 0:
 	{
-		cout << "Thank you for using our app.\n";
+		cout << "\nLogged out.\n";
 		return;
 	}
 	case 1:
@@ -478,10 +523,10 @@ tryAgain:
 		deleteAdvertisement();
 		break;
 	}
-	case 4 : 
+	case 4:
 	{
-	    showSpecificPlace();
-		break; 
+		showSpecificPlace();
+		break;
 	}
 	default:
 		cout << "Enter a correct number.\n";
@@ -513,8 +558,7 @@ void Host::fillHostInfo(string path)
 	getline(stream, this->firstName);
 	getline(stream, this->lastName);
 	getline(stream, this->email);
-	getline(stream, placeHolderString); // born to find horrible code, forced to cope
-	this->phone = stoi(placeHolderString);
+	getline(stream, this->phone); // born to find horrible code, forced to cope
 	getline(stream, this->nationality);
 	getline(stream, placeHolderString);
 	this->gender = placeHolderString[0];
@@ -522,17 +566,45 @@ void Host::fillHostInfo(string path)
 	this->age = stoi(placeHolderString);
 	deSerializePlaces();
 }
-void Host::showSpecificPlace () {
+
+void Host::showSpecificPlace() {
 	int id;
-	displayAdvertisements(); 
-	cout << " please enter the id of place you want"; 
-	cin >> id;
-	for (int i = 0; i < places.size(); i++) {
-		if (places[i].ID == id) {
-			for (int j = 0; j < places[i].daysofplace.size(); j++)
-				//add invalid id code again
-				cout << " Date : " << places[i].daysofplace[j].day << "/" << places[i].daysofplace[j].month << " \t reserver : " << places[i].daysofplace[j].userreserve << endl;
-		
+	displayAdvertisements();
+	while (true) {
+		if (places.size() == 0) {
+			cout << "You have no registered advertisments, Returning to menu..\n";
+			break;
+		}
+		cout << " please enter the id of place you want , if you want to return back press 0 \n";
+		cin >> id;
+		if (id == 0) {
+			break;
+		}
+		std::unordered_map<int, Place> ::iterator i;
+		i = places.find(id);
+		if (i == places.end())
+			cout << "ID NOT FOUND";
+		else {
+			for (int j = 0; j < i->second.daysofplace.size(); j++) {
+				cout << " Date : " << i->second.daysofplace[j].day << "/" << i->second.daysofplace[j].month << " \t reserver : " << i->second.daysofplace[j].userreserve << endl;
+			}
+			break;
 		}
 	}
-} 
+	showChoices();
+}
+
+Host::Host(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {
+	this->password = password;
+	this->firstName = firstName;
+	this->lastName = lastName;
+	this->email = email;
+	this->phone = phone;
+	this->nationality = nationality;
+	this->gender = gender;
+	this->age = age;
+}
+
+Host::Host() {
+
+}
