@@ -9,7 +9,7 @@ using namespace std;
 
 class Host : public User
 {
-    unordered_map<int,Place> places; // vector
+    unordered_map<int,Place> places;
 public:
     void signup();
     void login();

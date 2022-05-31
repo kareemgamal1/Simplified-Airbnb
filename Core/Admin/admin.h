@@ -14,7 +14,6 @@ class Admin
 public:
 	void createTraveler();
 	void createHost();
-	void generateDashboard();
 	void mainmenu();
 	void addAdvertisement();
 	void editAdvertisement();
@@ -23,21 +22,10 @@ public:
 	void deserializeTravelers();
 	void displayHosts();
 	void displayTravelers();
-
 	void deleteHost();
 	void deleteTraveler();
-
-	Place searchByType();
-	Place searchByCountry();
-	Place searchByCity();
-	Place searchByStreet();
-	Place searchByLocation();
-	Place searchByView();
-	Place searchByPriceRange();
-	Place searchByPaymentMethod();
-	Place searchByNoOfRooms();
-	Place searchByDuration();
-	Place search();
+	void generateDashboard();
+	void validateAdmin();
 	Admin();
 };
 #endif

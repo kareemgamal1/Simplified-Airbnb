@@ -5,16 +5,15 @@ void Admin::createTraveler()
 	Traveler T;
 	T.signup();
 	travelers[T.getEmail()] = T;
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 void Admin::createHost()
 {
 	Host h;
 	h.signup();
 	hosts[h.getEmail()] = h;
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
-//done
 
 void Admin::addAdvertisement() {
 	string mail;
@@ -33,7 +32,7 @@ void Admin::addAdvertisement() {
 		}
 	}
 	i->second.addAdvertisement();
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 void Admin::editAdvertisement() {
 	string mail;
@@ -52,7 +51,7 @@ void Admin::editAdvertisement() {
 		}
 	}
 	i->second.editAdvertisement();
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 void Admin::deleteAdvertisement() {
 	string mail;
@@ -71,41 +70,52 @@ void Admin::deleteAdvertisement() {
 		}
 	}
 	i->second.deleteAdvertisement();
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 
 void Admin::displayHosts() {
-	deserializeHosts();///////// updateeeeeeeeeeeeeeeeeeeeeeeeeee
-	cout << "\nHosts: \n\n";
-	for (auto i : hosts)
+	deserializeHosts();
+	if (hosts.size() == 0)
 	{
-		cout << "===============================\n";
-		cout << "Host's E-mail:" << i.second.getEmail() << '\n';
-		cout << "Host's name:" << i.second.getFirstName() << " " << i.second.getLastName() << '\n';
-		cout << "Host's nationality:" << i.second.getNationality() << '\n';
-		cout << "Host's gender:" << ((tolower(i.second.getGender()) == 'm') ? " Male" : " Female") << '\n';
-		cout << "Host's age:" << i.second.getAge() << '\n';
-		cout << "===============================\n\n\n";
+		std::cout << "\nThere are no hosts..\n";
 	}
-	mainmenu(); //// updateeeeeeeeeee
+	else {
+		cout << "\nHosts: \n\n";
+		for (auto i : hosts)
+		{
+			cout << "===============================\n";
+			cout << "Host's E-mail:" << i.second.getEmail() << '\n';
+			cout << "Host's name:" << i.second.getFirstName() << " " << i.second.getLastName() << '\n';
+			cout << "Host's nationality:" << i.second.getNationality() << '\n';
+			cout << "Host's gender:" << ((tolower(i.second.getGender()) == 'm') ? " Male" : " Female") << '\n';
+			cout << "Host's age:" << i.second.getAge() << '\n';
+			cout << "===============================\n\n\n";
+		}
+	}
+	mainmenu();
 }
 void Admin::displayTravelers() {
-	deserializeTravelers();//////////updateeeeeeeeeeeeee
-	cout << "\nTravelers: \n\n";
-	for (auto i : travelers)
+	deserializeTravelers();
+	if (travelers.size() == 0)
 	{
-		cout << "===============================\n";
-		cout << "Traveler's E-mail:" << i.second.getEmail() << '\n';
-		cout << "Traveler's name:" << i.second.getFirstName() << " " << i.second.getLastName() << '\n';
-		cout << "Traveler's nationality:" << i.second.getNationality() << '\n';
-		cout << "Traveler's age:" << i.second.getAge() << '\n';
-		cout << "===============================\n\n\n";
+		std::cout << "\nThere are no travelers..\n";
 	}
-	mainmenu(); //// updateeeeeeeeeee
+	else {
+		cout << "\nTravelers: \n\n";
+		for (auto i : travelers)
+		{
+			cout << "===============================\n";
+			cout << "Traveler's E-mail:" << i.second.getEmail() << '\n';
+			cout << "Traveler's name:" << i.second.getFirstName() << " " << i.second.getLastName() << '\n';
+			cout << "Traveler's nationality:" << i.second.getNationality() << '\n';
+			cout << "Traveler's age:" << i.second.getAge() << '\n';
+			cout << "===============================\n\n\n";
+		}
+	}
+	mainmenu();
 }
 //done
 void Admin::deserializeHosts() {
-	//hosts.clear();/////////////// updateeeeeeeeeeeeeeeeeeeeeeeeee
 	string path = "Data/host/";
 	try
 	{
@@ -147,7 +157,6 @@ void Admin::deserializeHosts() {
 	}
 }
 void Admin::deserializeTravelers() {
-	//travelers.clear(); /////////////updateeeeeeeeeeeeeeeeeee
 	string path = "Data/traveller/";
 	try
 	{
@@ -188,7 +197,6 @@ void Admin::deserializeTravelers() {
 		return;
 	}
 }
-//done
 
 void Admin::deleteHost() {
 
@@ -237,8 +245,7 @@ void Admin::deleteHost() {
 		}
 
 	}
-	//hosts.erase(i->first);//////////////// uodateeeeeeeeeeeeeeeeeee
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 void Admin::deleteTraveler() {
 	std::unordered_map<string, Traveler> ::iterator i;
@@ -250,7 +257,7 @@ void Admin::deleteTraveler() {
 		i = travelers.find(email);
 
 		if (i == travelers.end())
-			cout << "HOST NOT FOUND";
+			cout << "TRAVELLER NOT FOUND";
 		else
 		{
 			string toBeDeleted = "Data/traveller/" + email + ".txt";
@@ -274,54 +281,63 @@ void Admin::deleteTraveler() {
 
 		}
 	}
-	//travelers.erase(i->first); ///// updateeeeeeeeeeeeeeeeeeeeeeeeeeee
-	mainmenu(); //// updateeeeeeeeeee
+	mainmenu();
 }
 void Admin::mainmenu() { ///// updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 	int choice;
-	cout << "\t \t  Hello Admin \n - if you want to create a new traveller press 1 \n -if you want to create a new host press 2 /n -if you want to delete a traveller press 3 \n - if you want to delete a host press 4 \n -if you want to add advertisment press 5 \n -if you want to edit advertisment press 6 \n -if you want to delete advertisment press 7\n -if you want to display all travellers press 8 \n - if you want to display all hosts press 9 \n - if you want to exit press any number except pervious numbers \n";
-	cin >> choice;
-	switch (choice) {
-	case 1: {
-		createTraveler();
-		return;
-	}
-	case 2: {
-		createHost();
-		return;
-	}
-	case 3: {
-		deleteTraveler();
-		return;
-	}
-	case 4: {
-		deleteHost();
-		return;
-	}
-	case 5: {
-		addAdvertisement();
-		return;
-	}
-	case 6: {
-		editAdvertisement();
-		return;
-	}
-	case 7: {
-		deleteAdvertisement();
-		return;
-	}
-	case 8: {
-		displayTravelers();
-		return;
+	cout << "\n-Choose (1) if you want to create a new traveller.\n-Choose (2) if you want to create a new host.\n-Choose (3) if you want to delete a traveller.\n-Choose (4) if you want to delete a host.\n-Choose (5) if you want to add an advertisment to a specific host.\n-Choose (6) if you want to edit advertisment.\n-Choose (7) if you want to delete advertisment.\n-Choose (8) if you want to display all travellers.\n-Choose (9) if you want to display all hosts.\n-Choose (10) if you want to generate a statistical insights about the whole system.\n-Choose (0)if you want to sign out.\n";
+	while (true) {
+		cin >> choice;
+		switch (choice) {
+		case 1: {
+			createTraveler();
+			return;
+		}
+		case 2: {
+			createHost();
+			return;
+		}
+		case 3: {
+			deleteTraveler();
+			return;
+		}
+		case 4: {
+			deleteHost();
+			return;
+		}
+		case 5: {
+			addAdvertisement();
+			return;
+		}
+		case 6: {
+			editAdvertisement();
+			return;
+		}
+		case 7: {
+			deleteAdvertisement();
+			return;
+		}
+		case 8: {
+			displayTravelers();
+			return;
 
-	}
-	case 9: {
-		displayHosts();
-	}
-	default: {
-
-	}
-
+		}
+		case 9: {
+			displayHosts();
+			return;
+		}
+		case 10: {
+			generateDashboard();
+			return;
+		}
+		case 0: {
+			return;
+		}
+		default: {
+			cout << "Invalid choice!\n";
+			break;
+		}
+		}
 	}
 }
 void Admin::generateDashboard()
@@ -338,6 +354,18 @@ void Admin::generateDashboard()
 	// getPercentageOfRooms&Apartments();
 	// getNoOfReservedPlaces();
 }
+
+void Admin::validateAdmin() {
+	string passcode;
+	cin >> passcode;
+	if (passcode != "045")
+	{
+		return;
+	}
+	cout << "Hello admin!\n";
+	mainmenu();
+}
+
 Admin::Admin() {
 	deserializeHosts();
 	deserializeTravelers();

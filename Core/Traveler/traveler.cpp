@@ -7,6 +7,7 @@ int queryNumber = 0;
 
 void Traveler::signup()
 {
+	cout << "\nPlease sign up.\n";
 	std::cout << "First name : ";
 	std::cin >> firstName;
 	std::cout << "Last name : ";
@@ -25,7 +26,7 @@ void Traveler::signup()
 	std::cout << "Age : ";
 	std::cin >> age;
 	serializeUser(path);
-	login();
+	cout << "\nSigned up successfully!\n";
 }
 
 void Traveler::login()
@@ -33,24 +34,24 @@ void Traveler::login()
 	string em, pass;
 	int num_tries = 0;
 	bool validated = false;
-	while (num_tries < 3 && !validated)
+	cout << "\Please login.\n";
+	while (!validated)
 	{
-		//std::cout << "Username : ";
-		//std::cin >> em;
+		std::cout << "Username : ";
+		std::cin >> em;
 		string temp;
-		for (char c : email)
+		for (char c : em)
 		{
 			temp += (char)tolower(c);
 		}
 		em = temp;//email into lowercase
-		//std::cout << "\nPassword : ";
-		//std::cin >> pass;
-		em = "A@mail";
-		pass = "1";
+		std::cout << "\nPassword : ";
+		std::cin >> pass;
 		string path = "Data/traveller/" + em + ".txt";
 		validated = checkForCredintials(path, pass);
 		if (validated)
 		{
+			cout << "Logged in successfully!\n";
 			fillTravelerInfo(path);
 			search();
 		}
@@ -71,7 +72,6 @@ void Traveler::login()
 			}
 		}
 	}
-	search();
 }
 
 void Traveler::serializePlace(Place p)
@@ -86,7 +86,6 @@ void Traveler::serializePlace(Place p)
 	stream << p.view << endl;
 	stream << p.paymentMethod << endl;
 	stream << p.room << endl;
-	// stream << p.reserved << endl; uncomment it after we handle reservation in place
 	stream << p.pricePerDay << endl;
 	stream << p.noOfRooms << endl;
 	stream << p.discount << endl;
@@ -223,23 +222,21 @@ void Traveler::restartAll()
 {
 	queryNumber = 0;
 	search();
-
 }
 
 void Traveler::endProgram()
 {
-	std::cout << "Thank you for using our program.\n";
-	exit(0);
+	std::cout << "Logging out.\n";
+	return;
 }
 
 void Traveler::displayAll()
 {
 	if (currentPlaces.size() == 0)
 	{
-		std::cout << "\nThere are no matching advertisements.\nWould you like to restart the searching process?y/n";
-		char choice;
-		std::cin >> choice;
-		tolower(choice) == 'y' ? restartAll() : endProgram();
+		std::cout << "\nThere are no matching advertisements, restarting the searching process..\n";
+		restartAll();
+		return;
 	}
 	std::cout << "\nAdvertisements: \n\n";
 	for (auto i : currentPlaces) {
@@ -265,7 +262,6 @@ void Traveler::searchByType()
 	bool room;
 	std::cout << "Enter (1) for apartment or (2) for room.";
 	std::cin >> choice;
-	// choice = 2;
 	room = (choice == 2);
 	unordered_map<int, Place> currentContainer = chooseContainer();
 	unordered_map<int, Place>::iterator i;
@@ -371,9 +367,6 @@ void Traveler::searchByLocation()
 		}
 		std::cout << "(1)Country\n(2)City\n(3)Street Name\n(0)to stop searching by location.\n";
 		std::cin >> locationChoice;
-		/*searchByCountry();
-		searchByCity();
-		searchByStreet();*/
 	}
 }
 
@@ -444,7 +437,6 @@ void Traveler::searchByPaymentMethod()
 
 void Traveler::searchByNoOfRooms()
 {
-	// available only if it's an apartment.
 	int noOfRooms;
 	std::cout << "Number of rooms: ";
 	std::cin >> noOfRooms;
@@ -472,7 +464,7 @@ void Traveler::searchByDuration()
 	unordered_map<int, Place>::iterator i;
 	for (i = currentContainer.begin(); i != currentContainer.end();)
 	{
-		if (i->second.availableduration <= duration)
+		if (i->second.availableduration < duration)
 		{
 			i = currentContainer.erase(i);
 		}
@@ -511,7 +503,7 @@ void Traveler::searchByDate()
 void showPreferences()
 {
 	std::cout << "\nEnter your searching preferences:\n(1)Type (Room or Apartment)\n(2)Location\n(3)View\n(4)Price range\n(5)Payment method\n(6)Number of rooms in an apartment\n(7)Duration of stay\n(8)Date\n";
-	std::cout << "(9)Restart search\n(0)Stop searching\n";
+	std::cout << "(9)Restart search\n(0)Stop searching\n\n";
 }
 
 void Traveler::search()
@@ -565,22 +557,21 @@ void Traveler::search()
 		case 9:
 		{
 			restartAll();
-
 			return;
 		}
 		case 0: {
-			endProgram();
-			break;
+			cout << "Logging out..\n";
+			return;
 		}
 		default: {
-			cout << " invalid choice , try again \n";
+			cout << "Invalid choice , try again.\n";
 		}
 		}
 		std::cout << "Would you like to select any current advertisements?y/n\n";
 		char bookChoice;
 		std::cin >> bookChoice;
 		tolower(bookChoice) == 'y' ? choosePlace() : search();
-		std::cin >> choice;
+		break;
 	}
 }
 
@@ -630,7 +621,7 @@ bool Traveler::bookingcontinousperiod(Place &p, timereserve startdate, int perio
 		return true;
 	}
 	else {
-		std::cout << "invalid date you can't book ";
+		std::cout << "Invalid date, you can't book.\n";
 		return false;
 	}
 }
@@ -643,7 +634,7 @@ int Traveler::bookingSeperateDate(Place &p)
 	int choice;
 	bool canreserve;
 	do {
-		std::cout << " please enter date you want to reserve";
+		std::cout << "Please enter date you want to reserve.\nDay and Month:";
 		std::cin >> t.day >> t.month;
 		booking = bookingcontinousperiod(p, t, 1);
 		if (booking == true)
@@ -674,7 +665,7 @@ void Traveler::choosePlace()
 			std::cout << " if you want continous date press 1, if you want seperate press 2 \n if you want not to book press any number\n";
 			std::cin >> choice;
 			if (choice == 1) {
-				std::cout << " please enter start date ";
+				std::cout << " please enter start date: Month and Day:\n";
 				std::cin >> t.day >> t.month;
 				std::cout << " please enter period";
 				std::cin >> period;
@@ -695,7 +686,6 @@ void Traveler::choosePlace()
 		search();
 		return;
 	}
-	std::cout << "Invalid ID.\n";
 	choosePlace();
 }
 
@@ -720,6 +710,7 @@ string Traveler::validateEmail(string email)
 			std::cout << "E-mail: ";
 			string mail;
 			std::cin >> mail;
+			this->email = mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
@@ -728,6 +719,7 @@ string Traveler::validateEmail(string email)
 			std::cout << "E-mail: ";
 			string mail;
 			std::cin >> mail;
+			this->email=mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
@@ -737,6 +729,7 @@ string Traveler::validateEmail(string email)
 			std::cout << "E-mail: ";
 			string mail;
 			std::cin >> mail;
+			this->email = mail;
 			ifile.close();
 			return validateEmail(mail);
 		}
@@ -770,7 +763,6 @@ void Traveler::fillTravelerInfo(string path)
 	getline(stream, this->lastName);
 	getline(stream, this->email);
 	getline(stream, this->phone); // born to find horrible code, forced to cope
-	//this->phone = stoi(placeHolderString);
 	getline(stream, this->nationality);
 	getline(stream, placeHolderString);
 	this->gender = placeHolderString[0];
@@ -782,14 +774,19 @@ void Traveler::fillTravelerInfo(string path)
 float Traveler::generateTotalPrice(Place p, int duration)
 {
 	int totalPrice = 0;
-	if (duration > 3) {//updateee
-		float discount = p.discount / 100;
-		totalPrice = (p.pricePerDay - (discount * p.pricePerDay)) * duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
+	if (p.discount != 0) {
+		if (duration > 3) {
+			float discount = p.discount / 100;
+			totalPrice = (p.pricePerDay - (discount * p.pricePerDay)) * duration; // then multiply the whole expression by the number of days (Tamer&Ahmed)
+		}
+		else 
+			totalPrice = p.pricePerDay * duration;
 	}
 	else
-		totalPrice = p.pricePerDay * duration;//updateee
+		totalPrice = p.pricePerDay * duration;
 	return totalPrice;
 }
+
 Traveler::Traveler(string password, string firstName, string lastName, string email, string phone, string nationality, char gender, int age) {
 	this->password = password;
 	this->firstName = firstName;
@@ -800,6 +797,7 @@ Traveler::Traveler(string password, string firstName, string lastName, string em
 	this->gender = gender;
 	this->age = age;
 }
+
 Traveler::Traveler() {
 
 }

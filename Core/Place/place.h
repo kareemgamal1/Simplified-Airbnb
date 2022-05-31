@@ -41,8 +41,5 @@ public:
     Place(int ID, location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount);
     Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, int discount);
     Place(location loc, int pricePerDay, string view, bool room, int noOfRooms, string paymentMethod, string hostEmail, timereserve startDate, timereserve endDate, int discount);
-    void bookingcontinousperiod(int period, timereserve t);
-    void displaydays();
-    void calculateDuration();
 };
 #endif

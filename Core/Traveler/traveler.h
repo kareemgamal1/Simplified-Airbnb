@@ -7,20 +7,10 @@
 
 class Traveler : public User
 {
-	string startDate;
-	string endDate;
-	location loc;
-	int stayDuration;
-	int priceRangeStart;
-	int priceRangeEnd;
 	int queryNumber;
 	unordered_map<int, Place> allPlaces;
 	unordered_map<int, Place> currentPlaces;
-	Place reservedPlace;
-	// test
 public:
-	// vector to hold all Places, and check for each element if it satisfies every attribute we search with
-	// another vector to hold the Places which satisfy the conditions
 	void signup();
 	void login();
 
