@@ -1,5 +1,3 @@
-import os
-import numpy as np
 import pandas as pd
 import hostDf as hdf
 import travelerDf as tdf

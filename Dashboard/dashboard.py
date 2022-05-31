@@ -1,10 +1,4 @@
-import os
-import pandas as pd
-import numpy as np
-import dash 
-from dash import Dash, dash_table
-import plotly.graph_objects as go
-import dash_html_components as html
+from dash import Dash, dash_table,html
 import dash_core_components as dcc
 import hostDf as hdf
 import travelerDf as tdf
@@ -17,9 +11,7 @@ app = Dash(__name__)
 
 app.layout=html.Div([
     html.Div([
-        html.Div([
-            html.H3(['Users statistics.'],style={'text-align':'center'})
-            ],style={"margin-top":'20px'}),
+            html.H3(['Users statistics.'],style={'text-align':'center'}),
         html.Label(['Variety among different types of users.'],style={'text-align':'center'}),
         dcc.Dropdown(
             id="attribute_dropdown",
@@ -38,9 +30,9 @@ app.layout=html.Div([
             html.Div([("Travelers")],style={"width":"33%","text-align":"center","z-index":"2"})
             ],style={"display":"flex","margin-top":'15px'}),
         html.Div([
-            dcc.Graph(id='host_graph', style={"width":"33%"}),
-            dcc.Graph(id='user_graph', style={"width":"33%"}),
-            dcc.Graph(id='traveler_graph', style={"width":"33%"})
+            dcc.Graph(id='host_graph', style={"width":"33.33%"}),
+            dcc.Graph(id='user_graph', style={"width":"33.33%"}),
+            dcc.Graph(id='traveler_graph', style={"width":"33.33%"})
             ],style={"display":"flex","margin-top":'-20px'}),
        
         html.Div([
@@ -48,27 +40,67 @@ app.layout=html.Div([
             ]),
         html.H4('Number of places per host.'),
     html.Div([
-            # html.Label(['X-axis categories to compare:'],style={'font-weight': 'bold'}),
             dcc.RadioItems(
-                id='xaxis_raditem',
+                id='xaxis_rad',
                 options=[
                          {'label': 'Host', 'value': 'host'}
                 ],
                 value='host',
             ),
-        ]),
+        ],style={"display":"none"}),
 
         html.Div([
-            html.Br(),
-            # html.Label(['Y-axis values to compare:'], style={'font-weight': 'bold'}),
             dcc.RadioItems(
-                id='yaxis_raditem',
+                id='yaxis_rad',
                 options=[{'label': 'Number of places', 'value': 'noOfPlaces'},],
                 value='noOfPlaces',
             ),
-        ]),
+        ],style={"display":"none"}),
     html.Div([
-        dcc.Graph(id='the_graph')
+        dcc.Graph(id='the_graphh')
+    ]),
+    html.H3(['Places statistics.'],style={'text-align':'center'}),
+    
+    dcc.Dropdown(
+        id="places_dropdown",
+        options=[
+            {'label':'Payment method','value':'method'},
+            {'label':'Country','value':'country'},
+            {'label':'Type','value':'room'}
+            ],
+        value='method',
+        multi=False,
+        clearable=False,
+        ),
+    
+    html.Div([
+        dcc.Graph(id='places_graph')
+        ]),
+    
+    html.Div([
+        dash_table.DataTable(pdf.placeStatistics.to_dict('records'), [{"name": i, "id": i} for i in pdf.placeStatistics.columns]),
+        ]),
+    
+        html.H4('Duration per place.'),
+    html.Div([
+            dcc.RadioItems(
+                id='xaxis',
+                options=[
+                         {'label': 'Duration', 'value': 'duration'}
+                ],
+                value='duration',
+            ),
+        ],style={"display":"none"}),
+
+        html.Div([
+            dcc.RadioItems(
+                id='yaxis',
+                options=[{'label': 'ID', 'value': 'id'},],
+                value='id',
+            ),
+        ],style={"display":"none"}),
+    html.Div([
+        dcc.Graph(id='the_graphhh')
     ]),
     ],style={"padding":"0% 7%","background-color":"floralwhite"}),
 ])
@@ -101,12 +133,12 @@ def update_graph(attribute_dropdown):
     return piechart
 
 @app.callback(
-    Output(component_id='the_graph', component_property='figure'),
-    [Input(component_id='xaxis_raditem', component_property='value'),
-     Input(component_id='yaxis_raditem', component_property='value')]
+    Output(component_id='the_graphh', component_property='figure'),
+    [Input(component_id='xaxis_rad', component_property='value'),
+     Input(component_id='yaxis_rad', component_property='value')]
 )
 def update_graph(x_axis, y_axis):
-    dff = pdf.hostPlaces
+    dff = pdf.hostPlacesDf
     barchart=px.bar(
             data_frame=dff,
             x=x_axis,
@@ -117,6 +149,31 @@ def update_graph(x_axis, y_axis):
                            title={'xanchor':'center', 'yanchor': 'top', 'y':0.9,'x':0.5,})
     return (barchart)
 
+@app.callback(
+    Output(component_id='places_graph',component_property='figure'),
+    [Input(component_id="places_dropdown",component_property='value')]
+    )
+def update_graph(attribute_dropdown):
+    df=pdf.PlaceDf
+    piechart=px.pie(data_frame=df,names=attribute_dropdown,hole=0)
+    return piechart
+
+@app.callback(
+    Output(component_id='the_graphhh', component_property='figure'),
+    [Input(component_id='xaxis', component_property='value'),
+     Input(component_id='yaxis', component_property='value')]
+)
+def update_graph(x_axis, y_axis):
+    dff = pdf.PlaceDf
+    barchart=px.bar(
+            data_frame=dff,
+            x=y_axis,
+            y=x_axis,
+            title=y_axis+': by '+x_axis,
+            )
+    barchart.update_layout(xaxis={'categoryorder':'total ascending'},
+                           title={'xanchor':'center', 'yanchor': 'top', 'y':0.9,'x':0.5,})
+    return (barchart)
+
 
 app.run_server(debug=False,port=3024)
-            # dash_table.DataTable(udf.UserDf.to_dict('records'), [{"name": i, "id": i} for i in udf.UserDf.columns]),

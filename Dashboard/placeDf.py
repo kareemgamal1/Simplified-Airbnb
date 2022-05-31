@@ -3,7 +3,7 @@ import pandas as pd
 
 
 
-placeCountry,placeCity,placeStreet,placeView,placePayment,placeRoom,placePrice,placeNoOfRooms,placeDiscount,placeOwner,placeStartDate,placeEndDate,placeEndDay,placeEndMonth,placeDuration=([] for i in range(15))
+placeCountry,placeCity,placeStreet,placeView,placePayment,placeRoom,placePrice,placeNoOfRooms,placeDiscount,placeID,placeOwner,placeStartDate,placeEndDate,placeEndDay,placeEndMonth,placeDuration=([] for i in range(16))
 
 rootdir = '../Data/place'
 currentPlace=""
@@ -32,6 +32,7 @@ hostPlacesDf=pd.DataFrame(
         }
     )
 
+
 for place in places:
     placeFile = open(place, "r")
     lines = placeFile.readlines()
@@ -42,15 +43,16 @@ for place in places:
     placeView.append(lines[3])  
     placePayment.append(lines[4])  
     placeRoom.append("Room" if (lines[5]=='1') else "Apartment")  
-    placePrice.append(lines[6]) #bar
-    placeNoOfRooms.append(lines[7])  
-    placeDiscount.append(lines[8]) 
+    placePrice.append(int(lines[6])) #bar
+    placeNoOfRooms.append(int(lines[7]))  
+    placeDiscount.append(int(lines[8])) 
+    placeID.append(int(lines[9]))
     placeOwner.append(lines[10])
     startDate='2022'+'-'+lines[12]+'-'+lines[11]
     placeStartDate.append(startDate) 
     endDate='2022'+'-'+lines[14]+'-'+lines[13]
-    placeEndDate.append  (endDate) 
-    placeDuration.append(lines[15])
+    placeEndDate.append(endDate) 
+    placeDuration.append(int(lines[15]))
     
 # print(placeStartDate)
 pd.set_option("display.max_columns", 100)
@@ -65,10 +67,18 @@ PlaceDf=pd.DataFrame(
       'price': placePrice,
       'rooms': placeNoOfRooms,
       'discount': placeDiscount,
+      'id':placeID,
       'owner': placeOwner,
       'startDate': placeStartDate,
       'endDate': placeEndDate,
       'duration': placeDuration,
       }
     )
+
+count = (PlaceDf['discount'] != 0).sum()
+newDf=PlaceDf[PlaceDf['discount']!=0] 
+mean=newDf['discount'].mean()
+placeStatistics = pd.DataFrame(data=[[count,mean]], columns=['Discounts','Avg Discount'])
+print(placeStatistics)
+print(count)
 # print(PlaceDf)
